@@ -13,9 +13,13 @@ export const theme = {
       loading: 1.0,
     },
     easing: {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       premium: [0.16, 1, 0.3, 1] as any, // Cast to any to satisfy Framer Motion's Easing type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       standard: [0.4, 0, 0.2, 1] as any,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       in: [0.4, 0, 1, 1] as any,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       out: [0, 0, 0.2, 1] as any,
     },
   },

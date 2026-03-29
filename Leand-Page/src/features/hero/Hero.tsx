@@ -10,7 +10,6 @@ import { Zap, ArrowRight, Activity, Globe, Lock, BarChart3, ShieldCheck } from "
 import { TrustCloud } from "./TrustCloud";
 import { cn } from "@/shared/lib/utils";
 import { theme } from "@/shared/lib/theme";
-import Image from "next/image";
 
 const HeroDashboard = () => {
   // Static random heights to ensure purity and premium "live" feel without runtime instability
@@ -53,9 +52,9 @@ const HeroDashboard = () => {
 
         <div className="p-4 md:p-10 bg-gradient-to-b from-white/80 to-slate-50/50">
            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-              {stats.map((item, i) => (
-                <div key={i} className="bg-white rounded-3xl p-6 border border-slate-200/60 shadow-sm space-y-4 text-left">
-                   <div className="flex items-center justify-between">
+               {stats.map((item, i) => (
+                 <div key={i} className="bg-white/95 dark:bg-slate-900/95 rounded-3xl p-6 border border-slate-200/60 dark:border-slate-800 shadow-sm hover:shadow-md transition-all cursor-pointer space-y-4 text-left group">
+                    <div className="flex items-center justify-between">
                       <div className={cn("w-10 h-10 rounded-2xl flex items-center justify-center bg-slate-50", item.color)}>
                          <item.icon size={20} aria-hidden="true" />
                       </div>

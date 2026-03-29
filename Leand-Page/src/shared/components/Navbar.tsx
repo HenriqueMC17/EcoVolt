@@ -33,8 +33,8 @@ export const Navbar = () => {
   return (
     <nav
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all px-6",
-        isScrolled ? "py-4" : "py-8"
+        "fixed top-4 left-4 right-4 z-50 transition-all",
+        isScrolled ? "py-0" : "py-2"
       )}
       style={{ transitionDuration: `${theme.animations.durations.slow}s` }}
     >
@@ -64,7 +64,7 @@ export const Navbar = () => {
             <a
               key={link.name}
               href={link.href}
-              className="px-4 py-2 text-sm font-bold text-slate-500 hover:text-slate-900 transition-all rounded-full hover:bg-slate-50"
+              className="px-4 py-2 text-sm font-bold text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-all rounded-full hover:bg-slate-50 dark:hover:bg-slate-800"
               style={{ transitionDuration: `${theme.animations.durations.fast}s` }}
             >
               {link.name}

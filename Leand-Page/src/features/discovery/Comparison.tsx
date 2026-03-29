@@ -4,7 +4,7 @@ import React from "react";
 import { Section } from "@/shared/components/Section";
 import { Heading, Text, Subheading } from "@/shared/ui/Typography";
 import { GlassCard } from "@/shared/ui/GlassCard";
-import { Check, X, ShieldAlert, ZapOff, Scale } from "lucide-react";
+import { Check, X, ZapOff, Scale } from "lucide-react";
 
 const comparisonData = [
   {
