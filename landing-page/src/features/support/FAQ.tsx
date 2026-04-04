@@ -7,6 +7,7 @@ import { GlassCard } from "@/shared/ui/GlassCard";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Minus } from "lucide-react";
 import { theme } from "@/shared/lib/theme";
+import { cn } from "@/shared/lib/utils";
 
 const faqs = [
   {
@@ -30,15 +31,22 @@ const faqs = [
 const FAQItem = ({ faq, isOpen, onClick }: { faq: typeof faqs[0]; isOpen: boolean; onClick: () => void }) => {
   return (
     <GlassCard 
-      className="p-0 border-slate-100 bg-white shadow-sm hover:shadow-md transition-shadow cursor-pointer overflow-hidden" 
+      variant="dark"
+      className={cn(
+        "p-0 border-white/5 bg-slate-900/40 shadow-sm transition-all duration-300 cursor-pointer overflow-hidden",
+        isOpen ? "border-white/10 bg-slate-900/80 shadow-[0_0_30px_-10px_rgba(0,0,0,0.5)]" : "hover:bg-slate-900/60"
+      )} 
       hover={false}
       onClick={onClick}
     >
       <div className="p-6 md:p-8 flex items-center justify-between gap-6">
         <div className="space-y-1 text-left">
-           <Heading as="h4" className="text-lg md:text-xl tracking-tight">{faq.question}</Heading>
+           <Heading as="h4" className="text-lg md:text-xl text-white tracking-tight">{faq.question}</Heading>
         </div>
-        <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400">
+        <div className={cn(
+           "w-10 h-10 rounded-full flex items-center justify-center transition-colors shrink-0 border",
+           isOpen ? "bg-ecovolt-green-500/10 text-ecovolt-green-400 border-ecovolt-green-500/20" : "bg-slate-800 text-slate-400 border-white/5"
+        )}>
            {isOpen ? <Minus size={20} /> : <Plus size={20} />}
         </div>
       </div>
@@ -51,8 +59,8 @@ const FAQItem = ({ faq, isOpen, onClick }: { faq: typeof faqs[0]; isOpen: boolea
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: theme.animations.durations.normal, ease: theme.animations.easing.premium }}
           >
-            <div className="px-8 pb-8 pt-0 text-left border-t border-slate-50 mt-2">
-               <Text className="text-base font-medium pt-8">{faq.answer}</Text>
+            <div className="px-8 pb-8 pt-0 text-left border-t border-white/5 mx-2 mt-2">
+               <Text className="text-base text-slate-400 font-medium pt-6">{faq.answer}</Text>
             </div>
           </motion.div>
         )}
@@ -65,12 +73,14 @@ export const FAQ = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <Section id="faq" className="bg-slate-50 py-32 md:py-48 overflow-hidden relative">
-      <div className="max-w-4xl mx-auto px-6">
+    <Section id="faq" className="bg-slate-950 py-32 md:py-48 overflow-hidden relative border-t border-white/5">
+      <div className="absolute top-1/4 -left-1/4 w-[600px] h-[600px] bg-ecovolt-blue-600/5 blur-[120px] rounded-full pointer-events-none" />
+      
+      <div className="max-w-4xl mx-auto px-6 relative z-10">
         <div className="text-center mb-24 space-y-6">
-          <Subheading>The Details</Subheading>
-          <Heading>Perguntas Frequentes.</Heading>
-          <Text className="text-lg md:text-xl font-medium">
+          <Subheading className="text-ecovolt-green-400">The Details</Subheading>
+          <Heading className="text-white">Perguntas Frequentes.</Heading>
+          <Text className="text-lg md:text-xl text-slate-400 font-medium">
              Tudo o que você precisa saber sobre a infraestrutura da EcoVolt.
           </Text>
         </div>
@@ -87,7 +97,7 @@ export const FAQ = () => {
         </div>
 
         <div className="mt-20 text-center">
-           <Text className="text-sm">Ainda tem dúvidas? <span className="text-ecovolt-green-600 font-bold cursor-pointer hover:underline">Fale com um especialista.</span></Text>
+           <Text className="text-sm text-slate-500">Ainda tem dúvidas? <span className="text-ecovolt-green-400 font-bold cursor-pointer hover:underline">Fale com um especialista.</span></Text>
         </div>
       </div>
     </Section>

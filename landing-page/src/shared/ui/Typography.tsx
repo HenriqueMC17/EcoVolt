@@ -31,7 +31,7 @@ export const Heading = ({
   );
 };
 
-export const Text = ({ 
+export const Paragraph = ({ 
   children, 
   className, 
   as: Component = "p" 
@@ -48,7 +48,7 @@ export const Text = ({
 
 export const Subheading = ({ children, className }: TypographyProps) => (
   <span className={cn(
-    "text-ecovolt-green-600 text-[10px] font-bold uppercase tracking-[0.2em] mb-4 block",
+    "text-emerald-500 text-[10px] font-bold uppercase tracking-[0.3em] mb-4 block",
     className
   )}>
     {children}

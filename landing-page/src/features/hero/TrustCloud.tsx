@@ -40,20 +40,22 @@ export const TrustCloud = () => {
           ))}
         </div>
         
-        <div className="mt-12 flex flex-wrap justify-center gap-8 md:gap-16">
+        <div className="mt-12 flex flex-col md:flex-row flex-wrap justify-center gap-8 md:gap-16">
           <div className="flex flex-col items-center">
-            <span className="text-xl md:text-2xl font-bold text-slate-900">1.2GW</span>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Energia Gerida</span>
+            <span className="text-3xl md:text-2xl font-bold text-slate-900">1.2GW</span>
+            <span className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Energia Gerida</span>
           </div>
           <div className="w-px h-8 bg-slate-200 hidden md:block" />
+          <div className="w-16 h-px bg-slate-200 block md:hidden" />
           <div className="flex flex-col items-center">
-            <span className="text-xl md:text-2xl font-bold text-slate-900">500+</span>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Eventos Globais</span>
+            <span className="text-3xl md:text-2xl font-bold text-slate-900">500+</span>
+            <span className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Eventos Globais</span>
           </div>
           <div className="w-px h-8 bg-slate-200 hidden md:block" />
+          <div className="w-16 h-px bg-slate-200 block md:hidden" />
           <div className="flex flex-col items-center">
-            <span className="text-xl md:text-2xl font-bold text-slate-900">99.9%</span>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Uptime Garantido</span>
+            <span className="text-3xl md:text-2xl font-bold text-slate-900">99.9%</span>
+            <span className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Uptime Garantido</span>
           </div>
         </div>
       </div>

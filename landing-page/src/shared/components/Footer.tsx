@@ -3,7 +3,6 @@
 import React from "react";
 import { Text } from "@/shared/ui/Typography";
 import { Globe, Github, Twitter, Linkedin, ArrowUpRight } from "lucide-react";
-import Image from "next/image";
 
 const footerLinks = [
   {
@@ -26,30 +25,29 @@ const footerLinks = [
 
 export const Footer = () => {
   return (
-    <footer className="bg-white pt-24 pb-12 px-6 border-t border-slate-100 overflow-hidden relative">
+    <footer className="bg-slate-950 pt-24 pb-12 px-6 border-t border-white/5 overflow-hidden relative">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-16 mb-24">
-          <div className="md:col-span-4 space-y-8">
-            <div className="flex items-center gap-3 group cursor-pointer">
-              <div className="relative w-10 h-10 flex items-center justify-center transition-transform group-hover:scale-110">
-                <Image 
-                  src="/logo.png" 
-                  alt="EcoVolt Logo" 
-                  width={40} 
-                  height={40} 
-                  className="object-contain"
-                />
+          <div className="md:col-span-4 space-y-8 text-left">
+            <div className="flex items-center gap-4 group cursor-pointer">
+              <div className="w-12 h-12 rounded-2xl bg-slate-900 border border-white/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500 shadow-xl shadow-emerald-500/5">
+                <svg width="32" height="32" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M26 12L16 26H24L22 36L32 22H24L26 12Z" fill="#10B981" />
+                </svg>
               </div>
-              <span className="text-2xl font-display font-black tracking-tighter text-slate-900 dark:text-white italic">
-                ECOVOLT
-              </span>
+              <div className="flex flex-col">
+                <span className="text-2xl md:text-3xl font-display font-black tracking-tighter text-white uppercase transition-transform group-hover:opacity-90">
+                  ECOVOLT
+                </span>
+                <span className="text-[0.65rem] font-bold tracking-[0.4em] text-emerald-500 uppercase -mt-1 ml-0.5">Enterprise</span>
+              </div>
             </div>
             <Text className="max-w-xs text-base font-medium text-slate-500 dark:text-slate-400">
               A espinha dorsal energética para a próxima geração de eventos globais e sustentáveis.
             </Text>
             <div className="flex gap-4">
               {[Twitter, Linkedin, Github].map((Icon, i) => (
-                <div key={i} className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 hover:text-ecovolt-green-600 hover:bg-slate-100 transition-all cursor-pointer">
+                <div key={i} className="w-10 h-10 rounded-xl bg-slate-900 border border-white/5 flex items-center justify-center text-slate-400 hover:text-ecovolt-green-500 hover:bg-slate-800 transition-all cursor-pointer">
                   <Icon size={18} />
                 </div>
               ))}
@@ -63,7 +61,7 @@ export const Footer = () => {
                 <ul className="space-y-4">
                   {column.links.map((link, j) => (
                     <li key={j}>
-                      <a href="#" className="text-sm font-bold text-slate-600 hover:text-ecovolt-green-600 transition-colors flex items-center gap-0.5 group">
+                      <a href="#" className="text-sm font-bold text-slate-400 hover:text-ecovolt-green-400 transition-colors flex items-center gap-0.5 group">
                         {link}
                         <ArrowUpRight size={12} className="opacity-0 group-hover:opacity-100 transition-all -translate-y-0.5" />
                       </a>
@@ -75,7 +73,7 @@ export const Footer = () => {
           </div>
         </div>
 
-        <div className="pt-12 border-t border-slate-50 flex flex-col md:flex-row justify-between items-center gap-8">
+        <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex items-center gap-6">
             <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">© 2026 EcoVolt Technologies Inc.</p>
             <div className="flex items-center gap-2">
@@ -86,8 +84,8 @@ export const Footer = () => {
           
           <div className="flex items-center gap-4 text-xs font-bold text-slate-400 uppercase tracking-widest">
              <div className="flex items-center gap-1.5"><Globe size={12} /> Brazil (PT-BR)</div>
-             <div className="w-px h-3 bg-slate-200" />
-             <div className="hover:text-slate-900 cursor-pointer transition-colors">System Status</div>
+             <div className="w-px h-3 bg-slate-800" />
+             <div className="hover:text-white cursor-pointer transition-colors">System Status</div>
           </div>
         </div>
       </div>
