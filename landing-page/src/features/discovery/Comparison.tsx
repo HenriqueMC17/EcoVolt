@@ -1,10 +1,12 @@
 "use client";
 
 import React from "react";
+import { motion } from "framer-motion";
 import { Section } from "@/shared/components/Section";
-import { Heading, Text, Subheading } from "@/shared/ui/Typography";
+import { Heading, Paragraph, Subheading } from "@/shared/ui/Typography";
 import { GlassCard } from "@/shared/ui/GlassCard";
-import { Check, X, ZapOff, Scale } from "lucide-react";
+import { Check, X, ZapOff, Scale, ArrowRight } from "lucide-react";
+import { cn } from "@/shared/lib/utils";
 
 const comparisonData = [
   {
@@ -27,83 +29,99 @@ const comparisonData = [
   },
   {
     feature: "Riscos Operacionais",
-    traditional: "Altos (Falta de Backup Inteligente)",
-    ecovolt: "Monitorado (Redundância Digital)",
-    impact: "Continuidade do Negócio",
+    traditional: "Altos (Falta de Backup)",
+    ecovolt: "Resiliência Digital 24/7",
+    impact: "Continuidade Absoluta",
   },
 ];
 
 export const Comparison = () => {
   return (
-    <Section id="comparativo" className="bg-slate-950 py-32 md:py-48 overflow-hidden relative border-t border-white/5">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-24 space-y-4">
-           <Subheading className="text-ecovolt-green-400">The Benchmark</Subheading>
-           <Heading className="max-w-3xl mx-auto text-white">EcoVolt vs <span className="text-slate-500">Métodos Tradicionais.</span></Heading>
-           <Text className="text-lg md:text-xl font-medium text-slate-400">
-              Pare de gastar com energia que você não consome. Veja por que somos a escolha lógica.
-           </Text>
+    <Section id="comparativo" className="bg-slate-950 py-32 md:py-64 overflow-hidden relative border-t border-white/5">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.03)_0%,transparent_70%)] pointer-events-none" />
+      
+      <div className="max-w-7xl mx-auto px-6 relative">
+        <div className="text-center mb-32 space-y-6">
+           <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="space-y-6"
+           >
+              <Subheading className="text-emerald-500 font-black tracking-[0.3em] uppercase">THE BENCHMARK</Subheading>
+              <Heading className="max-w-4xl mx-auto text-white text-5xl md:text-8xl font-black tracking-tighter leading-[0.9]">
+                EcoVolt vs <br/><span className="text-slate-500">Métodos Tradicionais.</span>
+              </Heading>
+              <Paragraph className="text-lg md:text-2xl font-medium text-slate-400 max-w-2xl mx-auto leading-relaxed">
+                Pare de gastar com energia que sua infraestrutura não consome. Veja por que somos a escolha lógica para grandes operações.
+              </Paragraph>
+           </motion.div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-           <div className="space-y-8">
-              <GlassCard variant="dark" className="p-8 border-red-500/20 bg-red-500/5 shadow-[0_0_30px_-10px_rgba(239,68,68,0.15)]">
-                 <div className="flex items-center gap-4 mb-6">
-                    <div className="w-12 h-12 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-500">
-                       <ZapOff size={24} />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+           <div className="lg:col-span-5 space-y-8">
+              <GlassCard variant="dark" className="p-10 border-red-500/10 bg-red-500/5 shadow-2xl">
+                 <div className="flex items-center gap-4 mb-8">
+                    <div className="w-14 h-14 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-500">
+                       <ZapOff size={28} />
                     </div>
-                    <Heading as="h3" className="text-2xl text-white">Métodos Tradicionais</Heading>
+                    <Heading as="h3" className="text-2xl md:text-3xl text-white font-black tracking-tight">Tradicionais</Heading>
                  </div>
-                 <ul className="space-y-4">
-                    {["Custos ocultos no faturamento", "Falta de dados para relatórios ESG", "Desperdícios operacionais", "Risco de multas ambientais"].map((item, i) => (
-                      <li key={i} className="flex items-center gap-3 text-slate-400 font-medium">
-                         <X size={18} className="text-red-500 shrink-0" />
-                         {item}
+                 <ul className="space-y-6">
+                    {["Custos ocultos no faturamento", "Falta de dados para ESG", "Desperdícios operacionais", "Risco de multas ambientais"].map((item, i) => (
+                      <li key={i} className="flex items-start gap-4 text-slate-500 font-medium group">
+                         <X size={20} className="text-red-500 shrink-0 mt-1" />
+                         <span className="group-hover:text-slate-400 transition-colors">{item}</span>
                       </li>
                     ))}
                  </ul>
               </GlassCard>
 
-              <GlassCard variant="dark" className="p-8 border-ecovolt-green-500/20 bg-ecovolt-green-500/5 shadow-[0_0_30px_-10px_rgba(34,197,94,0.15)]">
-                 <div className="flex items-center gap-4 mb-6">
-                    <div className="w-12 h-12 rounded-2xl bg-ecovolt-green-500/10 border border-ecovolt-green-500/20 flex items-center justify-center text-ecovolt-green-500">
-                       <Check size={24} />
-                    </div>
-                    <Heading as="h3" className="text-2xl text-white">Vantagem EcoVolt</Heading>
+              <GlassCard variant="dark" className="p-10 border-emerald-500/20 bg-emerald-500/5 shadow-[0_0_50px_rgba(16,185,129,0.1)] relative overflow-hidden">
+                 <div className="absolute top-0 right-0 p-4">
+                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
                  </div>
-                 <ul className="space-y-4">
-                    {["ROI imediato via eficiência", "Certificação automática de energia limpa", "Monitoramento preditivo 24/7", "Interface unificada de gestão"].map((item, i) => (
-                      <li key={i} className="flex items-center gap-3 text-slate-200 font-bold">
-                         <Check size={18} className="text-ecovolt-green-500 shrink-0" />
-                         {item}
+                 <div className="flex items-center gap-4 mb-8">
+                    <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500">
+                       <Check size={28} />
+                    </div>
+                    <Heading as="h3" className="text-2xl md:text-3xl text-white font-black tracking-tight">Vantagem EcoVolt</Heading>
+                 </div>
+                 <ul className="space-y-6">
+                    {["ROI imediato via eficiência", "Certificação automática", "Monitoramento preditivo 24/7", "Interface unificada"].map((item, i) => (
+                      <li key={i} className="flex items-start gap-4 text-slate-200 font-bold group">
+                         <Check size={20} className="text-emerald-500 shrink-0 mt-1" />
+                         <span className="group-hover:text-white transition-colors">{item}</span>
                       </li>
                     ))}
                  </ul>
               </GlassCard>
            </div>
 
-           <div className="bg-slate-900 border border-white/10 rounded-[2.5rem] p-4 md:p-10 shadow-[0_0_50px_-12px_rgba(0,0,0,0.6)]">
+           <div className="lg:col-span-7 bg-slate-900/40 border border-white/5 rounded-[3rem] p-4 md:p-14 shadow-2xl backdrop-blur-3xl relative">
+              <div className="absolute -top-10 -right-10 w-40 h-40 bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none" />
+              
               <div className="overflow-x-auto">
                  <table className="w-full text-left">
                     <thead>
-                       <tr className="border-b border-white/10">
-                          <th className="py-6 text-[10px] uppercase font-bold text-slate-500 tracking-widest">Recurso</th>
-                          <th className="py-6 text-[10px] uppercase font-bold text-slate-500 tracking-widest">EcoVolt</th>
-                          <th className="py-6 text-[10px] uppercase font-bold text-slate-500 tracking-widest whitespace-nowrap">Impacto B2B</th>
+                       <tr className="border-b border-white/5">
+                          <th className="pb-8 text-[11px] uppercase font-black text-slate-500 tracking-[0.3em]">Recurso Principal</th>
+                          <th className="pb-8 text-[11px] uppercase font-black text-emerald-500 tracking-[0.3em]">EcoVolt OS</th>
+                          <th className="pb-8 text-[11px] uppercase font-black text-slate-500 tracking-[0.3em] whitespace-nowrap">Impacto Direto</th>
                        </tr>
                     </thead>
-                    <tbody className="divide-y divide-white/5">
+                    <tbody className="divide-y divide-white/2">
                        {comparisonData.map((row, i) => (
-                         <tr key={i} className="group hover:bg-slate-800/50 transition-colors">
-                            <td className="py-6 pr-4">
-                               <p className="font-bold text-white tracking-tight">{row.feature}</p>
+                         <tr key={i} className="group hover:bg-white/[0.02] transition-colors">
+                            <td className="py-8 pr-6">
+                               <p className="font-black text-white text-lg tracking-tight leading-none">{row.feature}</p>
                             </td>
-                            <td className="py-6 pr-4">
-                               <p className="text-sm font-black text-ecovolt-green-400">{row.ecovolt}</p>
+                            <td className="py-8 pr-6">
+                               <p className="text-xs font-black text-emerald-400 uppercase tracking-widest">{row.ecovolt}</p>
                             </td>
-                            <td className="py-6">
-                               <div className="px-3 py-1.5 bg-slate-800 border border-white/5 rounded-lg inline-block text-center">
-                                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight whitespace-nowrap">{row.impact}</p>
+                            <td className="py-8">
+                               <div className="px-4 py-2 bg-slate-800/50 border border-white/5 rounded-xl inline-block text-center shadow-inner">
+                                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">{row.impact}</p>
                                </div>
                             </td>
                          </tr>
@@ -111,23 +129,29 @@ export const Comparison = () => {
                     </tbody>
                  </table>
               </div>
-              <div className="mt-10 p-6 bg-gradient-to-r from-ecovolt-green-600 to-ecovolt-green-500 rounded-2xl flex flex-col sm:flex-row gap-6 sm:gap-0 items-center justify-between text-white shadow-xl shadow-ecovolt-green-500/20">
-                 <div className="flex items-center gap-4 text-center sm:text-left">
-                    <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center shrink-0">
-                       <Scale size={24} strokeWidth={2} />
+
+              <motion.div 
+                whileHover={{ scale: 1.02 }}
+                className="mt-14 p-8 bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-[2rem] flex flex-col sm:flex-row gap-8 sm:gap-0 items-center justify-between text-white shadow-[0_20px_50px_rgba(16,185,129,0.3)] relative overflow-hidden group cursor-pointer"
+              >
+                 <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none" />
+                 <div className="flex items-center gap-6 text-center sm:text-left relative z-10">
+                    <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center shrink-0 backdrop-blur-md border border-white/20">
+                       <Scale size={32} strokeWidth={1} />
                     </div>
                     <div>
-                       <p className="text-sm font-bold opacity-90">Eficiência média garantida</p>
-                       <p className="text-3xl font-black tracking-tight">+35%</p>
+                       <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-80 mb-1">Guaranteed Performance</p>
+                       <p className="text-5xl font-black tracking-tighter">+35% <span className="text-xl opacity-60">Avg. Efficiency</span></p>
                     </div>
                  </div>
-                 <div className="hidden sm:block h-12 w-px bg-white/30" />
-                 <div className="w-full h-px bg-white/30 sm:hidden" />
-                 <div className="text-center sm:text-right">
-                    <p className="text-[10px] font-bold uppercase tracking-widest opacity-80 mb-1">Payback Estimado</p>
-                    <p className="text-2xl font-black">Imediato</p>
+                 <div className="hidden sm:block h-16 w-px bg-white/20 relative z-10" />
+                 <div className="text-center sm:text-right relative z-10">
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-80 mb-1">Faturamento Estimado</p>
+                    <p className="text-3xl font-black group-hover:translate-x-2 transition-transform inline-flex items-center gap-2">
+                       Imediato <ArrowRight size={24} />
+                    </p>
                  </div>
-              </div>
+              </motion.div>
            </div>
         </div>
       </div>

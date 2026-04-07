@@ -1,6 +1,7 @@
 {
-  "name": "ecovolt-landing",
-  "version": "0.1.0",
+  "name": "ecovolt-enterprise",
+  "version": "1.0.0",
+  "description": "Premium Enterprise Energy Infrastructure Platform",
   "private": true,
   "scripts": {
     "dev": "next dev",

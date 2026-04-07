@@ -39,8 +39,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <motion.button
         ref={ref}
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
+        aria-disabled={props.disabled}
+        whileHover={!props.disabled ? { scale: 1.02 } : {}}
+        whileTap={!props.disabled ? { scale: 0.98 } : {}}
         className={cn(
           "relative inline-flex items-center justify-center rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-ecovolt-green-500/50 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden",
           variants[variant],

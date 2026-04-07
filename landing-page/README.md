@@ -32,7 +32,7 @@ Nossa plataforma permite reduzir custos operacionais em até **30%** e eliminar 
 
 O projeto foi construído com as tecnologias mais modernas do ecossistema front-end para garantir performance, escalabilidade e uma experiência de usuário impecável:
 
-- **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
+- **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
 - **Estilização**: [Tailwind CSS 4](https://tailwindcss.com/)
 - **Animações**: [Framer Motion](https://www.framer.com/motion/)
 - **Iconografia**: [Lucide React](https://lucide.dev/)

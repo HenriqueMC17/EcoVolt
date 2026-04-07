@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Text } from "@/shared/ui/Typography";
+import { Paragraph } from "@/shared/ui/Typography";
 import { Globe, Github, Twitter, Linkedin, ArrowUpRight } from "lucide-react";
 
 const footerLinks = [
@@ -42,12 +42,12 @@ export const Footer = () => {
                 <span className="text-[0.65rem] font-bold tracking-[0.4em] text-emerald-500 uppercase -mt-1 ml-0.5">Enterprise</span>
               </div>
             </div>
-            <Text className="max-w-xs text-base font-medium text-slate-500 dark:text-slate-400">
+            <Paragraph className="max-w-xs text-base font-medium text-slate-500 dark:text-slate-400">
               A espinha dorsal energética para a próxima geração de eventos globais e sustentáveis.
-            </Text>
+            </Paragraph>
             <div className="flex gap-4">
               {[Twitter, Linkedin, Github].map((Icon, i) => (
-                <div key={i} className="w-10 h-10 rounded-xl bg-slate-900 border border-white/5 flex items-center justify-center text-slate-400 hover:text-ecovolt-green-500 hover:bg-slate-800 transition-all cursor-pointer">
+                <div key={i} className="w-10 h-10 rounded-xl bg-slate-900 border border-white/5 flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:bg-slate-800 transition-all cursor-pointer">
                   <Icon size={18} />
                 </div>
               ))}
@@ -61,7 +61,7 @@ export const Footer = () => {
                 <ul className="space-y-4">
                   {column.links.map((link, j) => (
                     <li key={j}>
-                      <a href="#" className="text-sm font-bold text-slate-400 hover:text-ecovolt-green-400 transition-colors flex items-center gap-0.5 group">
+                      <a href="#" className="text-sm font-bold text-slate-400 hover:text-emerald-400 transition-colors flex items-center gap-0.5 group">
                         {link}
                         <ArrowUpRight size={12} className="opacity-0 group-hover:opacity-100 transition-all -translate-y-0.5" />
                       </a>
@@ -77,7 +77,7 @@ export const Footer = () => {
           <div className="flex items-center gap-6">
             <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">© 2026 EcoVolt Technologies Inc.</p>
             <div className="flex items-center gap-2">
-               <div className="w-2 h-2 rounded-full bg-ecovolt-green-500 animate-pulse" />
+               <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">Global Network Active</span>
             </div>
           </div>
@@ -91,7 +91,7 @@ export const Footer = () => {
       </div>
       
       {/* Subtle branding accent */}
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-ecovolt-green-500/5 blur-[120px] rounded-full -z-10 translate-x-1/2 translate-y-1/2" aria-hidden="true" />
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-emerald-500/5 blur-[120px] rounded-full -z-10 translate-x-1/2 translate-y-1/2" aria-hidden="true" />
     </footer>
   );
 };

@@ -25,6 +25,8 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
         <div className="relative">
           <select
             id={id}
+            aria-invalid={!!error}
+            aria-describedby={error ? `${id}-error` : undefined}
             className={cn(
               "flex h-14 w-full rounded-2xl border border-white/10 bg-slate-900 px-6 py-4 text-base font-medium appearance-none ring-offset-slate-950 focus-visible:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/40 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-300",
               error && "border-red-500/50 focus:ring-red-500/20 focus:border-red-500/60",
@@ -39,7 +41,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
             <ChevronDown size={18} className="text-slate-500" />
           </div>
           {error && (
-            <p className="mt-1.5 text-[10px] font-bold text-red-400 uppercase tracking-wider px-1">
+            <p id={`${id}-error`} className="mt-1.5 text-[10px] font-bold text-red-400 uppercase tracking-wider px-1">
               {error}
             </p>
           )}

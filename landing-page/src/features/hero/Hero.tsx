@@ -6,7 +6,7 @@ import { Button } from "@/shared/ui/Button";
 import { Badge } from "@/shared/ui/Badge";
 import { Glow } from "@/shared/ui/Glow";
 import { Heading, Paragraph, Subheading } from "@/shared/ui/Typography";
-import { Zap, ArrowRight, Activity, Globe, Lock, BarChart3, ShieldCheck, Cpu } from "lucide-material-react";
+import { Zap, ArrowRight, Activity, Globe, Lock, BarChart3, ShieldCheck, Cpu } from "lucide-react";
 import { TrustCloud } from "./TrustCloud";
 import { cn } from "@/shared/lib/utils";
 import { theme } from "@/shared/lib/theme";
