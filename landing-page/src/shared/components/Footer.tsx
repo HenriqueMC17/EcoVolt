@@ -1,25 +1,46 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { Paragraph } from "@/shared/ui/Typography";
 import { Globe, Github, Twitter, Linkedin, ArrowUpRight } from "lucide-react";
 
 const footerLinks = [
   {
     title: "Produto",
-    links: ["Como Funciona", "Plataforma", "Segurança", "Preços"],
+    links: [
+      { label: "Como Funciona", href: "/product/how-it-works" },
+      { label: "Plataforma", href: "/product/platform" },
+      { label: "Segurança", href: "/product/security" },
+      { label: "Preços", href: "/product/pricing" },
+    ],
   },
   {
     title: "Empresa",
-    links: ["Sobre Nós", "Carreiras", "Blog", "Sustentabilidade"],
+    links: [
+      { label: "Sobre Nós", href: "/company/about" },
+      { label: "Carreiras", href: "/company/careers" },
+      { label: "Blog", href: "/company/blog" },
+      { label: "Sustentabilidade", href: "/company/sustainability" },
+    ],
   },
   {
     title: "Recursos",
-    links: ["Documentação", "API Reference", "Status", "Suporte"],
+    links: [
+      { label: "Documentação", href: "/resources/docs" },
+      { label: "API Reference", href: "/resources/api-reference" },
+      { label: "Status", href: "/resources/status" },
+      { label: "Suporte", href: "/resources/support" },
+    ],
   },
   {
     title: "Legal",
-    links: ["Privacidade", "Termos de Uso", "Cookies", "Compliance"],
+    links: [
+      { label: "Privacidade", href: "/legal/privacy" },
+      { label: "Termos de Uso", href: "/legal/terms" },
+      { label: "Cookies", href: "/legal/cookies" },
+      { label: "Compliance", href: "/legal/compliance" },
+    ],
   },
 ];
 
@@ -61,10 +82,10 @@ export const Footer = () => {
                 <ul className="space-y-4">
                   {column.links.map((link, j) => (
                     <li key={j}>
-                      <a href="#" className="text-sm font-bold text-slate-400 hover:text-emerald-400 transition-colors flex items-center gap-0.5 group">
-                        {link}
+                      <Link href={link.href} className="text-sm font-bold text-slate-400 hover:text-emerald-400 transition-colors flex items-center gap-0.5 group">
+                        {link.label}
                         <ArrowUpRight size={12} className="opacity-0 group-hover:opacity-100 transition-all -translate-y-0.5" />
-                      </a>
+                      </Link>
                     </li>
                   ))}
                 </ul>

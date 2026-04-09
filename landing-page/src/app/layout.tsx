@@ -27,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" className={`${inter.variable} ${outfit.variable} scroll-smooth dark`} suppressHydrationWarning>
+    <html lang="pt-BR" className={`${inter.variable} ${outfit.variable} scroll-smooth`} suppressHydrationWarning>
       <body className="antialiased overflow-x-hidden bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-50 transition-colors duration-300">
         <ThemeProvider
           attribute="class"

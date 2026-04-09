@@ -6,6 +6,7 @@ import { Menu, X } from "lucide-react";
 import { Button } from "@/shared/ui/Button";
 import { ThemeToggle } from "@/shared/ui/ThemeToggle";
 import { cn } from "@/shared/lib/utils";
+import Link from "next/link";
 
 const navLinks = [
   { name: "Início", href: "#" },
@@ -91,14 +92,16 @@ export const Navbar = () => {
 
         <div className="hidden md:flex items-center gap-6">
           <ThemeToggle />
-          <Button 
-            size="sm" 
-            variant="primary" 
-            className="group relative overflow-hidden bg-emerald-600 hover:bg-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all duration-500 rounded-full px-8 py-2.5 font-bold text-sm tracking-tight"
-          >
-            <span className="relative z-10">Solicitar Demonstração</span>
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/0 via-white/20 to-emerald-400/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-          </Button>
+          <Link href="/solicitar-demonstracao">
+            <Button 
+              size="sm" 
+              variant="primary" 
+              className="group relative overflow-hidden bg-emerald-600 hover:bg-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all duration-500 rounded-full px-8 py-2.5 font-bold text-sm tracking-tight"
+            >
+              <span className="relative z-10">Solicitar Demonstração</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/0 via-white/20 to-emerald-400/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+            </Button>
+          </Link>
         </div>
 
         {/* Mobile Toggle */}
@@ -137,7 +140,9 @@ export const Navbar = () => {
               ))}
               <div className="h-px bg-gradient-to-r from-transparent via-slate-800 to-transparent my-6" />
               <div className="flex flex-col gap-4">
-                <Button className="w-full py-8 rounded-2xl font-black text-lg shadow-2xl shadow-emerald-500/20">Solicitar demonstração</Button>
+                <Link href="/solicitar-demonstracao" onClick={() => setIsMobileMenuOpen(false)} className="w-full">
+                  <Button className="w-full py-8 rounded-2xl font-black text-lg shadow-2xl shadow-emerald-500/20">Solicitar demonstração</Button>
+                </Link>
                 <div className="flex items-center justify-center py-2">
                   <ThemeToggle />
                 </div>
