@@ -16,10 +16,8 @@ Error: expect(locator).toBeVisible() failed
 
 Locator: getByText('Produto')
 Expected: visible
-Error: strict mode violation: getByText('Produto') resolved to 3 elements:
-    1) <p class="dark:text-slate-400 tracking-tight text-sm text-slate-400 font-medium leading-relaxed group-hover:text-slate-300 transition-colors">Foco absoluto no nicho de eventos, resolvendo dor…</p> aka getByText('Foco absoluto no nicho de')
-    2) <p class="text-slate-400 text-lg md:text-xl leading-relaxed tracking-tight max-w-xl font-medium">Mariana Sousa é produtora de eventos culturais qu…</p> aka getByText('Mariana Sousa é produtora de')
-    3) <h4 class="text-[10px] uppercase font-bold text-slate-400 tracking-widest">Produto</h4> aka getByRole('heading', { name: 'Produto' })
+Timeout: 5000ms
+Error: element(s) not found
 
 Call log:
   - Expect "toBeVisible" with timeout 5000ms

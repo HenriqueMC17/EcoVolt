@@ -12,15 +12,16 @@
 # Error details
 
 ```
-Error: expect(page).toHaveURL(expected) failed
+Error: expect(locator).toBeVisible() failed
 
-Expected pattern: /#solucao/
-Received string:  "http://localhost:3000/"
+Locator: getByRole('link', { name: 'Solução' })
+Expected: visible
 Timeout: 5000ms
+Error: element(s) not found
 
 Call log:
-  - Expect "toHaveURL" with timeout 5000ms
-    8 × unexpected value "http://localhost:3000/"
+  - Expect "toBeVisible" with timeout 5000ms
+  - waiting for getByRole('link', { name: 'Solução' })
 
 ```
 
@@ -84,9 +85,9 @@ Call log:
                 - generic [ref=e72]:
                   - paragraph [ref=e73]:
                     - text: Call Stack
-                    - generic [ref=e74]: "20"
-                  - button "Show 17 ignore-listed frame(s)" [ref=e75] [cursor=pointer]:
-                    - text: Show 17 ignore-listed frame(s)
+                    - generic [ref=e74]: "18"
+                  - button "Show 15 ignore-listed frame(s)" [ref=e75] [cursor=pointer]:
+                    - text: Show 15 ignore-listed frame(s)
                     - img [ref=e76]
                 - generic [ref=e78]:
                   - generic [ref=e79]: script
@@ -164,11 +165,11 @@ Call log:
   23  |     await page.goto("/");
   24  | 
   25  |     const navLink = page.getByRole("link", { name: "Solução" });
-  26  |     await expect(navLink).toBeVisible();
+> 26  |     await expect(navLink).toBeVisible();
+      |                           ^ Error: expect(locator).toBeVisible() failed
   27  | 
   28  |     await navLink.click();
-> 29  |     await expect(page).toHaveURL(/#solucao/);
-      |                        ^ Error: expect(page).toHaveURL(expected) failed
+  29  |     await expect(page).toHaveURL(/#solucao/);
   30  |   });
   31  | 
   32  |   test("should render the Footer with all primary link groups", async ({ page }) => {

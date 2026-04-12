@@ -16,9 +16,6 @@ Error: locator.scrollIntoViewIfNeeded: Element is not attached to the DOM
 Call log:
   - attempting scroll into view action
     - waiting for element to be stable
-    - element is not stable
-  - retrying scroll into view action
-    - waiting for element to be stable
 
 ```
 
