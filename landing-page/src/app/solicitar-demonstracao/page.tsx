@@ -1,16 +1,12 @@
-import React from "react";
 import type { Metadata } from "next";
 import { Heading, Paragraph, Subheading } from "@/shared/ui/Typography";
 import { Badge } from "@/shared/ui/Badge";
 import { GlassCard } from "@/shared/ui/GlassCard";
-import { Input } from "@/shared/ui/Input";
-import { Select } from "@/shared/ui/Select";
-import { Textarea } from "@/shared/ui/Textarea";
-import { Button } from "@/shared/ui/Button";
-import { Navbar } from "@/shared/components/Navbar";
-import { Footer } from "@/shared/components/Footer";
-import { CheckCircle2, ArrowRight } from "lucide-react";
+import { Navbar } from "@/widgets/Layout/Navbar";
+import { Footer } from "@/widgets/Layout/Footer";
+import { CheckCircle2 } from "lucide-react";
 import { BENEFITS_DATA } from "@/shared/lib/constants";
+import { LeadSubmissionForm } from "@/features/lead-submission/components/LeadSubmissionForm";
 
 export const metadata: Metadata = {
   title: "Acelere a Transição Energética | EcoVolt Enterprise",
@@ -83,45 +79,7 @@ export default function SolicitarDemonstracao() {
                 </p>
               </div>
 
-              <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <Input id="name" label="Nome Completo" placeholder="Ex: Maria Silva" required />
-                  <Input id="company" label="Empresa" placeholder="Ex: EventCorp LTDA" required />
-                </div>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <Input id="email" type="email" label="Email Corporativo" placeholder="m.silva@empresa.com" required />
-                  <Input id="phone" type="tel" label="Telefone / WhatsApp" placeholder="(00) 00000-0000" />
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <Input id="role" label="Seu Cargo" placeholder="Ex: CTO, Diretor" required />
-                  <Select id="segment" label="Segmento de Atuação" required defaultValue="">
-                    <option value="" disabled className="bg-slate-900 text-slate-500">Selecione um segmento</option>
-                    <option value="festivais" className="bg-slate-900">Festivais de Música</option>
-                    <option value="corporativo" className="bg-slate-900">Eventos Corporativos</option>
-                    <option value="esportes" className="bg-slate-900">Eventos Esportivos</option>
-                    <option value="fornecedor" className="bg-slate-900">Fornecedor de Energia</option>
-                    <option value="outro" className="bg-slate-900">Outro</option>
-                  </Select>
-                </div>
-
-                <Textarea 
-                  id="message" 
-                  label="Mensagem Opcional" 
-                  placeholder="Quais seus maiores desafios com energia para eventos atualmente?"
-                  rows={4} 
-                />
-
-                <Button type="submit" size="lg" className="w-full group mt-4">
-                  <span>Solicitar Contato</span>
-                  <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                </Button>
-                
-                <p className="text-center text-[10px] text-slate-500 font-medium uppercase tracking-widest mt-4">
-                  Seus dados estão protegidos conosco.
-                </p>
-              </form>
+              <LeadSubmissionForm />
             </GlassCard>
             
             {/* Soft shadow underlying the card */}

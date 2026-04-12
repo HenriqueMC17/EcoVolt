@@ -1,5 +1,5 @@
-import { Navbar } from "@/shared/components/Navbar";
-import { Footer } from "@/shared/components/Footer";
+import { Navbar } from "@/widgets/Layout/Navbar";
+import { Footer } from "@/widgets/Layout/Footer";
 import { PageHeader } from "@/shared/components/PageHeader";
 import Link from "next/link";
 import { BookOpen, Code, Terminal, Zap } from "lucide-react";

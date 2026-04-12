@@ -1,5 +1,5 @@
-import { Navbar } from "@/shared/components/Navbar";
-import { Footer } from "@/shared/components/Footer";
+import { Navbar } from "@/widgets/Layout/Navbar";
+import { Footer } from "@/widgets/Layout/Footer";
 import dynamic from "next/dynamic";
 
 // Critical Above-the-fold features
