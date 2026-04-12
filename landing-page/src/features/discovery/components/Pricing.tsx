@@ -6,7 +6,7 @@ import { Heading, Paragraph, Subheading } from "@/shared/ui/Typography";
 import { Button } from "@/shared/ui/Button";
 import { GlassCard } from "@/shared/ui/GlassCard";
 import { Check, Zap, Globe, ArrowRight, ShieldCheck } from "lucide-react";
-import { motion } from "framer-motion";
+import { m as motion } from "framer-motion";
 import { cn } from "@/shared/lib/utils";
 
 const plans = [

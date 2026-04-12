@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
+import { m as motion } from "framer-motion";
 import { Button } from "@/shared/ui/Button";
 import { Badge } from "@/shared/ui/Badge";
 import { Glow } from "@/shared/ui/Glow";

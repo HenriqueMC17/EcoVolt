@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { Sun, Moon } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m as motion, AnimatePresence } from "framer-motion";
 import { theme as premiumTheme } from "@/shared/lib/theme";
 
 export const ThemeToggle = () => {

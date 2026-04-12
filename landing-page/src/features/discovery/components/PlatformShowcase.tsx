@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
+import { m as motion } from "framer-motion";
 import { Section } from "@/shared/components/Section";
 import { Heading, Paragraph, Subheading } from "@/shared/ui/Typography";
 import { Glow } from "@/shared/ui/Glow";

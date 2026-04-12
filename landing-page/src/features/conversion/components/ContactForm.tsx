@@ -5,7 +5,7 @@ import { Heading, Paragraph, Subheading } from "@/shared/ui/Typography";
 import { Button } from "@/shared/ui/Button";
 import { Glow } from "@/shared/ui/Glow";
 import { GlassCard } from "@/shared/ui/GlassCard";
-import { motion, AnimatePresence } from "framer-motion";
+import { m as motion, AnimatePresence } from "framer-motion";
 import { Send, Mail, Phone, ShieldCheck, Zap, CheckCircle2, Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";

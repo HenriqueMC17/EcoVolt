@@ -5,7 +5,7 @@ import { Section } from "@/shared/components/Section";
 import { Heading, Paragraph, Subheading } from "@/shared/ui/Typography";
 import { GlassCard } from "@/shared/ui/GlassCard";
 import { Search, Handshake, MonitorCheck, BarChart3, ArrowRight, Activity, Shield } from "lucide-react";
-import { motion } from "framer-motion";
+import { m as motion } from "framer-motion";
 import { theme } from "@/shared/lib/theme";
 import { cn } from "@/shared/lib/utils";
 

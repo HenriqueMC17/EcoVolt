@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Section } from "@/shared/components/Section";
 import { Heading, Paragraph, Subheading } from "@/shared/ui/Typography";
 import { GlassCard } from "@/shared/ui/GlassCard";
-import { motion, AnimatePresence } from "framer-motion";
+import { m as motion, AnimatePresence } from "framer-motion";
 import { Plus, Minus, HelpCircle, MessageCircle } from "lucide-react";
 import { theme } from "@/shared/lib/theme";
 import { cn } from "@/shared/lib/utils";
