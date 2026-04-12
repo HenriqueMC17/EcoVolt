@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/shared/components/ThemeProvider";
+import { AppThemeProvider } from "@/app/providers/ThemeProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -29,14 +29,14 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className={`${inter.variable} ${outfit.variable} scroll-smooth`} suppressHydrationWarning>
       <body className="antialiased overflow-x-hidden bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-50 transition-colors duration-300">
-        <ThemeProvider
+        <AppThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
           {children}
-        </ThemeProvider>
+        </AppThemeProvider>
       </body>
     </html>
   );
