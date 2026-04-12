@@ -1,0 +1,112 @@
+{
+  "h1s": [
+    "This page couldn’t load"
+  ],
+  "firstLinks": [
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "href": ""
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "href": ""
+    },
+    {
+      "tag": "A",
+      "text": "Next.js 16.2.1 (stale)Turbopack",
+      "href": "https://nextjs.org/docs/messages/version-staleness"
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "href": ""
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "href": ""
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "href": ""
+    },
+    {
+      "tag": "A",
+      "text": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/te",
+      "href": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template"
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "href": ""
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Show 15 ignore-listed frame(s)",
+      "href": ""
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "href": ""
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "href": ""
+    },
+    {
+      "tag": "A",
+      "text": "Was this helpful?",
+      "href": "https://nextjs.org/telemetry#error-feedback"
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "href": ""
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "href": ""
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "href": ""
+    },
+    {
+      "tag": "BUTTON",
+      "text": "12 Issues",
+      "href": ""
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "href": ""
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Reload",
+      "href": ""
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Back",
+      "href": ""
+    }
+  ],
+  "navLinks": [],
+  "footerPreview": "Was this helpful?",
+  "formFields": [
+    {
+      "tag": "BUTTON",
+      "text": "Reload",
+      "name": "",
+      "type": "submit"
+    }
+  ]
+}

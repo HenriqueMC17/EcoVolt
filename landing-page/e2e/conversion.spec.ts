@@ -1,163 +1,139 @@
-import { test, expect, Page } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 
 /**
  * EcoVolt E2E — Critical Conversion Path
  *
- * Flow: Landing Page → Scroll to #contato → Fill LeadSubmissionForm → Submit → Verify Success
+ * Selectors derived directly from source code analysis:
+ * - Hero H1: role=heading level=1 (text: "Energia para a próxima escala.")
+ * - Hero CTAs: role=button name="Agendar Trial" | "Documentação" (are <button>, not <a>)
+ * - Nav: <nav> with <a> links from NAV_LINKS constant
+ * - Form submit: role=button name="Solicitar Contato"
+ * - Success state: <h3> text "Solicitação Enviada!"
+ * - Footer: <footer> with groups "Produto", "Empresa", "Recursos", "Legal"
  *
- * NOTE: Framer Motion lazy-hydration requires waitFor({ state: 'visible' }) guards
- * before any scroll/interaction to prevent "element not attached to DOM" errors.
+ * Framer Motion mitigation: waitForLoadState('networkidle') + 1000ms settle
  */
 
-// Wait for the page to fully hydrate (LazyMotion + React 19 concurrent rendering)
-async function waitForHydration(page: Page) {
-  await page.waitForLoadState("networkidle");
-  // Allow Framer Motion initial animations to settle
-  await page.waitForTimeout(800);
-}
+const HYDRATION_WAIT = 1200;
 
-test.describe("Landing Page", () => {
+test.describe("Landing Page — Hero & Navigation", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
-    await waitForHydration(page);
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(HYDRATION_WAIT);
   });
 
-  test("should render the hero section with the main CTA", async ({ page }) => {
-    // Wait for h1 to be in the DOM and visible (after Framer Motion entry)
-    const heading = page.getByRole("heading", { level: 1 });
-    await expect(heading).toBeVisible({ timeout: 10_000 });
-
-    // At least one primary CTA should be visible
-    const ctaButton = page
-      .getByRole("link", { name: /começar|solicitar|agendar|demo|acesso/i })
-      .first();
-    await expect(ctaButton).toBeVisible({ timeout: 10_000 });
+  test("should render the H1 heading", async ({ page }) => {
+    const h1 = page.getByRole("heading", { level: 1 });
+    await expect(h1).toBeVisible({ timeout: 10_000 });
+    // Verify it contains the expected text (partial match, resilient to line breaks)
+    const text = await h1.innerText();
+    expect(text).toMatch(/energia|próxima|escala/i);
   });
 
-  test("should display the Navbar brand and nav links", async ({ page }) => {
-    // The Navbar is a widget — always rendered server-side, stable
-    const nav = page.getByRole("navigation").first();
+  test("should render hero CTA buttons — Agendar Trial and Documentação", async ({ page }) => {
+    const primaryCTA = page.getByRole("button", { name: /agendar trial/i });
+    await expect(primaryCTA).toBeVisible({ timeout: 10_000 });
+
+    const secondaryCTA = page.getByRole("button", { name: /documentação/i });
+    await expect(secondaryCTA).toBeVisible({ timeout: 10_000 });
+  });
+
+  test("should render Navbar with navigation links", async ({ page }) => {
+    const nav = page.locator("nav").first();
     await expect(nav).toBeVisible();
 
-    // At least one nav link should be rendered
-    const navLinks = page.getByRole("link", {
-      name: /solução|início|plataforma|benefícios/i,
-    });
-    await expect(navLinks.first()).toBeVisible();
+    // NAV_LINKS from constants.tsx
+    for (const label of ["Solução", "Como Funciona", "Plataforma", "Benefícios", "Contato"]) {
+      await expect(page.getByRole("link", { name: label, exact: true }).first()).toBeVisible();
+    }
   });
 
-  test("should render the Footer with all primary link groups", async ({ page }) => {
-    // Scroll to end of page
+  test("should render Footer with all section groups", async ({ page }) => {
+    // Scroll to bottom
     await page.keyboard.press("End");
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(600);
 
-    const footer = page.getByRole("contentinfo");
+    const footer = page.locator("footer");
     await expect(footer).toBeVisible({ timeout: 10_000 });
 
-    await expect(page.getByText("Produto", { exact: true })).toBeVisible();
-    await expect(page.getByText("Empresa", { exact: true })).toBeVisible();
-    await expect(page.getByText("Recursos", { exact: true })).toBeVisible();
-    await expect(page.getByText("Legal", { exact: true })).toBeVisible();
+    for (const group of ["Produto", "Empresa", "Recursos", "Legal"]) {
+      await expect(footer.getByText(group, { exact: true })).toBeVisible();
+    }
   });
 });
 
 test.describe("Lead Submission Form — Conversion Path", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
-    await waitForHydration(page);
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(HYDRATION_WAIT);
+
+    // Scroll incrementally to trigger lazy-loaded sections
+    for (let i = 0; i < 6; i++) {
+      await page.keyboard.press("PageDown");
+      await page.waitForTimeout(250);
+    }
   });
 
-  test("should display the contact form in the page", async ({ page }) => {
-    // Scroll gradually to allow lazy-loaded sections to mount
-    for (let i = 0; i < 5; i++) {
-      await page.keyboard.press("PageDown");
-      await page.waitForTimeout(300);
-    }
-
+  test("should display the lead submission form", async ({ page }) => {
     const form = page.locator("form").first();
     await expect(form).toBeVisible({ timeout: 15_000 });
+
+    // Verify key form fields are present (by label text from LeadSubmissionForm.tsx)
+    await expect(page.getByLabel("Nome Completo")).toBeVisible({ timeout: 8_000 });
+    await expect(page.getByLabel("Email Corporativo")).toBeVisible();
+    await expect(page.getByLabel("Empresa")).toBeVisible();
   });
 
   test("should show validation errors on empty submit", async ({ page }) => {
-    // Navigate directly to the section anchor to trigger lazy load
-    for (let i = 0; i < 5; i++) {
-      await page.keyboard.press("PageDown");
-      await page.waitForTimeout(300);
-    }
-
     const form = page.locator("form").first();
     await expect(form).toBeVisible({ timeout: 15_000 });
 
-    const submitButton = form
-      .getByRole("button", { name: /enviar|solicitar|agendar|send/i })
-      .first();
-    await expect(submitButton).toBeVisible({ timeout: 5_000 });
-    await submitButton.click();
+    // Submit button text from source: "Solicitar Contato"
+    const submitBtn = page.getByRole("button", { name: /solicitar contato/i });
+    await expect(submitBtn).toBeVisible({ timeout: 8_000 });
+    await submitBtn.click();
 
-    // Expect at least one validation error to appear
-    const errorMessage = page
-      .locator("[role='alert'], p.text-red-500, p[class*='destructive'], span[class*='error']")
-      .first();
-    await expect(errorMessage).toBeVisible({ timeout: 8_000 });
+    // react-hook-form renders errors as text next to inputs
+    // Zod schema requires: name, company, email, phone, role, segment
+    const firstError = page.locator("p.text-red-500, span.text-red-500, p[class*='error'], [data-error]").first();
+    await expect(firstError).toBeVisible({ timeout: 8_000 });
   });
 
-  test("should successfully submit a valid lead form", async ({ page }) => {
-    for (let i = 0; i < 5; i++) {
-      await page.keyboard.press("PageDown");
-      await page.waitForTimeout(300);
-    }
-
+  test("should fill and submit the lead form successfully", async ({ page }) => {
     const form = page.locator("form").first();
     await expect(form).toBeVisible({ timeout: 15_000 });
 
-    // Try to fill fields by placeholder or label (resilient approach)
-    const nameField =
-      (await form.getByLabel(/nome/i).count()) > 0
-        ? form.getByLabel(/nome/i)
-        : form.getByPlaceholder(/nome/i);
-    const emailField =
-      (await form.getByLabel(/e-mail|email/i).count()) > 0
-        ? form.getByLabel(/e-mail|email/i)
-        : form.getByPlaceholder(/e-mail|email/i);
+    // Fill required fields (labels from LeadSubmissionForm.tsx)
+    await page.getByLabel("Nome Completo").fill("João Silva");
+    await page.getByLabel("Empresa").fill("TechCorp Ltda");
+    await page.getByLabel("Email Corporativo").fill("joao.silva@techcorp.com.br");
+    await page.getByLabel("Telefone / WhatsApp").fill("(11) 99999-8888");
+    await page.getByLabel("Seu Cargo").fill("CTO");
+    await page.getByLabel("Segmento de Atuação").selectOption("corporativo");
 
-    if (await nameField.isVisible()) await nameField.fill("João Silva");
-    if (await emailField.isVisible()) await emailField.fill("joao@empresa.com.br");
+    const submitBtn = page.getByRole("button", { name: /solicitar contato/i });
+    await submitBtn.click();
 
-    const companyField =
-      (await form.getByLabel(/empresa/i).count()) > 0
-        ? form.getByLabel(/empresa/i)
-        : form.getByPlaceholder(/empresa/i);
-    if (await companyField.isVisible()) await companyField.fill("Empresa Ltda");
-
-    const submitButton = form
-      .getByRole("button", { name: /enviar|solicitar|agendar|send/i })
-      .first();
-    await expect(submitButton).toBeVisible();
-    await submitButton.click();
-
-    // Look for any success indicator
-    const successIndicator = page
-      .getByText(/enviado|sucesso|obrigado|recebemos|confirmado/i)
-      .first();
-    await expect(successIndicator).toBeVisible({ timeout: 12_000 });
+    // Success state from LeadSubmissionForm.tsx: <h3>Solicitação Enviada!</h3>
+    const successHeading = page.getByRole("heading", { name: /solicitação enviada/i });
+    await expect(successHeading).toBeVisible({ timeout: 15_000 });
   });
 });
 
-test.describe("Sub-pages smoke tests", () => {
-  const subPages = [
-    { name: "platform", url: "/product/platform" },
-    { name: "privacy",  url: "/legal/privacy"    },
-    { name: "docs",     url: "/resources/docs"   },
+test.describe("Sub-pages — Smoke Tests", () => {
+  const pages = [
+    { title: "platform", url: "/product/platform" },
+    { title: "privacy",  url: "/legal/privacy"    },
+    { title: "docs",     url: "/resources/docs"   },
   ] as const;
 
-  for (const { name, url } of subPages) {
-    test(`should render ${name} page without errors`, async ({ page }) => {
-      const response = await page.goto(url);
-
-      // Must not be a 404 or 500
+  for (const { title, url } of pages) {
+    test(`${title} page should load without 4xx/5xx errors`, async ({ page }) => {
+      const response = await page.goto(url, { waitUntil: "domcontentloaded" });
       expect(response?.status()).toBeLessThan(400);
 
-      // Main content area must be present
       const main = page.getByRole("main");
       await expect(main).toBeVisible({ timeout: 8_000 });
     });
