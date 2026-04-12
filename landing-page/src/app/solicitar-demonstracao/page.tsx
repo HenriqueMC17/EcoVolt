@@ -9,30 +9,13 @@ import { Textarea } from "@/shared/ui/Textarea";
 import { Button } from "@/shared/ui/Button";
 import { Navbar } from "@/shared/components/Navbar";
 import { Footer } from "@/shared/components/Footer";
-import { CheckCircle2, Building2, Zap, ArrowRight, ShieldCheck } from "lucide-react";
+import { CheckCircle2, ArrowRight } from "lucide-react";
+import { BENEFITS_DATA } from "@/shared/lib/constants";
 
 export const metadata: Metadata = {
   title: "Acelere a Transição Energética | EcoVolt Enterprise",
   description: "Solicite uma demonstração da plataforma EcoVolt Enterprise e veja na prática como podemos otimizar a energia limpa para seus eventos.",
 };
-
-const benefits = [
-  {
-    icon: <Zap className="w-5 h-5 text-emerald-500" />,
-    title: "Gestão Inteligente",
-    description: "Controle e previsibilidade energética com dados em tempo real.",
-  },
-  {
-    icon: <ShieldCheck className="w-5 h-5 text-emerald-500" />,
-    title: "Eco-Compliance",
-    description: "Certificação e auditoria de fontes renováveis para ESG.",
-  },
-  {
-    icon: <Building2 className="w-5 h-5 text-emerald-500" />,
-    title: "Para o seu ecossistema",
-    description: "Soluções customizadas de infraestrutura B2B escalável.",
-  },
-];
 
 export default function SolicitarDemonstracao() {
   return (
@@ -67,7 +50,7 @@ export default function SolicitarDemonstracao() {
             </div>
 
             <div className="space-y-6">
-              {benefits.map((item, idx) => (
+              {BENEFITS_DATA.map((item, idx) => (
                 <div key={idx} className="flex flex-col sm:flex-row gap-4 p-5 rounded-2xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
                   <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-slate-900 border border-white/10 flex items-center justify-center shadow-lg shadow-emerald-500/5">
                     {item.icon}
