@@ -6,22 +6,22 @@
 
 # Test info
 
-- Name: conversion.spec.ts >> Landing Page >> should render the Footer with all primary link groups
-- Location: e2e\conversion.spec.ts:49:7
+- Name: conversion.spec.ts >> Landing Page >> should display the Navbar brand and nav links
+- Location: e2e\conversion.spec.ts:37:7
 
 # Error details
 
 ```
 Error: expect(locator).toBeVisible() failed
 
-Locator: getByText('Produto', { exact: true })
+Locator: getByRole('link', { name: /solução|início|plataforma|benefícios/i }).first()
 Expected: visible
 Timeout: 5000ms
 Error: element(s) not found
 
 Call log:
   - Expect "toBeVisible" with timeout 5000ms
-  - waiting for getByText('Produto', { exact: true })
+  - waiting for getByRole('link', { name: /solução|início|plataforma|benefícios/i }).first()
 
 ```
 
@@ -71,70 +71,65 @@ Call log:
               - generic [ref=e51]:
                 - paragraph [ref=e53]:
                   - img [ref=e55]
-                  - generic [ref=e58]: src/app/providers/ThemeProvider.tsx (10:10) @ AppThemeProvider
+                  - generic [ref=e58]: src\app\layout.tsx (33:9) @ RootLayout
                   - button "Open in editor" [ref=e59] [cursor=pointer]:
                     - img [ref=e61]
                 - generic [ref=e64]:
-                  - generic [ref=e65]: 8 | ...props
-                  - generic [ref=e66]: "9 | }: React.ComponentProps<typeof NextThemesProvider>) {"
-                  - generic [ref=e67]: "> 10 | return <NextThemesProvider {...props}>{children}</NextThemesProvider>;"
+                  - generic [ref=e65]: "31 | <html lang=\"pt-BR\" className={`${inter.variable} ${outfit.variable} scroll-smooth`} su..."
+                  - generic [ref=e66]: 32 | <body className="antialiased overflow-x-hidden bg-white text-slate-900 dark:bg-slate...
+                  - generic [ref=e67]: "> 33 | <AppThemeProvider"
                   - generic [ref=e68]: "| ^"
-                  - generic [ref=e69]: "11 | }"
-                  - generic [ref=e70]: 12 |
-              - generic [ref=e71]:
-                - generic [ref=e72]:
-                  - paragraph [ref=e73]:
+                  - generic [ref=e69]: 34 | attribute="class"
+                  - generic [ref=e70]: 35 | defaultTheme="system"
+                  - generic [ref=e71]: 36 | enableSystem
+              - generic [ref=e72]:
+                - generic [ref=e73]:
+                  - paragraph [ref=e74]:
                     - text: Call Stack
-                    - generic [ref=e74]: "18"
-                  - button "Show 15 ignore-listed frame(s)" [ref=e75] [cursor=pointer]:
-                    - text: Show 15 ignore-listed frame(s)
-                    - img [ref=e76]
-                - generic [ref=e78]:
-                  - generic [ref=e79]: script
+                    - generic [ref=e75]: "14"
+                  - button "Show 12 ignore-listed frame(s)" [ref=e76] [cursor=pointer]:
+                    - text: Show 12 ignore-listed frame(s)
+                    - img [ref=e77]
+                - generic [ref=e79]:
+                  - generic [ref=e80]: script
                   - text: <anonymous>
-                - generic [ref=e80]:
-                  - generic [ref=e81]:
-                    - text: AppThemeProvider
-                    - button "Open AppThemeProvider in editor" [ref=e82] [cursor=pointer]:
-                      - img [ref=e83]
-                  - text: src/app/providers/ThemeProvider.tsx (10:10)
-                - generic [ref=e85]:
-                  - generic [ref=e86]:
+                - generic [ref=e81]:
+                  - generic [ref=e82]:
                     - text: RootLayout
-                    - button "Open RootLayout in editor" [ref=e87] [cursor=pointer]:
-                      - img [ref=e88]
+                    - button "Open RootLayout in editor" [ref=e83] [cursor=pointer]:
+                      - img [ref=e84]
                   - text: src\app\layout.tsx (33:9)
-          - generic [ref=e90]: "1"
-          - generic [ref=e91]: "2"
-        - contentinfo [ref=e92]:
-          - region "Error feedback" [ref=e93]:
-            - paragraph [ref=e94]:
-              - link "Was this helpful?" [ref=e95] [cursor=pointer]:
+          - generic [ref=e86]: "1"
+          - generic [ref=e87]: "2"
+        - contentinfo [ref=e88]:
+          - region "Error feedback" [ref=e89]:
+            - paragraph [ref=e90]:
+              - link "Was this helpful?" [ref=e91] [cursor=pointer]:
                 - /url: https://nextjs.org/telemetry#error-feedback
-            - button "Mark as helpful" [ref=e96] [cursor=pointer]:
+            - button "Mark as helpful" [ref=e92] [cursor=pointer]:
+              - img [ref=e93]
+            - button "Mark as not helpful" [ref=e96] [cursor=pointer]:
               - img [ref=e97]
-            - button "Mark as not helpful" [ref=e100] [cursor=pointer]:
-              - img [ref=e101]
-    - generic [ref=e107] [cursor=pointer]:
-      - button "Open Next.js Dev Tools" [ref=e108]:
-        - img [ref=e109]
-      - generic [ref=e112]:
-        - button "Open issues overlay" [ref=e113]:
-          - generic [ref=e114]:
-            - generic [ref=e115]: "1"
-            - generic [ref=e116]: "2"
-          - generic [ref=e117]:
+    - generic [ref=e103] [cursor=pointer]:
+      - button "Open Next.js Dev Tools" [ref=e104]:
+        - img [ref=e105]
+      - generic [ref=e108]:
+        - button "Open issues overlay" [ref=e109]:
+          - generic [ref=e110]:
+            - generic [ref=e111]: "1"
+            - generic [ref=e112]: "2"
+          - generic [ref=e113]:
             - text: Issue
-            - generic [ref=e118]: s
-        - button "Collapse issues badge" [ref=e119]:
-          - img [ref=e120]
-  - generic [ref=e123]:
-    - img [ref=e124]
-    - heading "This page couldn’t load" [level=1] [ref=e126]
-    - paragraph [ref=e127]: Reload to try again, or go back.
-    - generic [ref=e128]:
-      - button "Reload" [ref=e130] [cursor=pointer]
-      - button "Back" [ref=e131] [cursor=pointer]
+            - generic [ref=e114]: s
+        - button "Collapse issues badge" [ref=e115]:
+          - img [ref=e116]
+  - generic [ref=e119]:
+    - img [ref=e120]
+    - heading "This page couldn’t load" [level=1] [ref=e122]
+    - paragraph [ref=e123]: Reload to try again, or go back.
+    - generic [ref=e124]:
+      - button "Reload" [ref=e126] [cursor=pointer]
+      - button "Back" [ref=e127] [cursor=pointer]
 ```
 
 # Test source
@@ -185,7 +180,8 @@ Call log:
   43  |     const navLinks = page.getByRole("link", {
   44  |       name: /solução|início|plataforma|benefícios/i,
   45  |     });
-  46  |     await expect(navLinks.first()).toBeVisible();
+> 46  |     await expect(navLinks.first()).toBeVisible();
+      |                                    ^ Error: expect(locator).toBeVisible() failed
   47  |   });
   48  | 
   49  |   test("should render the Footer with all primary link groups", async ({ page }) => {
@@ -196,8 +192,7 @@ Call log:
   54  |     const footer = page.getByRole("contentinfo");
   55  |     await expect(footer).toBeVisible({ timeout: 10_000 });
   56  | 
-> 57  |     await expect(page.getByText("Produto", { exact: true })).toBeVisible();
-      |                                                              ^ Error: expect(locator).toBeVisible() failed
+  57  |     await expect(page.getByText("Produto", { exact: true })).toBeVisible();
   58  |     await expect(page.getByText("Empresa", { exact: true })).toBeVisible();
   59  |     await expect(page.getByText("Recursos", { exact: true })).toBeVisible();
   60  |     await expect(page.getByText("Legal", { exact: true })).toBeVisible();
@@ -287,15 +282,4 @@ Call log:
   144 | });
   145 | 
   146 | test.describe("Sub-pages smoke tests", () => {
-  147 |   const subPages = [
-  148 |     { name: "platform", url: "/product/platform" },
-  149 |     { name: "privacy",  url: "/legal/privacy"    },
-  150 |     { name: "docs",     url: "/resources/docs"   },
-  151 |   ] as const;
-  152 | 
-  153 |   for (const { name, url } of subPages) {
-  154 |     test(`should render ${name} page without errors`, async ({ page }) => {
-  155 |       const response = await page.goto(url);
-  156 | 
-  157 |       // Must not be a 404 or 500
 ```

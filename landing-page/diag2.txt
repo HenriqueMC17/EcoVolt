@@ -1,0 +1,9 @@
+failed|should render the hero section with the main CTA|Error: expect(locator).toBeVisible() failed >>  >> Locator: getByRole('link', { name: /come├ºar|solicitar|agendar|demo|acesso/i }).first()
+failed|should display the Navbar brand and nav links|Error: expect(locator).toBeVisible() failed >>  >> Locator: getByRole('link', { name: /solu├º├úo|in├¡cio|plataforma|benef├¡cios/i }).first()
+failed|should render the Footer with all primary link groups|Error: expect(locator).toBeVisible() failed >>  >> Locator: getByText('Produto', { exact: true })
+passed|should display the contact form in the page|
+failed|should show validation errors on empty submit|Error: expect(locator).toBeVisible() failed >>  >> Locator: locator('form').first().getByRole('button', { name: /enviar|solicitar|agendar|send/i }).first()
+failed|should successfully submit a valid lead form|Error: expect(locator).toBeVisible() failed >>  >> Locator: locator('form').first().getByRole('button', { name: /enviar|solicitar|agendar|send/i }).first()
+failed|should render platform page without errors|Error: expect(locator).toBeVisible() failed >>  >> Locator: getByRole('main')
+passed|should render privacy page without errors|
+passed|should render docs page without errors|

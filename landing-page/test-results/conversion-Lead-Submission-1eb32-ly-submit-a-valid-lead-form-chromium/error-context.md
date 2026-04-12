@@ -7,15 +7,21 @@
 # Test info
 
 - Name: conversion.spec.ts >> Lead Submission Form — Conversion Path >> should successfully submit a valid lead form
-- Location: e2e\conversion.spec.ts:69:7
+- Location: e2e\conversion.spec.ts:104:7
 
 # Error details
 
 ```
-Error: locator.scrollIntoViewIfNeeded: Element is not attached to the DOM
+Error: expect(locator).toBeVisible() failed
+
+Locator: locator('form').first().getByRole('button', { name: /enviar|solicitar|agendar|send/i }).first()
+Expected: visible
+Timeout: 5000ms
+Error: element(s) not found
+
 Call log:
-  - attempting scroll into view action
-    - waiting for element to be stable
+  - Expect "toBeVisible" with timeout 5000ms
+  - waiting for locator('form').first().getByRole('button', { name: /enviar|solicitar|agendar|send/i }).first()
 
 ```
 
@@ -134,117 +140,137 @@ Call log:
 # Test source
 
 ```ts
-  1   | import { test, expect } from "@playwright/test";
-  2   | 
-  3   | /**
-  4   |  * EcoVolt E2E — Critical Conversion Path
-  5   |  *
-  6   |  * Flow: Landing Page → Scroll to #contato → Fill LeadSubmissionForm → Submit → Verify Success State
-  7   |  */
-  8   | 
-  9   | test.describe("Landing Page", () => {
-  10  |   test("should render the hero section with the main CTA", async ({ page }) => {
-  11  |     await page.goto("/");
-  12  | 
-  13  |     // Confirm the hero headline is visible
-  14  |     const heading = page.getByRole("heading", { level: 1 });
-  15  |     await expect(heading).toBeVisible();
-  16  | 
-  17  |     // Confirm at least one CTA button is present
-  18  |     const ctaButton = page.getByRole("link", { name: /começar|solicitar|agendar/i }).first();
-  19  |     await expect(ctaButton).toBeVisible();
-  20  |   });
-  21  | 
-  22  |   test("should display the Navbar and navigate to #solucao section", async ({ page }) => {
-  23  |     await page.goto("/");
-  24  | 
-  25  |     const navLink = page.getByRole("link", { name: "Solução" });
-  26  |     await expect(navLink).toBeVisible();
-  27  | 
-  28  |     await navLink.click();
-  29  |     await expect(page).toHaveURL(/#solucao/);
-  30  |   });
-  31  | 
-  32  |   test("should render the Footer with all primary link groups", async ({ page }) => {
-  33  |     await page.goto("/");
-  34  | 
-  35  |     // Scroll to footer
-  36  |     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-  37  | 
-  38  |     await expect(page.getByText("Produto")).toBeVisible();
-  39  |     await expect(page.getByText("Empresa")).toBeVisible();
-  40  |     await expect(page.getByText("Recursos")).toBeVisible();
-  41  |     await expect(page.getByText("Legal")).toBeVisible();
-  42  |   });
-  43  | });
-  44  | 
-  45  | test.describe("Lead Submission Form — Conversion Path", () => {
-  46  |   test("should display the contact form in the #contato section", async ({ page }) => {
-  47  |     await page.goto("/");
+  35  |   });
+  36  | 
+  37  |   test("should display the Navbar brand and nav links", async ({ page }) => {
+  38  |     // The Navbar is a widget — always rendered server-side, stable
+  39  |     const nav = page.getByRole("navigation").first();
+  40  |     await expect(nav).toBeVisible();
+  41  | 
+  42  |     // At least one nav link should be rendered
+  43  |     const navLinks = page.getByRole("link", {
+  44  |       name: /solução|início|plataforma|benefícios/i,
+  45  |     });
+  46  |     await expect(navLinks.first()).toBeVisible();
+  47  |   });
   48  | 
-  49  |     const form = page.locator("form").first();
-  50  |     await form.scrollIntoViewIfNeeded();
-  51  |     await expect(form).toBeVisible();
-  52  |   });
+  49  |   test("should render the Footer with all primary link groups", async ({ page }) => {
+  50  |     // Scroll to end of page
+  51  |     await page.keyboard.press("End");
+  52  |     await page.waitForTimeout(500);
   53  | 
-  54  |   test("should show validation errors on empty submit", async ({ page }) => {
-  55  |     await page.goto("/");
+  54  |     const footer = page.getByRole("contentinfo");
+  55  |     await expect(footer).toBeVisible({ timeout: 10_000 });
   56  | 
-  57  |     // Scroll to form and try to submit empty
-  58  |     const form = page.locator("form").first();
-  59  |     await form.scrollIntoViewIfNeeded();
-  60  | 
-  61  |     const submitButton = form.getByRole("button", { name: /enviar|solicitar|agendar/i });
-  62  |     await submitButton.click();
+  57  |     await expect(page.getByText("Produto", { exact: true })).toBeVisible();
+  58  |     await expect(page.getByText("Empresa", { exact: true })).toBeVisible();
+  59  |     await expect(page.getByText("Recursos", { exact: true })).toBeVisible();
+  60  |     await expect(page.getByText("Legal", { exact: true })).toBeVisible();
+  61  |   });
+  62  | });
   63  | 
-  64  |     // At least one validation error message should appear
-  65  |     const errorMessage = page.locator("[role='alert'], .text-red-500, .text-destructive").first();
-  66  |     await expect(errorMessage).toBeVisible({ timeout: 5_000 });
-  67  |   });
-  68  | 
-  69  |   test("should successfully submit a valid lead form", async ({ page }) => {
-  70  |     await page.goto("/");
-  71  | 
-  72  |     const form = page.locator("form").first();
-> 73  |     await form.scrollIntoViewIfNeeded();
-      |                ^ Error: locator.scrollIntoViewIfNeeded: Element is not attached to the DOM
-  74  | 
-  75  |     // Fill in required fields (adjust selectors to match actual form fields)
-  76  |     const nameInput = form.getByLabel(/nome/i);
-  77  |     const emailInput = form.getByLabel(/e-mail/i);
-  78  |     const companyInput = form.getByLabel(/empresa/i);
-  79  | 
-  80  |     if (await nameInput.isVisible()) await nameInput.fill("João Silva");
-  81  |     if (await emailInput.isVisible()) await emailInput.fill("joao@empresa.com.br");
-  82  |     if (await companyInput.isVisible()) await companyInput.fill("Empresa Ltda");
-  83  | 
-  84  |     const submitButton = form.getByRole("button", { name: /enviar|solicitar|agendar/i });
-  85  |     await submitButton.click();
-  86  | 
-  87  |     // Verify success state (toast, message, or page change)
-  88  |     const successIndicator = page.getByText(/enviado|sucesso|obrigado|recebemos/i).first();
-  89  |     await expect(successIndicator).toBeVisible({ timeout: 10_000 });
-  90  |   });
-  91  | });
-  92  | 
-  93  | test.describe("Sub-pages", () => {
-  94  |   test("should render /product/platform without errors", async ({ page }) => {
-  95  |     await page.goto("/product/platform");
-  96  |     await expect(page).not.toHaveURL(/error|404/i);
-  97  |     await expect(page.getByRole("main")).toBeVisible();
-  98  |   });
-  99  | 
-  100 |   test("should render /legal/privacy without errors", async ({ page }) => {
-  101 |     await page.goto("/legal/privacy");
-  102 |     await expect(page).not.toHaveURL(/error|404/i);
-  103 |     await expect(page.getByRole("main")).toBeVisible();
-  104 |   });
-  105 | 
-  106 |   test("should render /resources/docs without errors", async ({ page }) => {
-  107 |     await page.goto("/resources/docs");
-  108 |     await expect(page).not.toHaveURL(/error|404/i);
-  109 |     await expect(page.getByRole("main")).toBeVisible();
-  110 |   });
-  111 | });
+  64  | test.describe("Lead Submission Form — Conversion Path", () => {
+  65  |   test.beforeEach(async ({ page }) => {
+  66  |     await page.goto("/");
+  67  |     await waitForHydration(page);
+  68  |   });
+  69  | 
+  70  |   test("should display the contact form in the page", async ({ page }) => {
+  71  |     // Scroll gradually to allow lazy-loaded sections to mount
+  72  |     for (let i = 0; i < 5; i++) {
+  73  |       await page.keyboard.press("PageDown");
+  74  |       await page.waitForTimeout(300);
+  75  |     }
+  76  | 
+  77  |     const form = page.locator("form").first();
+  78  |     await expect(form).toBeVisible({ timeout: 15_000 });
+  79  |   });
+  80  | 
+  81  |   test("should show validation errors on empty submit", async ({ page }) => {
+  82  |     // Navigate directly to the section anchor to trigger lazy load
+  83  |     for (let i = 0; i < 5; i++) {
+  84  |       await page.keyboard.press("PageDown");
+  85  |       await page.waitForTimeout(300);
+  86  |     }
+  87  | 
+  88  |     const form = page.locator("form").first();
+  89  |     await expect(form).toBeVisible({ timeout: 15_000 });
+  90  | 
+  91  |     const submitButton = form
+  92  |       .getByRole("button", { name: /enviar|solicitar|agendar|send/i })
+  93  |       .first();
+  94  |     await expect(submitButton).toBeVisible({ timeout: 5_000 });
+  95  |     await submitButton.click();
+  96  | 
+  97  |     // Expect at least one validation error to appear
+  98  |     const errorMessage = page
+  99  |       .locator("[role='alert'], p.text-red-500, p[class*='destructive'], span[class*='error']")
+  100 |       .first();
+  101 |     await expect(errorMessage).toBeVisible({ timeout: 8_000 });
+  102 |   });
+  103 | 
+  104 |   test("should successfully submit a valid lead form", async ({ page }) => {
+  105 |     for (let i = 0; i < 5; i++) {
+  106 |       await page.keyboard.press("PageDown");
+  107 |       await page.waitForTimeout(300);
+  108 |     }
+  109 | 
+  110 |     const form = page.locator("form").first();
+  111 |     await expect(form).toBeVisible({ timeout: 15_000 });
   112 | 
+  113 |     // Try to fill fields by placeholder or label (resilient approach)
+  114 |     const nameField =
+  115 |       (await form.getByLabel(/nome/i).count()) > 0
+  116 |         ? form.getByLabel(/nome/i)
+  117 |         : form.getByPlaceholder(/nome/i);
+  118 |     const emailField =
+  119 |       (await form.getByLabel(/e-mail|email/i).count()) > 0
+  120 |         ? form.getByLabel(/e-mail|email/i)
+  121 |         : form.getByPlaceholder(/e-mail|email/i);
+  122 | 
+  123 |     if (await nameField.isVisible()) await nameField.fill("João Silva");
+  124 |     if (await emailField.isVisible()) await emailField.fill("joao@empresa.com.br");
+  125 | 
+  126 |     const companyField =
+  127 |       (await form.getByLabel(/empresa/i).count()) > 0
+  128 |         ? form.getByLabel(/empresa/i)
+  129 |         : form.getByPlaceholder(/empresa/i);
+  130 |     if (await companyField.isVisible()) await companyField.fill("Empresa Ltda");
+  131 | 
+  132 |     const submitButton = form
+  133 |       .getByRole("button", { name: /enviar|solicitar|agendar|send/i })
+  134 |       .first();
+> 135 |     await expect(submitButton).toBeVisible();
+      |                                ^ Error: expect(locator).toBeVisible() failed
+  136 |     await submitButton.click();
+  137 | 
+  138 |     // Look for any success indicator
+  139 |     const successIndicator = page
+  140 |       .getByText(/enviado|sucesso|obrigado|recebemos|confirmado/i)
+  141 |       .first();
+  142 |     await expect(successIndicator).toBeVisible({ timeout: 12_000 });
+  143 |   });
+  144 | });
+  145 | 
+  146 | test.describe("Sub-pages smoke tests", () => {
+  147 |   const subPages = [
+  148 |     { name: "platform", url: "/product/platform" },
+  149 |     { name: "privacy",  url: "/legal/privacy"    },
+  150 |     { name: "docs",     url: "/resources/docs"   },
+  151 |   ] as const;
+  152 | 
+  153 |   for (const { name, url } of subPages) {
+  154 |     test(`should render ${name} page without errors`, async ({ page }) => {
+  155 |       const response = await page.goto(url);
+  156 | 
+  157 |       // Must not be a 404 or 500
+  158 |       expect(response?.status()).toBeLessThan(400);
+  159 | 
+  160 |       // Main content area must be present
+  161 |       const main = page.getByRole("main");
+  162 |       await expect(main).toBeVisible({ timeout: 8_000 });
+  163 |     });
+  164 |   }
+  165 | });
+  166 | 
 ```

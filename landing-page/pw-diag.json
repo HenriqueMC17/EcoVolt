@@ -1,0 +1,56 @@
+[
+  {
+    "status": "failed",
+    "suite": "Landing Page",
+    "test": "should render the hero section with the main CTA",
+    "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed"
+  },
+  {
+    "status": "failed",
+    "suite": "Landing Page",
+    "test": "should display the Navbar and navigate to #solucao section",
+    "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed"
+  },
+  {
+    "status": "failed",
+    "suite": "Landing Page",
+    "test": "should render the Footer with all primary link groups",
+    "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed"
+  },
+  {
+    "status": "passed",
+    "suite": "Lead Submission Form ÔÇö Conversion Path",
+    "test": "should display the contact form in the #contato section",
+    "error": ""
+  },
+  {
+    "status": "failed",
+    "suite": "Lead Submission Form ÔÇö Conversion Path",
+    "test": "should show validation errors on empty submit",
+    "error": "Error: locator.scrollIntoViewIfNeeded: Element is not attached to the DOM"
+  },
+  {
+    "status": "failed",
+    "suite": "Lead Submission Form ÔÇö Conversion Path",
+    "test": "should successfully submit a valid lead form",
+    "error": "Error: locator.scrollIntoViewIfNeeded: Element is not attached to the DOM"
+  },
+  {
+    "status": "passed",
+    "suite": "Sub-pages",
+    "test": "should render /product/platform without errors",
+    "error": ""
+  },
+  {
+    "status": "passed",
+    "suite": "Sub-pages",
+    "test": "should render /legal/privacy without errors",
+    "error": ""
+  },
+  {
+    "status": "passed",
+    "suite": "Sub-pages",
+    "test": "should render /resources/docs without errors",
+    "error": ""
+  }
+]
