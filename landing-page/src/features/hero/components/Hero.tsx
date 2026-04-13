@@ -5,15 +5,20 @@ import { m as motion } from "framer-motion";
 import { Button } from "@/shared/ui/Button";
 import { Badge } from "@/shared/ui/Badge";
 import { Glow } from "@/shared/ui/Glow";
-import { Heading, Paragraph, Subheading } from "@/shared/ui/Typography";
-import { Zap, ArrowRight, Activity, Globe, Lock, BarChart3, ShieldCheck, Cpu } from "lucide-react";
+import { Heading, Paragraph } from "@/shared/ui/Typography";
+import { ArrowRight } from "lucide-react";
 import { TrustCloud } from "./TrustCloud";
 import { cn } from "@/shared/lib/utils";
-import { theme } from "@/shared/lib/theme";
+import { useQuery } from "convex/react";
+import { api } from "../../../../convex/_generated/api";
 // Note: using lucide-react standard icons
-import { Activity as ActivityIcon, Zap as ZapIcon, ShieldCheck as ShieldIcon, BarChart3 as ChartIcon, Globe as GlobeIcon, Lock as LockIcon, Cpu as CpuIcon } from "lucide-react";
+import { Activity as ActivityIcon, Zap as ZapIcon, ShieldCheck as ShieldIcon, BarChart3 as ChartIcon, Lock as LockIcon, Cpu as CpuIcon } from "lucide-react";
 
 const HeroDashboard = () => {
+  const energyData = useQuery(api.energy.getMachineData, { machineId: "generator-alpha", limit: 3 });
+  const recentData = energyData?.[0];
+  const powerKb = recentData ? (recentData.power / 100).toFixed(2) : "482.4";
+
   const barHeights = [
     45, 78, 34, 89, 23, 56, 91, 44, 67, 32, 88, 54, 76, 21, 95, 43,
     65, 33, 87, 52, 74, 19, 93, 41, 63, 31, 85, 50, 72, 17, 91, 39
@@ -21,7 +26,7 @@ const HeroDashboard = () => {
 
   const stats = [
     { label: "Grid Status", value: "Optimal", icon: ActivityIcon, color: "text-emerald-500", trend: "99.9%" },
-    { label: "Realtime Load", value: "482.4 kW", icon: ZapIcon, color: "text-blue-500", trend: "-2.4%" },
+    { label: "Realtime Load", value: `${powerKb} kW`, icon: ZapIcon, color: "text-blue-500", trend: "Live" },
     { label: "Net Zero Index", value: "1.00", icon: ShieldIcon, color: "text-emerald-400", trend: "Active" },
     { label: "Revenue Delta", value: "+12.4%", icon: ChartIcon, color: "text-amber-400", trend: "Live" },
   ];
