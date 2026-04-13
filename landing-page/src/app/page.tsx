@@ -8,6 +8,7 @@ import { Hero } from "@/features/hero/components/Hero";
 // Lazy-loaded features for performance (Core Web Vitals)
 const LoadingPlaceholder = () => <div className="w-full h-screen bg-slate-950/20 animate-pulse border-y border-white/5" />;
 
+const RealTimeDashboard = dynamic(() => import("@/features/dashboard/components/RealTimeDashboard").then(mod => mod.RealTimeDashboard), { loading: LoadingPlaceholder });
 const Problem = dynamic(() => import("@/features/discovery/components/Problem").then(mod => mod.Problem), { loading: LoadingPlaceholder });
 const Benefits = dynamic(() => import("@/features/discovery/components/Benefits").then(mod => mod.Benefits), { loading: LoadingPlaceholder });
 const PlatformShowcase = dynamic(() => import("@/features/discovery/components/PlatformShowcase").then(mod => mod.PlatformShowcase), { loading: LoadingPlaceholder });
@@ -27,6 +28,7 @@ export default function Home() {
     <main>
       <Navbar />
       <Hero />
+      <RealTimeDashboard />
       <Problem />
       <Benefits />
       <PlatformShowcase />
@@ -44,3 +46,4 @@ export default function Home() {
     </main>
   );
 }
+

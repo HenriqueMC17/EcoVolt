@@ -10,6 +10,8 @@ import { GlassCard } from "@/shared/ui/GlassCard";
 import { Layout, Zap, Terminal, BarChart3, Globe, Cpu, Shield, Activity, ArrowRight } from "lucide-react";
 import { theme } from "@/shared/lib/theme";
 import { cn } from "@/shared/lib/utils";
+import { useQuery } from "convex/react";
+import { api } from "../../../../convex/_generated/api";
 
 const PreviewHeader = () => (
   <div className="flex items-center justify-between mb-16 max-w-4xl mx-auto px-4">
@@ -31,6 +33,11 @@ const PreviewHeader = () => (
 );
 
 export const PlatformShowcase = () => {
+  const energyData = useQuery(api.energy.getMachineData, { machineId: "generator-alpha", limit: 3 });
+  const recentData = energyData?.[0];
+  const peakLoad = recentData ? (recentData.power / 1000).toFixed(1) : "---";
+  const efficiency = recentData ? (recentData.voltage / 220 * 100).toFixed(1) : "--.-";
+
   return (
     <Section id="plataforma" className="bg-slate-950 py-32 md:py-64 overflow-hidden relative">
       <Glow color="green" position="top-right" size="lg" className="opacity-20" />
@@ -118,13 +125,13 @@ export const PlatformShowcase = () => {
                            <Heading as="h3" className="text-white text-3xl md:text-5xl font-black tracking-tighter">Event Performance Matrix</Heading>
                         </div>
                         <div className="flex gap-4">
-                           <div className="px-6 py-3 bg-white/5 border border-white/10 rounded-2xl flex flex-col">
+                           <div className="px-6 py-3 bg-white/5 border border-white/10 rounded-2xl flex flex-col transition-all">
                               <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Peak Load</span>
-                              <span className="text-xl font-black text-white">482.4 <span className="text-slate-500 text-sm">kV</span></span>
+                              <span className="text-xl font-black text-white">{peakLoad} <span className="text-slate-500 text-sm">kV</span></span>
                            </div>
-                           <div className="px-6 py-3 bg-emerald-500 border border-emerald-400 rounded-2xl flex flex-col shadow-[0_0_30px_rgba(16,185,129,0.2)]">
+                           <div className="px-6 py-3 bg-emerald-500 border border-emerald-400 rounded-2xl flex flex-col shadow-[0_0_30px_rgba(16,185,129,0.2)] transition-all">
                               <span className="text-[9px] font-bold text-slate-100/60 uppercase tracking-widest mb-1">Efficiency</span>
-                              <span className="text-xl font-black text-white">99.8%</span>
+                              <span className="text-xl font-black text-white">{efficiency}%</span>
                            </div>
                         </div>
                      </div>
@@ -168,34 +175,32 @@ export const PlatformShowcase = () => {
                            </button>
                         </div>
                         <div className="space-y-3">
-                          {[
-                            { name: "São Paulo Data Center", code: "SP-EAST-01", val: 12.4 },
-                            { name: "London Tech Summit", code: "LDN-HUB-V2", val: 4.2 },
-                            { name: "Tokyo Smart City", code: "TKY-NORTH-8", val: 8.9 }
-                          ].map((node, i) => (
-                            <div key={i} className="flex items-center justify-between p-5 bg-white/3 border border-white/5 rounded-2xl hover:bg-white/8 transition-all duration-300 backdrop-blur-md">
-                               <div className="flex items-center gap-6">
-                                  <div className="w-10 h-10 rounded-xl bg-slate-900 border border-white/5 flex items-center justify-center text-slate-500 font-black text-xs">
-                                     {i+1}
-                                  </div>
-                                  <div className="space-y-1">
-                                     <div className="text-sm font-black text-white">{node.name}</div>
-                                     <div className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">{node.code}</div>
-                                  </div>
-                               </div>
-                               <div className="flex items-center gap-12">
-                                  <div className="hidden sm:flex flex-col items-end">
-                                     <span className="text-[8px] font-bold text-slate-500 uppercase">Consumption</span>
-                                     <span className="text-xs font-black text-white">{node.val} MW/h</span>
-                                  </div>
-                                  <div className="px-4 py-1.5 bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 rounded-lg text-[9px] font-black tracking-widest">
-                                     STATUS: OPTIMAL
-                                  </div>
-                               </div>
-                            </div>
-                          ))}
-                        </div>
-                     </div>
+                           {energyData ? energyData.map((node, i) => (
+                             <div key={i} className="flex items-center justify-between p-5 bg-white/3 border border-white/5 rounded-2xl hover:bg-white/8 transition-all duration-300 backdrop-blur-md">
+                                <div className="flex items-center gap-6">
+                                   <div className="w-10 h-10 rounded-xl bg-slate-900 border border-white/5 flex items-center justify-center text-slate-500 font-black text-xs">
+                                      {i+1}
+                                   </div>
+                                   <div className="space-y-1">
+                                      <div className="text-sm font-black text-white">{node.machineId}</div>
+                                      <div className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">{node.status}</div>
+                                   </div>
+                                </div>
+                                <div className="flex items-center gap-12">
+                                   <div className="hidden sm:flex flex-col items-end">
+                                      <span className="text-[8px] font-bold text-slate-500 uppercase">Consumption</span>
+                                      <span className="text-xs font-black text-white">{node.power} W</span>
+                                   </div>
+                                   <div className={cn("px-4 py-1.5 border rounded-lg text-[9px] font-black tracking-widest", node.status === 'Warning' ? "bg-amber-500/10 text-amber-500 border-amber-500/20" : "bg-emerald-500/10 text-emerald-500 border-emerald-500/20")}>
+                                      {node.status}
+                                   </div>
+                                </div>
+                             </div>
+                           )) : (
+                             <div className="animate-pulse bg-white/5 h-20 w-full rounded-2xl" />
+                           )}
+                         </div>
+                      </div>
                   </div>
                </div>
             </GlassCard>

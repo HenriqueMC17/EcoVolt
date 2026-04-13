@@ -3,6 +3,7 @@ import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import { AppThemeProvider } from "@/app/providers/ThemeProvider";
 import { MotionProvider } from "@/features/motion/providers/MotionProvider";
+import { ConvexClientProvider } from "@/app/providers/ConvexClientProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -36,9 +37,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <MotionProvider>
-            {children}
-          </MotionProvider>
+          <ConvexClientProvider>
+            <MotionProvider>
+              {children}
+            </MotionProvider>
+          </ConvexClientProvider>
         </AppThemeProvider>
       </body>
     </html>
