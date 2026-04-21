@@ -10,6 +10,7 @@ import { DashboardOverview } from '@/features/dashboard-overview/ui/DashboardOve
 import { Contracts } from '@/features/contracts/ui/Contracts';
 import { Events } from '@/features/events/ui/Events';
 import { Estimation } from '@/features/estimation/ui/Estimation';
+import { Providers } from '@/features/providers/ui/Providers';
 
 // Providers
 import { UserProvider } from '@/context/UserContext';
