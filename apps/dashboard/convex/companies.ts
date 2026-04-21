@@ -1,5 +1,6 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { logActivityHelper } from "./activities";
 
 export const getCompanies = query({
   args: {
@@ -49,10 +50,23 @@ export const createCompany = mutation({
     }
 
     const { userEmail, ...companyData } = args;
-    return await ctx.db.insert("companies", {
+    const companyId = await ctx.db.insert("companies", {
       ...companyData,
       createdAt: Date.now(),
     });
+
+    await logActivityHelper(ctx, {
+      userId: user._id,
+      action: "CREATE_COMPANY",
+      entityId: companyId,
+      entityType: "companies",
+      details: {
+        summary: `Nova empresa cadastrada: ${args.name} (${args.type}).`,
+        data: { ...companyData }
+      },
+    });
+
+    return companyId;
   },
 });
 
@@ -80,7 +94,21 @@ export const updateCompany = mutation({
     }
 
     const { id, userEmail: _, ...updates } = args;
+    const previousState = await ctx.db.get(id);
+    
     await ctx.db.patch(id, updates);
+
+    await logActivityHelper(ctx, {
+      userId: user._id,
+      action: "UPDATE_COMPANY",
+      entityId: id,
+      entityType: "companies",
+      details: {
+        summary: `Empresa editada: ${args.name || previousState?.name || 'ID ' + id}.`,
+        previous: previousState,
+        updated: updates
+      },
+    });
   },
 });
 
@@ -99,6 +127,18 @@ export const removeCompany = mutation({
       throw new Error("Unauthorized: Only admins can remove companies");
     }
 
+    const company = await ctx.db.get(args.id);
     await ctx.db.delete(args.id);
+
+    await logActivityHelper(ctx, {
+      userId: user._id,
+      action: "REMOVE_COMPANY",
+      entityId: args.id,
+      entityType: "companies",
+      details: {
+        summary: `Empresa removida: ${company?.name || args.id}.`,
+        deletedRecord: company
+      },
+    });
   },
 });

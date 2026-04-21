@@ -1,5 +1,6 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { logActivityHelper } from "./activities";
 
 export const getProposals = query({
   args: { 
@@ -35,11 +36,15 @@ export const getProposals = query({
         
         const eventIds = events.map(e => e._id);
         
-        // This is a bit expensive in Convex without a direct "by_eventId_list" index, 
-        // but for now we'll collect and filter or query per event if small.
-        // Better: Query all proposals and filter by event ownership.
-        const allProposals = await ctx.db.query("proposals").collect();
-        proposals = allProposals.filter(p => eventIds.includes(p.eventId));
+        const proposalsList = [];
+        for (const eventId of eventIds) {
+          const eventProposals = await ctx.db
+            .query("proposals")
+            .withIndex("by_eventId", (q) => q.eq("eventId", eventId))
+            .collect();
+          proposalsList.push(...eventProposals);
+        }
+        proposals = proposalsList.sort((a, b) => b.createdAt - a.createdAt);
       } else {
         return [];
       }
@@ -89,7 +94,7 @@ export const createProposal = mutation({
       throw new Error("Usuário não pertence à empresa provedora informada.");
     }
 
-    return await ctx.db.insert("proposals", {
+    const proposalId = await ctx.db.insert("proposals", {
       eventId: args.eventId,
       providerCompanyId: args.providerCompanyId,
       value: args.value,
@@ -97,6 +102,23 @@ export const createProposal = mutation({
       status: "pending",
       createdAt: Date.now(),
     });
+
+    await logActivityHelper(ctx, {
+      userId: user._id,
+      action: "CREATE_PROPOSAL",
+      entityId: proposalId,
+      entityType: "proposals",
+      details: {
+        summary: `Nova proposta enviada para o evento ${args.eventId}. Valor: R$ ${args.value.toFixed(2)}.`,
+        data: {
+          eventId: args.eventId,
+          value: args.value,
+          description: args.description
+        }
+      },
+    });
+
+    return proposalId;
   },
 });
 
@@ -136,14 +158,16 @@ export const acceptProposal = mutation({
       .withIndex("by_eventId", (q) => q.eq("eventId", proposal.eventId))
       .collect();
     
+    const rejectedIds = [];
     for (const p of otherProposals) {
       if (p._id !== args.proposalId && p.status === "pending") {
         await ctx.db.patch(p._id, { status: "rejected" });
+        rejectedIds.push(p._id);
       }
     }
 
     // Create contract
-    return await ctx.db.insert("contracts", {
+    const contractId = await ctx.db.insert("contracts", {
       eventId: proposal.eventId,
       providerCompanyId: proposal.providerCompanyId,
       clientCompanyId: event.companyId,
@@ -151,6 +175,23 @@ export const acceptProposal = mutation({
       value: proposal.value,
       createdAt: Date.now(),
     });
+
+    await logActivityHelper(ctx, {
+      userId: user._id,
+      action: "ACCEPT_PROPOSAL",
+      entityId: args.proposalId,
+      entityType: "proposals",
+      details: {
+        summary: `Proposta ${args.proposalId} aceita. Contrato ${contractId} gerado em rascunho.`,
+        data: {
+          acceptedProposalId: args.proposalId,
+          contractId,
+          rejectedProposalIds: rejectedIds
+        }
+      },
+    });
+
+    return contractId;
   },
 });
 
@@ -180,6 +221,17 @@ export const rejectProposal = mutation({
     }
 
     await ctx.db.patch(args.proposalId, { status: "rejected" });
+
+    await logActivityHelper(ctx, {
+      userId: user._id,
+      action: "REJECT_PROPOSAL",
+      entityId: args.proposalId,
+      entityType: "proposals",
+      details: {
+        summary: `Proposta ${args.proposalId} recusada.`,
+        data: { proposalId: args.proposalId }
+      },
+    });
   },
 });
 

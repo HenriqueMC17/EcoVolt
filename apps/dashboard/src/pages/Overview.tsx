@@ -6,10 +6,10 @@ import {
   DollarSign, 
   ArrowUpRight, 
   ArrowDownRight,
-  TrendingUp,
   Clock,
   AlertCircle,
-  Loader2
+  Loader2,
+  History
 } from 'lucide-react';
 import { 
   AreaChart, 
@@ -26,16 +26,20 @@ import {
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { useUser } from "../context/UserContext";
+import { useNavigate } from 'react-router-dom';
+import ActivityFeed from '../components/ActivityFeed';
 
 const Overview: React.FC = () => {
   const { user } = useUser();
+  const navigate = useNavigate();
   const financialStats = useQuery(api.financials.getFinancialStats, { userEmail: user?.email || "" });
   const eventStats = useQuery(api.events.getEventStats, { userEmail: user?.email || "" });
   const contractStats = useQuery(api.contracts.getContractStats, { userEmail: user?.email || "" });
   const consumptionChartData = useQuery(api.consumptions.getConsumptionChartData, { userEmail: user?.email || "" });
   const recentEvents = useQuery(api.events.getEvents, { userEmail: user?.email || "" });
+  const operationalAlerts = useQuery(api.alerts.getOperationalAlerts, { userEmail: user?.email || "" });
 
-  if (!financialStats || !eventStats || !contractStats || !consumptionChartData || !recentEvents) {
+  if (!financialStats || !eventStats || !contractStats || !consumptionChartData || !recentEvents || !operationalAlerts) {
     return (
       <div style={{ height: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <Loader2 className="animate-spin" size={48} color="var(--primary)" />
@@ -60,7 +64,9 @@ const Overview: React.FC = () => {
   return (
     <div style={{ paddingBottom: '40px' }}>
       <header style={{ marginBottom: '32px' }}>
-        <h2 style={{ fontSize: '1.8rem', fontWeight: 700, marginBottom: '8px' }}>Bem-vindo, Administrador</h2>
+        <h2 style={{ fontSize: '1.8rem', fontWeight: 700, marginBottom: '8px' }}>
+          Bem-vindo, {user?.name.split(' ')[0] || 'Usuário'}
+        </h2>
         <p style={{ color: 'var(--text-muted)' }}>Aqui está o que está acontecendo com a operação da EcoVolt hoje.</p>
       </header>
 
@@ -200,7 +206,12 @@ const Overview: React.FC = () => {
         <div className="card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
             <h4 style={{ fontSize: '1.1rem', fontWeight: 600 }}>Próximos Eventos</h4>
-            <button style={{ color: 'var(--primary)', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600 }}>Ver todos</button>
+            <button 
+              onClick={() => navigate('/eventos')}
+              style={{ color: 'var(--primary)', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600 }}
+            >
+              Ver todos
+            </button>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             {recentEvents.slice(0, 3).map((event, idx) => (
@@ -245,35 +256,65 @@ const Overview: React.FC = () => {
         <div className="card">
           <h4 style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: '20px' }}>Alertas Operacionais</h4>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <div style={{ 
-              padding: '16px', 
-              borderRadius: '12px', 
-              background: 'rgba(244, 63, 94, 0.05)', 
-              border: '1px solid rgba(244, 63, 94, 0.1)',
-              display: 'flex',
-              gap: '12px'
-            }}>
-              <AlertCircle size={20} color="var(--error)" />
-              <div>
-                <p style={{ fontSize: '0.9rem', fontWeight: 600, color: '#fb7185' }}>Desvio de Consumo Detectado</p>
-                <p style={{ fontSize: '0.8rem', color: 'rgba(251, 113, 133, 0.8)' }}>Monitoramento detectou variações fora da curva em 3 eventos ativos.</p>
-              </div>
-            </div>
-            <div style={{ 
-              padding: '16px', 
-              borderRadius: '12px', 
-              background: 'rgba(245, 158, 11, 0.05)', 
-              border: '1px solid rgba(245, 158, 11, 0.1)',
-              display: 'flex',
-              gap: '12px'
-            }}>
-              <Clock size={20} color="var(--warning)" />
-              <div>
-                <p style={{ fontSize: '0.9rem', fontWeight: 600, color: '#fbbf24' }}>Contratos Próximos do Vencimento</p>
-                <p style={{ fontSize: '0.8rem', color: 'rgba(251, 191, 36, 0.8)' }}>Existem 5 contratos que requerem renovação ou fechamento financeiro.</p>
-              </div>
-            </div>
+            {operationalAlerts.length === 0 ? (
+              <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', textAlign: 'center', padding: '20px' }}>
+                Nenhum alerta crítico no momento.
+              </p>
+            ) : (
+              operationalAlerts.map((alert: any) => (
+                <div 
+                  key={alert.id} 
+                  onClick={() => alert.link && navigate(alert.link)}
+                  className="alert-item"
+                  style={{ 
+                    padding: '16px', 
+                    borderRadius: '12px', 
+                    background: alert.severity === 'high' ? 'rgba(244, 63, 94, 0.05)' : 'rgba(245, 158, 11, 0.05)', 
+                    border: alert.severity === 'high' ? '1px solid rgba(244, 63, 94, 0.1)' : '1px solid rgba(245, 158, 11, 0.1)',
+                    display: 'flex',
+                    gap: '12px',
+                    cursor: alert.link ? 'pointer' : 'default',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  {alert.severity === 'high' ? (
+                    <AlertCircle size={20} color="var(--error)" />
+                  ) : (
+                    <Clock size={20} color="var(--warning)" />
+                  )}
+                  <div>
+                    <p style={{ 
+                      fontSize: '0.9rem', 
+                      fontWeight: 600, 
+                      color: alert.severity === 'high' ? '#fb7185' : '#fbbf24' 
+                    }}>
+                      {alert.title}
+                    </p>
+                    <p style={{ 
+                      fontSize: '0.8rem', 
+                      color: alert.severity === 'high' ? 'rgba(251, 113, 133, 0.8)' : 'rgba(251, 191, 36, 0.8)' 
+                    }}>
+                      {alert.description}
+                    </p>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
+        </div>
+      </div>
+
+      {/* Activity Feed Row */}
+      <div style={{ marginTop: '24px' }}>
+        <div className="card">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <History size={20} color="var(--primary)" />
+              <h4 style={{ fontSize: '1.1rem', fontWeight: 600 }}>Atividade Recente (Auditoria)</h4>
+            </div>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Últimas 10 ações</span>
+          </div>
+          <ActivityFeed limit={10} userEmail={user?.email || ""} />
         </div>
       </div>
     </div>

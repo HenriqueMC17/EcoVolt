@@ -1,5 +1,6 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { logActivityHelper } from "./activities";
 
 export const getConsumptions = query({
   args: { userEmail: v.string() },
@@ -96,13 +97,36 @@ export const createConsumption = mutation({
       throw new Error("Apenas administradores e operadores podem registrar consumo.");
     }
 
-    return await ctx.db.insert("consumptions", {
+    if (args.predictedKwh < 0) {
+      throw new Error("O consumo previsto não pode ser negativo.");
+    }
+    if (args.actualKwh !== undefined && args.actualKwh < 0) {
+      throw new Error("O consumo real não pode ser negativo.");
+    }
+
+    const consumptionId = await ctx.db.insert("consumptions", {
       eventId: args.eventId,
       predictedKwh: args.predictedKwh,
       actualKwh: args.actualKwh,
+      isReconciled: false,
       recordedAt: Date.now(),
       createdAt: Date.now(),
     });
+
+    await logActivityHelper(ctx, {
+      userId: user._id,
+      action: "CREATE_CONSUMPTION",
+      entityId: consumptionId,
+      entityType: "consumptions",
+      details: {
+        eventId: args.eventId,
+        predictedKwh: args.predictedKwh,
+        actualKwh: args.actualKwh,
+        summary: `Novo registro de consumo para o evento ${args.eventId}. Previsto: ${args.predictedKwh}kWh.`,
+      },
+    });
+
+    return consumptionId;
   }
 });
 
@@ -122,7 +146,24 @@ export const updateActualConsumption = mutation({
       throw new Error("Apenas administradores e operadores podem atualizar o consumo real.");
     }
 
-    return await ctx.db.patch(args.consumptionId, { actualKwh: args.actualKwh, recordedAt: Date.now() });
+    if (args.actualKwh < 0) {
+      throw new Error("O consumo real não pode ser negativo.");
+    }
+
+    const oldConsumption = await ctx.db.get(args.consumptionId);
+    await ctx.db.patch(args.consumptionId, { actualKwh: args.actualKwh, recordedAt: Date.now() });
+
+    await logActivityHelper(ctx, {
+      userId: user._id,
+      action: "UPDATE_ACTUAL_CONSUMPTION",
+      entityId: args.consumptionId,
+      entityType: "consumptions",
+      details: {
+        previousActual: oldConsumption?.actualKwh,
+        newActual: args.actualKwh,
+        summary: `Consumo real atualizado de ${oldConsumption?.actualKwh ?? 0}kWh para ${args.actualKwh}kWh.`,
+      },
+    });
   }
 });
 
@@ -143,8 +184,20 @@ export const updateConsumption = mutation({
       throw new Error("Apenas administradores e operadores podem editar registros de consumo.");
     }
 
-    const { id, userEmail, ...updates } = args;
+    const oldConsumption = await ctx.db.get(id);
+    const { id: _, userEmail: __, ...updates } = args;
     await ctx.db.patch(id, updates);
+
+    await logActivityHelper(ctx, {
+      userId: user._id,
+      action: "UPDATE_CONSUMPTION",
+      entityId: id,
+      entityType: "consumptions",
+      details: {
+        updates,
+        summary: "Registro de consumo editado.",
+      },
+    });
   },
 });
 
@@ -163,7 +216,19 @@ export const removeConsumption = mutation({
       throw new Error("Apenas administradores podem excluir registros de consumo.");
     }
 
+    const oldConsumption = await ctx.db.get(args.id);
     await ctx.db.delete(args.id);
+
+    await logActivityHelper(ctx, {
+      userId: user._id,
+      action: "REMOVE_CONSUMPTION",
+      entityId: args.id,
+      entityType: "consumptions",
+      details: {
+        deletedRecord: oldConsumption,
+        summary: "Registro de consumo removido.",
+      },
+    });
   },
 });
 

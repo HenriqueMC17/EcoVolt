@@ -82,7 +82,8 @@ export default defineSchema({
     dueDate: v.number(),
     paidAt: v.optional(v.number()),
     createdAt: v.number(),
-  }).index("by_eventId", ["eventId"]),
+  }).index("by_eventId", ["eventId"])
+    .index("by_contractId", ["contractId"]),
 
   documents: defineTable({
     name: v.string(),
@@ -105,4 +106,14 @@ export default defineSchema({
     createdAt: v.number(),
   }).index("by_eventId", ["eventId"])
     .index("by_providerCompanyId", ["providerCompanyId"]),
+
+  activityLog: defineTable({
+    userId: v.id("users"),
+    companyId: v.optional(v.id("companies")), // The company of the acting user
+    action: v.string(), // e.g. "CREATED_EVENT", "UPDATED_CONSUMPTION"
+    entityId: v.optional(v.string()),
+    entityType: v.string(), // e.g. "event", "consumption", "financial"
+    details: v.any(),
+    createdAt: v.number(),
+  }).index("by_companyId", ["companyId"]),
 });

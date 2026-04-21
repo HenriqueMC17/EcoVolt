@@ -28,7 +28,8 @@ import {
   ResponsiveContainer 
 } from 'recharts';
 import { useUser } from '../context/UserContext';
-
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const Financial: React.FC = () => {
   const { user } = useUser();
@@ -56,6 +57,87 @@ const Financial: React.FC = () => {
   });
 
   const canManage = user?.role === 'admin' || user?.role === 'operator';
+
+  const handleExportPDF = () => {
+    if (!transactions) return;
+
+    const doc = new jsPDF();
+    const primaryColor = [16, 185, 129]; // #10b981 (EcoVolt Green)
+    
+    // Header
+    doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    doc.rect(0, 0, 210, 40, 'F');
+    
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(22);
+    doc.setFont('helvetica', 'bold');
+    doc.text('EcoVolt', 15, 25);
+    
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Relatório Financeiro Operacional', 15, 32);
+    
+    const now = new Date().toLocaleString('pt-BR');
+    doc.text(`Gerado em: ${now}`, 140, 32);
+
+    // Summary Section
+    doc.setTextColor(51, 65, 85);
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Resumo Executivo', 15, 55);
+
+    const totalIncome = financialStats?.totalIncome || 0;
+    const totalPending = financialStats?.totalPending || 0;
+    const totalExpenses = financialStats?.totalExpenses || 0;
+
+    autoTable(doc, {
+      startY: 60,
+      head: [['Categoria', 'Valor (R$)']],
+      body: [
+        ['Receita Liquidada', totalIncome.toLocaleString('pt-BR', { minimumFractionDigits: 2 })],
+        ['Pendentes / A Receber', totalPending.toLocaleString('pt-BR', { minimumFractionDigits: 2 })],
+        ['Despesas / Reembolsos', totalExpenses.toLocaleString('pt-BR', { minimumFractionDigits: 2 })],
+        ['Saldo Operacional', (totalIncome - totalExpenses).toLocaleString('pt-BR', { minimumFractionDigits: 2 })],
+      ],
+      theme: 'grid',
+      headStyles: { fillStyle: 'F', fillColor: [241, 245, 249], textColor: [71, 85, 105], fontStyle: 'bold' },
+      styles: { fontSize: 10, cellPadding: 5 }
+    });
+
+    // Transactions Table
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Histórico de Transações', 15, (doc as any).lastAutoTable.finalY + 15);
+
+    const tableData = transactions.map(trx => [
+      new Date(trx.createdAt).toLocaleDateString('pt-BR'),
+      trx.event || 'Geral',
+      trx.category,
+      `R$ ${trx.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
+      trx.type === 'income' ? 'Entrada' : 'Saída',
+      trx.status === 'paid' ? 'Liquidado' : 'Pendente'
+    ]);
+
+    autoTable(doc, {
+      startY: (doc as any).lastAutoTable.finalY + 20,
+      head: [['Data', 'Evento', 'Descrição', 'Valor', 'Tipo', 'Status']],
+      body: tableData,
+      theme: 'striped',
+      headStyles: { fillColor: primaryColor, textColor: [255, 255, 255] },
+      styles: { fontSize: 9 }
+    });
+
+    // Footer
+    const pageCount = (doc as any).internal.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+      doc.setPage(i);
+      doc.setFontSize(8);
+      doc.setTextColor(148, 163, 184);
+      doc.text(`EcoVolt Dashboard - Confidencial - Página ${i} de ${pageCount}`, 105, 285, { align: 'center' });
+    }
+
+    doc.save('EcoVolt_Relatorio_Financeiro.pdf');
+  };
 
   const handleSaveTransaction = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -145,7 +227,7 @@ const Financial: React.FC = () => {
           <p style={{ color: 'var(--text-muted)' }}>Acompanhe o impacto financeiro da operação, faturamentos e reembolsos.</p>
         </div>
         <div style={{ display: 'flex', gap: '12px' }}>
-          <button className="btn btn-outline">
+          <button className="btn btn-outline" onClick={handleExportPDF} disabled={!transactions}>
             <Download size={18} />
             Exportar
           </button>

@@ -8,6 +8,8 @@
  * @module
  */
 
+import type * as activities from "../activities.js";
+import type * as alerts from "../alerts.js";
 import type * as companies from "../companies.js";
 import type * as consumptions from "../consumptions.js";
 import type * as contracts from "../contracts.js";
@@ -25,6 +27,8 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  activities: typeof activities;
+  alerts: typeof alerts;
   companies: typeof companies;
   consumptions: typeof consumptions;
   contracts: typeof contracts;

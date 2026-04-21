@@ -1,5 +1,6 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { logActivityHelper } from "./activities";
 
 export const getFinancials = query({
   args: { userEmail: v.string() },
@@ -22,18 +23,35 @@ export const getFinancials = query({
         .query("events")
         .withIndex("by_companyId", (q) => q.eq("companyId", user.companyId!))
         .collect();
-      const eventIds = new Set(events.map(e => e._id));
-      financials = await financialsQuery.collect();
-      financials = financials.filter(f => f.eventId && eventIds.has(f.eventId));
+      
+      const eventIds = events.map(e => e._id);
+      const financialsList = [];
+      for (const eventId of eventIds) {
+        const eventFins = await ctx.db
+          .query("financials")
+          .withIndex("by_eventId", (q) => q.eq("eventId", eventId))
+          .collect();
+        financialsList.push(...eventFins);
+      }
+      // Sort by createdAt desc as we collected them separately
+      financials = financialsList.sort((a, b) => b.createdAt - a.createdAt);
     } else if (user.role === "provider") {
       // Filter by contracts where the user's company is the provider
       const contracts = await ctx.db
         .query("contracts")
-        .withIndex("by_providerId", (q) => q.eq("providerId", user.companyId!))
+        .withIndex("by_providerCompanyId", (q) => q.eq("providerCompanyId", user.companyId!))
         .collect();
-      const contractIds = new Set(contracts.map(c => c._id));
-      financials = await financialsQuery.collect();
-      financials = financials.filter(f => f.contractId && contractIds.has(f.contractId));
+      
+      const contractIds = contracts.map(c => c._id);
+      const financialsList = [];
+      for (const contractId of contractIds) {
+        const contractFins = await ctx.db
+          .query("financials")
+          .withIndex("by_contractId", (q) => q.eq("contractId", contractId))
+          .collect();
+        financialsList.push(...contractFins);
+      }
+      financials = financialsList.sort((a, b) => b.createdAt - a.createdAt);
     } else {
       return [];
     }
@@ -87,11 +105,28 @@ export const createFinancialTransaction = mutation({
     }
 
     const { userEmail, ...transactionData } = args;
-    return await ctx.db.insert("financials", {
+    const financialId = await ctx.db.insert("financials", {
       ...transactionData,
       createdAt: Date.now(),
       paidAt: args.status === "paid" ? Date.now() : undefined,
     });
+
+    await logActivityHelper(ctx, {
+      userId: user._id,
+      action: "CREATE_FINANCIAL_TRANSACTION",
+      entityId: financialId,
+      entityType: "financials",
+      details: {
+        type: args.type,
+        amount: args.amount,
+        category: args.category,
+        status: args.status,
+        dueDate: args.dueDate,
+        summary: `Nova transação de ${args.type}: R$ ${args.amount.toFixed(2)} (${args.category}).`
+      },
+    });
+
+    return financialId;
   },
 });
 
@@ -111,9 +146,22 @@ export const updateFinancialStatus = mutation({
       throw new Error("Unauthorized: Only admins and operators can update status");
     }
 
-    return await ctx.db.patch(args.financialId, { 
+    const oldFinancial = await ctx.db.get(args.financialId);
+    await ctx.db.patch(args.financialId, { 
       status: args.status,
       paidAt: args.status === "paid" ? Date.now() : undefined
+    });
+
+    await logActivityHelper(ctx, {
+      userId: user._id,
+      action: "UPDATE_FINANCIAL_STATUS",
+      entityId: args.financialId,
+      entityType: "financials",
+      details: {
+        previousStatus: oldFinancial?.status,
+        newStatus: args.status,
+        summary: `Status da transação alterado de ${oldFinancial?.status} para ${args.status}.`,
+      },
     });
   },
 });
@@ -140,8 +188,20 @@ export const updateFinancial = mutation({
       throw new Error("Unauthorized: Only admins and operators can update transactions");
     }
 
-    const { id, userEmail, ...updates } = args;
+    const oldFinancial = await ctx.db.get(id);
+    const { id: _, userEmail: __, ...updates } = args;
     await ctx.db.patch(id, updates);
+
+    await logActivityHelper(ctx, {
+      userId: user._id,
+      action: "UPDATE_FINANCIAL",
+      entityId: id,
+      entityType: "financials",
+      details: {
+        updates,
+        summary: "Transação financeira editada.",
+      },
+    });
   },
 });
 
@@ -160,7 +220,19 @@ export const removeFinancial = mutation({
       throw new Error("Unauthorized: Only admins and operators can remove transactions");
     }
 
+    const oldFinancial = await ctx.db.get(args.id);
     await ctx.db.delete(args.id);
+
+    await logActivityHelper(ctx, {
+      userId: user._id,
+      action: "REMOVE_FINANCIAL",
+      entityId: args.id,
+      entityType: "financials",
+      details: {
+        deletedRecord: oldFinancial,
+        summary: `Transação financeira de R$ ${oldFinancial?.amount.toFixed(2)} removida.`,
+      },
+    });
   },
 });
 
@@ -227,6 +299,14 @@ export const processReconciliation = mutation({
 
     await ctx.db.patch(args.consumptionId, { isReconciled: true });
 
+    await logActivityHelper(ctx, {
+      userId: user._id,
+      action: "PROCESS_RECONCILIATION",
+      entityId: args.consumptionId,
+      entityType: "consumptions",
+      details: `Reconciliação processada para o consumo ${args.consumptionId}. Diferença: ${difference.toFixed(2)}kWh.`,
+    });
+
     return { 
       success: true, 
       financialId, 
@@ -271,17 +351,33 @@ export const getFinancialStats = query({
         .query("events")
         .withIndex("by_companyId", (q) => q.eq("companyId", user.companyId!))
         .collect();
-      const eventIds = new Set(events.map(e => e._id));
-      transactions = await financialsQuery.collect();
-      transactions = transactions.filter(f => f.eventId && eventIds.has(f.eventId));
+      
+      const eventIds = events.map(e => e._id);
+      const transactionsList = [];
+      for (const eventId of eventIds) {
+        const eventFins = await ctx.db
+          .query("financials")
+          .withIndex("by_eventId", (q) => q.eq("eventId", eventId))
+          .collect();
+        transactionsList.push(...eventFins);
+      }
+      transactions = transactionsList;
     } else if (user.role === "provider") {
       const contracts = await ctx.db
         .query("contracts")
-        .withIndex("by_providerId", (q) => q.eq("providerId", user.companyId!))
+        .withIndex("by_providerCompanyId", (q) => q.eq("providerCompanyId", user.companyId!))
         .collect();
-      const contractIds = new Set(contracts.map(c => c._id));
-      transactions = await financialsQuery.collect();
-      transactions = transactions.filter(f => f.contractId && contractIds.has(f.contractId));
+      
+      const contractIds = contracts.map(c => c._id);
+      const transactionsList = [];
+      for (const contractId of contractIds) {
+        const contractFins = await ctx.db
+          .query("financials")
+          .withIndex("by_contractId", (q) => q.eq("contractId", contractId))
+          .collect();
+        transactionsList.push(...contractFins);
+      }
+      transactions = transactionsList;
     } else {
       transactions = [];
     }

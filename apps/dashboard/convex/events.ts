@@ -1,5 +1,5 @@
-import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { logActivityHelper } from "./activities";
 
 export const getEvents = query({
   args: { userEmail: v.string() },
@@ -76,6 +76,7 @@ export const createEvent = mutation({
     location: v.string(),
     expectedAttendees: v.number(),
     estimatedConsumption: v.number(),
+    toleranceKwh: v.optional(v.number()),
     companyId: v.id("companies"),
     userEmail: v.string(), 
   },
@@ -93,7 +94,19 @@ export const createEvent = mutation({
       throw new Error("Você só pode criar eventos para a sua própria empresa.");
     }
 
-    return await ctx.db.insert("events", {
+    if (args.startDate >= args.endDate) {
+      throw new Error("A data de início deve ser anterior à data de término.");
+    }
+
+    if (args.expectedAttendees <= 0) {
+      throw new Error("O número de participantes esperados deve ser maior que zero.");
+    }
+
+    if (args.estimatedConsumption <= 0) {
+      throw new Error("O consumo estimado deve ser maior que zero.");
+    }
+
+    const eventId = await ctx.db.insert("events", {
       name: args.name,
       status: args.status,
       startDate: args.startDate,
@@ -101,9 +114,26 @@ export const createEvent = mutation({
       location: args.location,
       expectedAttendees: args.expectedAttendees,
       estimatedConsumption: args.estimatedConsumption,
+      toleranceKwh: args.toleranceKwh,
       companyId: args.companyId,
       createdAt: Date.now(),
     });
+
+    await logActivityHelper(ctx, {
+      userId: user._id,
+      action: "CREATE_EVENT",
+      entityId: eventId,
+      entityType: "event",
+      details: {
+        name: args.name,
+        status: args.status,
+        startDate: args.startDate,
+        endDate: args.endDate,
+        summary: `Criou o evento "${args.name}"`,
+      },
+    });
+
+    return eventId;
   },
 });
 
@@ -130,7 +160,19 @@ export const updateEventStatus = mutation({
       throw new Error("Permissão negada para este evento.");
     }
 
-    return await ctx.db.patch(args.eventId, { status: args.status });
+    await ctx.db.patch(args.eventId, { status: args.status });
+
+    await logActivityHelper(ctx, {
+      userId: user._id,
+      action: "UPDATE_EVENT_STATUS",
+      entityId: args.eventId,
+      entityType: "event",
+      details: {
+        previousStatus: event.status,
+        newStatus: args.status,
+        summary: `Alterou o status do evento "${event.name}" de ${event.status} para ${args.status}`,
+      },
+    });
   },
 });
 
@@ -144,6 +186,7 @@ export const updateEvent = mutation({
     location: v.string(),
     expectedAttendees: v.number(),
     estimatedConsumption: v.number(),
+    toleranceKwh: v.optional(v.number()),
     companyId: v.id("companies"),
     userEmail: v.string(),
   },
@@ -166,7 +209,32 @@ export const updateEvent = mutation({
       throw new Error("Permissão negada para este evento.");
     }
 
-    return await ctx.db.patch(eventId, updateFields);
+    if (updateFields.startDate >= updateFields.endDate) {
+      throw new Error("A data de início deve ser anterior à data de término.");
+    }
+
+    if (updateFields.expectedAttendees <= 0) {
+      throw new Error("O número de participantes esperados deve ser maior que zero.");
+    }
+
+    if (updateFields.estimatedConsumption <= 0) {
+      throw new Error("O consumo estimado deve ser maior que zero.");
+    }
+
+    await ctx.db.patch(eventId, updateFields);
+
+    await logActivityHelper(ctx, {
+      userId: user._id,
+      action: "UPDATE_EVENT",
+      entityId: eventId,
+      entityType: "event",
+      details: {
+        updates: updateFields,
+        summary: `Atualizou os dados do evento "${updateFields.name}"`,
+      },
+    });
+
+    return eventId;
   },
 });
 
@@ -198,7 +266,20 @@ export const removeEvent = mutation({
       throw new Error("Não é possível excluir um evento que possui contratos vinculados.");
     }
 
-    return await ctx.db.delete(args.eventId);
+    await ctx.db.delete(args.eventId);
+
+    await logActivityHelper(ctx, {
+      userId: user._id,
+      action: "REMOVE_EVENT",
+      entityId: args.eventId,
+      entityType: "event",
+      details: {
+        deletedRecord: event,
+        summary: `Removeu o evento "${event.name}"`,
+      },
+    });
+
+    return args.eventId;
   },
 });
 

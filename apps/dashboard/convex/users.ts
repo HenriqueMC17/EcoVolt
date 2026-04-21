@@ -1,5 +1,6 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { logActivityHelper } from "./activities";
 
 export const getMe = query({
   args: { email: v.optional(v.string()) },
@@ -55,10 +56,26 @@ export const createUser = mutation({
     }
 
     const { userEmail, ...userData } = args;
-    return await ctx.db.insert("users", {
+    const userId = await ctx.db.insert("users", {
       ...userData,
       createdAt: Date.now(),
     });
+
+    await logActivityHelper(ctx, {
+      userId: user._id,
+      action: "CREATE_USER",
+      entityId: userId,
+      entityType: "users",
+      details: {
+        name: args.name,
+        email: args.email,
+        role: args.role,
+        companyId: args.companyId,
+        summary: `Novo usuário criado: ${args.name} (${args.email}) com perfil ${args.role}.`,
+      },
+    });
+
+    return userId;
   },
 });
 
@@ -86,8 +103,21 @@ export const updateUser = mutation({
       throw new Error("Unauthorized: Only admins can update users");
     }
 
-    const { id, userEmail: _, ...updates } = args;
+    const targetUser = await ctx.db.get(id);
+    const { id: _, userEmail: __, ...updates } = args;
     await ctx.db.patch(id, updates);
+
+    await logActivityHelper(ctx, {
+      userId: user._id,
+      action: "UPDATE_USER",
+      entityId: id,
+      entityType: "users",
+      details: {
+        updates,
+        targetUser: targetUser?.email,
+        summary: `Usuário editado: ${targetUser?.name} (${targetUser?.email}).`,
+      },
+    });
   },
 });
 
@@ -106,6 +136,18 @@ export const removeUser = mutation({
       throw new Error("Unauthorized: Only admins can remove users");
     }
 
+    const oldUser = await ctx.db.get(args.id);
     await ctx.db.delete(args.id);
+
+    await logActivityHelper(ctx, {
+      userId: user._id,
+      action: "REMOVE_USER",
+      entityId: args.id,
+      entityType: "users",
+      details: {
+        deletedUser: oldUser?.email,
+        summary: `Usuário ${oldUser?.name} (${oldUser?.email}) removido do sistema.`,
+      },
+    });
   },
 });

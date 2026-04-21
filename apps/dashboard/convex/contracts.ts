@@ -1,5 +1,6 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { logActivityHelper } from "./activities";
 
 export const getContracts = query({
   args: { userEmail: v.string() },
@@ -75,7 +76,7 @@ export const createContract = mutation({
       throw new Error("Apenas administradores, operadores ou organizadores podem criar contratos.");
     }
 
-    return await ctx.db.insert("contracts", {
+    const contractId = await ctx.db.insert("contracts", {
       eventId: args.eventId,
       providerCompanyId: args.providerCompanyId,
       clientCompanyId: args.clientCompanyId,
@@ -84,6 +85,22 @@ export const createContract = mutation({
       status: args.status,
       createdAt: Date.now(),
     });
+
+    await logActivityHelper(ctx, {
+      userId: user._id,
+      action: "CREATE_CONTRACT",
+      entityId: contractId,
+      entityType: "contracts",
+      details: {
+        eventId: args.eventId,
+        providerCompanyId: args.providerCompanyId,
+        value: args.value,
+        ratePerKwh: args.ratePerKwh,
+        summary: `Novo contrato criado para o evento ${args.eventId}. Valor: R$ ${args.value.toFixed(2)}.`,
+      },
+    });
+
+    return contractId;
   },
 });
 
@@ -119,7 +136,19 @@ export const updateContractStatus = mutation({
       throw new Error("Permissão negada.");
     }
 
-    return await ctx.db.patch(args.contractId, { status: args.status });
+    await ctx.db.patch(args.contractId, { status: args.status });
+
+    await logActivityHelper(ctx, {
+      userId: user._id,
+      action: "UPDATE_CONTRACT_STATUS",
+      entityId: args.contractId,
+      entityType: "contracts",
+      details: {
+        previousStatus: contract.status,
+        newStatus: args.status,
+        summary: `Status do contrato alterado de ${contract.status} para ${args.status}.`,
+      },
+    });
   },
 });
 
@@ -161,7 +190,18 @@ export const updateContract = mutation({
       throw new Error("Apenas o contratante, administrador ou operador pode editar os termos do contrato.");
     }
 
-    return await ctx.db.patch(contractId, updateFields);
+    await ctx.db.patch(contractId, updateFields);
+
+    await logActivityHelper(ctx, {
+      userId: user._id,
+      action: "UPDATE_CONTRACT",
+      entityId: contractId,
+      entityType: "contracts",
+      details: {
+        updates: updateFields,
+        summary: "Termos do contrato editados.",
+      },
+    });
   },
 });
 
@@ -180,7 +220,19 @@ export const removeContract = mutation({
       throw new Error("Apenas administradores ou operadores podem excluir contratos.");
     }
 
-    return await ctx.db.delete(args.contractId);
+    const oldContract = await ctx.db.get(args.contractId);
+    await ctx.db.delete(args.contractId);
+
+    await logActivityHelper(ctx, {
+      userId: user._id,
+      action: "REMOVE_CONTRACT",
+      entityId: args.contractId,
+      entityType: "contracts",
+      details: {
+        deletedRecord: oldContract,
+        summary: "Contrato removido do sistema.",
+      },
+    });
   },
 });
 
