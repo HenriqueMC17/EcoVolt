@@ -5,16 +5,17 @@ import { Hero } from '@/features/hero/ui/Hero';
 import { StatsOverview } from '@/features/stats-overview/ui/StatsOverview';
 import { Footer } from '@/shared/components/Footer';
 import { DashboardLayout } from '@/shared/components/DashboardLayout';
+// Features
 import { DashboardOverview } from '@/features/dashboard-overview/ui/DashboardOverview';
 import { Contracts } from '@/features/contracts/ui/Contracts';
+import { Events } from '@/features/events/ui/Events';
+import { Estimation } from '@/features/estimation/ui/Estimation';
 
 // Providers
 import { UserProvider } from '@/context/UserContext';
 import { ToastProvider } from '@/context/ToastContext';
 
 // Legacy Pages (to be migrated)
-import Events from '@/pages/Events';
-
 import Estimation from '@/pages/Estimation';
 import Providers from '@/pages/Providers';
 import Proposals from '@/pages/Proposals';
