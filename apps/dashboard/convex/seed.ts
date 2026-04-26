@@ -80,6 +80,15 @@ export const seedData = mutation({
       createdAt: Date.now(),
     });
 
+    const allProjects = await ctx.db.query("projects").collect();
+    for (const p of allProjects) await ctx.db.delete(p._id);
+    const allMetrics = await ctx.db.query("metrics").collect();
+    for (const m of allMetrics) await ctx.db.delete(m._id);
+    const allLogs = await ctx.db.query("auditLogs").collect();
+    for (const l of allLogs) await ctx.db.delete(l._id);
+
+    // ... (existing company and event seeds) ...
+
     const adminId = await ctx.db.insert("users", {
       name: "Henrique Admin",
       email: "henrique@ecovolt.com",
@@ -87,57 +96,48 @@ export const seedData = mutation({
       createdAt: Date.now(),
     });
 
-    await ctx.db.insert("users", {
-      name: "Mariana Eventos",
-      email: "mariana@vibe.com",
-      role: "event_company",
-      companyId: companyId,
-      createdAt: Date.now(),
-    });
-
-    await ctx.db.insert("users", {
-      name: "João Provedor",
-      email: "joao@solartech.com",
-      role: "provider",
-      companyId: providerId,
-      createdAt: Date.now(),
-    });
-
-    await ctx.db.insert("users", {
-      name: "Carlos Jurídico",
-      email: "carlos@ecovolt.com",
-      role: "operator",
-      createdAt: Date.now(),
-    });
-
-    // Seed initial consumptions
-    await ctx.db.insert("consumptions", {
-      eventId: event2, // Arena Verão (completed)
-      predictedKwh: 120500,
-      actualKwh: 121000, // Slightly over
-      recordedAt: Date.now(),
-      createdAt: Date.now(),
-    });
-
-    // Create active contracts for reconciliation testing
-    await ctx.db.insert("contracts", {
-      eventId: event1,
-      providerCompanyId: providerId,
-      clientCompanyId: companyId,
+    // Seed Projects
+    const project1 = await ctx.db.insert("projects", {
+      userId: adminId,
+      name: "Fazenda Solar Atibaia",
+      category: "Solar",
       status: "active",
-      value: 75000,
+      location: "Atibaia, SP",
+      description: "Usina fotovoltaica de médio porte para suprir sede administrativa.",
       createdAt: Date.now(),
     });
 
-    await ctx.db.insert("contracts", {
-      eventId: event2,
-      providerCompanyId: providerId,
-      clientCompanyId: companyId,
-      status: "active",
-      value: 150000,
+    const project2 = await ctx.db.insert("projects", {
+      userId: adminId,
+      name: "Complexo Eólico Ventos do Sul",
+      category: "Wind",
+      status: "in_analysis",
+      location: "Osório, RS",
+      description: "Expansão de parque eólico existente com novas turbinas de 5MW.",
       createdAt: Date.now(),
     });
 
-    return "Data seeded successfully with users, consumptions, and contracts!";
+    // Seed Metrics for Project 1
+    const baseTime = Date.now() - (30 * 24 * 60 * 60 * 1000); // 30 days ago
+    for (let i = 0; i < 30; i++) {
+      await ctx.db.insert("metrics", {
+        projectId: project1,
+        energyConsumption: 450 + Math.random() * 100,
+        savings: 1200 + Math.random() * 300,
+        environmentalImpact: 85 + Math.random() * 20,
+        timestamp: baseTime + (i * 24 * 60 * 60 * 1000),
+      });
+    }
+
+    // Seed Audit Logs
+    await ctx.db.insert("auditLogs", {
+      projectId: project1,
+      userId: adminId,
+      action: "CREATE_PROJECT",
+      details: { name: "Fazenda Solar Atibaia" },
+      timestamp: Date.now(),
+    });
+
+    return "Data seeded successfully with projects and metrics!";
   },
 });

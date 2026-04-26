@@ -5,44 +5,76 @@
   --color-primary-hover: oklch(0.65 0.18 160);
   --color-secondary: oklch(0.6 0.18 250); /* Blue-ish */
   
-  --color-bg-main: oklch(0.15 0.02 240); /* Deep Slate */
-  --color-bg-surface: oklch(0.2 0.03 240 / 0.8);
-  --color-bg-surface-elevated: oklch(0.25 0.04 240 / 0.9);
+  --color-bg-main: oklch(0.12 0.015 240); /* Deep Slate - Darker for more contrast */
+  --color-bg-surface: oklch(0.18 0.02 240 / 0.7);
+  --color-bg-surface-elevated: oklch(0.22 0.03 240 / 0.85);
   
-  --color-text-main: oklch(0.95 0.01 240);
-  --color-text-muted: oklch(0.7 0.02 240);
+  --color-text-main: oklch(0.98 0.005 240);
+  --color-text-muted: oklch(0.75 0.015 240);
   
-  --color-border-glass: oklch(1 0 0 / 0.1);
+  --color-border-glass: oklch(1 0 0 / 0.08);
+  --color-border-glass-bright: oklch(1 0 0 / 0.15);
   
   --radius-xl: 1.5rem;
   --radius-2xl: 2rem;
+  --radius-3xl: 2.5rem;
   
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  
+  --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @layer base {
   body {
-    @apply bg-bg-main text-text-main antialiased selection:bg-primary/30;
+    @apply bg-bg-main text-text-main antialiased selection:bg-primary/30 min-h-screen relative overflow-x-hidden;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  body::before {
+    content: "";
+    @apply fixed inset-0 -z-10 opacity-40 pointer-events-none;
+    background: 
+      radial-gradient(circle at 0% 0%, oklch(0.705 0.15 160 / 0.15) 0%, transparent 50%),
+      radial-gradient(circle at 100% 100%, oklch(0.6 0.18 250 / 0.15) 0%, transparent 50%),
+      radial-gradient(circle at 50% 50%, oklch(0.12 0.015 240) 0%, transparent 100%);
+  }
+
+  /* Custom Scrollbar - Premium Look */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-white/10 rounded-full hover:bg-white/20 transition-colors;
   }
 }
 
 @layer components {
-  .glass {
-    @apply bg-bg-surface backdrop-blur-xl border border-border-glass shadow-2xl;
+  @utility glass {
+    @apply bg-bg-surface backdrop-blur-2xl border border-border-glass shadow-[0_8px_32px_0_rgba(0,0,0,0.37)];
+  }
+  
+  @utility glass-border {
+    @apply border border-white/10 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.05)];
   }
   
   .glass-card {
-    @apply glass rounded-xl p-6 transition-all duration-300 hover:translate-y-[-4px] hover:border-primary/50;
+    @apply glass rounded-2xl p-6 transition-all duration-500 hover:translate-y-[-6px] hover:border-primary/40 hover:shadow-primary/10;
   }
   
   .btn-premium {
-    @apply px-6 py-3 rounded-lg font-semibold transition-all duration-300 
-           flex items-center gap-2 active:scale-95 disabled:opacity-50;
+    @apply px-6 py-3 rounded-xl font-bold transition-all duration-500 
+           flex items-center gap-2 active:scale-95 disabled:opacity-50 relative overflow-hidden;
   }
   
   .btn-premium-primary {
-    @apply btn-premium bg-primary text-black hover:bg-primary-hover hover:shadow-[0_0_30px_rgba(16,185,129,0.4)];
+    @apply btn-premium bg-primary text-black hover:shadow-[0_0_40px_rgba(16,185,129,0.35)];
+  }
+  
+  .nav-link-premium {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative;
   }
 }
 
@@ -52,10 +84,14 @@
 }
 
 .animate-orchestrated {
-  animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: slideUp 1.2s var(--ease-premium) both;
 }
 
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(30px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.perspective-1000 {
+  perspective: 1000px;
 }

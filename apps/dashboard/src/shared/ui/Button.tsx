@@ -1,6 +1,7 @@
 import React from 'react';
 import { cn } from '@/shared/lib/utils';
-import { motion, HTMLMotionProps } from 'framer-motion';
+import { motion } from 'framer-motion';
+import type { HTMLMotionProps } from 'framer-motion';
 
 interface ButtonProps extends HTMLMotionProps<'button'> {
   variant?: 'primary' | 'outline' | 'ghost';

@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { 
-  Users, 
   MapPin, 
   Star, 
   Zap, 
-  CheckCircle, 
   Search, 
   Filter,
   MessageSquare,
@@ -21,7 +19,7 @@ import { Typography } from '@/shared/ui/Typography';
 import { Button } from '@/shared/ui/Button';
 
 export const Providers: React.FC = () => {
-  const providers = useQuery(api.companies.getCompanies, { type: "provider" });
+  const providers = useQuery(api.companies.getCompanies, { userEmail: "henrique@ecovolt.com", type: "provider" });
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredProviders = providers?.filter(provider => 
@@ -38,7 +36,7 @@ export const Providers: React.FC = () => {
           <Typography variant="h2" className="text-3xl font-bold tracking-tight text-white">
             Provedores de Energia
           </Typography>
-          <Typography variant="body" className="text-slate-400 mt-1">
+          <Typography variant="p" className="text-slate-400 mt-1">
             Rede exclusiva de fornecedores de energia limpa homologados.
           </Typography>
         </div>

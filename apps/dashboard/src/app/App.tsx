@@ -17,8 +17,6 @@ import { UserProvider } from '@/context/UserContext';
 import { ToastProvider } from '@/context/ToastContext';
 
 // Legacy Pages (to be migrated)
-import Estimation from '@/pages/Estimation';
-import Providers from '@/pages/Providers';
 import Proposals from '@/pages/Proposals';
 import Consumption from '@/pages/Consumption';
 import Financial from '@/pages/Financial';

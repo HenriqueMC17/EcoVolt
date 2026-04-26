@@ -23,16 +23,13 @@ import { api } from '../../../convex/_generated/api';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const menuItems = [
-  { icon: LayoutDashboard, label: 'Visão Geral', path: '/', roles: ['admin', 'event_company', 'provider', 'operator'] },
-  { icon: Calendar, label: 'Eventos', path: '/eventos', roles: ['admin', 'event_company', 'provider'] },
-  { icon: Zap, label: 'Estimativas', path: '/estimativas', roles: ['admin', 'event_company'] },
-  { icon: Users, label: 'Provedores', path: '/provedores', roles: ['admin', 'event_company'] },
-  { icon: FileText, label: 'Propostas', path: '/propostas', roles: ['admin', 'event_company', 'provider'] },
-  { icon: ClipboardCheck, label: 'Contratos', path: '/contratos', roles: ['admin', 'event_company', 'provider', 'operator'] },
-  { icon: BarChart3, label: 'Consumo', path: '/consumo', roles: ['admin', 'event_company', 'provider', 'operator'] },
-  { icon: DollarSign, label: 'Financeiro', path: '/financeiro', roles: ['admin', 'event_company', 'provider', 'operator'] },
-  { icon: ShieldCheck, label: 'Documentos', path: '/documentos', roles: ['admin', 'event_company', 'provider', 'operator'] },
-  { icon: PieChart, label: 'Relatórios', path: '/relatorios', roles: ['admin', 'operator'] },
+  { icon: LayoutDashboard, label: 'Visão Geral', path: '/', roles: ['admin', 'user', 'operator'] },
+  { icon: Leaf, label: 'Projetos', path: '/projetos', roles: ['admin', 'user', 'operator'] },
+  { icon: Zap, label: 'Simulações', path: '/estimativas', roles: ['admin', 'user'] },
+  { icon: Users, label: 'Provedores', path: '/provedores', roles: ['admin', 'user'] },
+  { icon: BarChart3, label: 'Métricas', path: '/consumo', roles: ['admin', 'user', 'operator'] },
+  { icon: DollarSign, label: 'Financeiro', path: '/financeiro', roles: ['admin', 'user', 'operator'] },
+  { icon: ShieldCheck, label: 'Documentos', path: '/documentos', roles: ['admin', 'user', 'operator'] },
   { icon: Settings, label: 'Configurações', path: '/configuracoes', roles: ['admin'] },
 ];
 

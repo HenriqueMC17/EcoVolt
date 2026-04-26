@@ -4,14 +4,11 @@ import {
   Users, 
   Plus, 
   Mail, 
-  Shield, 
-  CheckCircle, 
   X, 
   Loader2,
   Trash2,
   Edit,
   Lock,
-  Search,
   Globe,
   Briefcase
 } from 'lucide-react';
@@ -62,7 +59,7 @@ const Management: React.FC = () => {
   const [userForm, setUserForm] = useState({
     name: '',
     email: '',
-    role: 'event_company' as 'admin' | 'event_company' | 'provider' | 'operator',
+    role: 'event_company' as any,
     companyId: ''
   });
 

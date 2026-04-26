@@ -7,6 +7,7 @@ export const getRecentActivities = query({
     limit: v.optional(v.number()),
     entityType: v.optional(v.string()),
     userId: v.optional(v.id("users")),
+    projectId: v.optional(v.id("projects")),
   },
   handler: async (ctx, args) => {
     if (!args.userEmail) return [];
@@ -20,22 +21,19 @@ export const getRecentActivities = query({
 
     let activitiesQuery;
 
-    // RBAC: Admins and Operators see everything
-    if (user.role === "admin" || user.role === "operator") {
-      activitiesQuery = ctx.db.query("activityLog");
-    } else {
-      // Others see only their company's activity
-      if (!user.companyId) return [];
+    if (args.projectId) {
       activitiesQuery = ctx.db
-        .query("activityLog")
-        .withIndex("by_companyId", (q) => q.eq("companyId", user.companyId));
+        .query("auditLogs")
+        .withIndex("by_projectId", (q) => q.eq("projectId", args.projectId));
+    } else {
+      activitiesQuery = ctx.db.query("auditLogs");
     }
 
     const activities = await activitiesQuery
       .order("desc")
       .collect();
 
-    // Secondary filters
+    // ... (rest of filtering logic)
     let filtered = activities;
     
     if (args.entityType) {
@@ -55,6 +53,7 @@ export const getRecentActivities = query({
           ...activity,
           userName: actingUser?.name || "Sistema",
           userEmail: actingUser?.email || "",
+          createdAt: activity.timestamp, // Map for UI compatibility
         };
       })
     );
@@ -68,8 +67,8 @@ export const clearOldActivities = internalMutation({
   handler: async (ctx, args) => {
     const threshold = Date.now() - (args.daysToKeep * 24 * 60 * 60 * 1000);
     const oldActivities = await ctx.db
-      .query("activityLog")
-      .filter((q) => q.lt(q.field("createdAt"), threshold))
+      .query("auditLogs")
+      .filter((q) => q.lt(q.field("timestamp"), threshold))
       .collect();
 
     for (const activity of oldActivities) {
@@ -83,41 +82,33 @@ export const logActivityHelper = async (
   ctx: { db: any },
   args: {
     userId: any;
-    companyId?: any; // Optional, will be fetched if missing
+    projectId?: any;
     action: string;
     entityId?: string;
     entityType: string;
     details: any;
   }
 ) => {
-  let companyId = args.companyId;
-  
-  if (!companyId) {
-    const user = await ctx.db.get(args.userId);
-    companyId = user?.companyId;
-  }
-
-  return await ctx.db.insert("activityLog", {
+  return await ctx.db.insert("auditLogs", {
     userId: args.userId,
-    companyId,
+    projectId: args.projectId,
     action: args.action,
-    entityId: args.entityId,
-    entityType: args.entityType,
     details: args.details,
-    createdAt: Date.now(),
+    timestamp: Date.now(),
   });
 };
 
-export const logActivity = internalMutation({
+export const logActivity = mutation({
   args: {
     userId: v.id("users"),
-    companyId: v.optional(v.id("companies")),
+    projectId: v.optional(v.id("projects")),
     action: v.string(),
-    entityId: v.optional(v.string()),
-    entityType: v.string(),
     details: v.any(),
   },
   handler: async (ctx, args) => {
-    return await logActivityHelper(ctx, args);
+    return await logActivityHelper(ctx, {
+      ...args,
+      entityType: "audit", // Default for direct calls
+    });
   },
 });

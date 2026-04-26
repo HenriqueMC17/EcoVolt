@@ -103,14 +103,14 @@ export const updateUser = mutation({
       throw new Error("Unauthorized: Only admins can update users");
     }
 
-    const targetUser = await ctx.db.get(id);
+    const targetUser = await ctx.db.get(args.id);
     const { id: _, userEmail: __, ...updates } = args;
-    await ctx.db.patch(id, updates);
+    await ctx.db.patch(args.id, updates);
 
     await logActivityHelper(ctx, {
       userId: user._id,
       action: "UPDATE_USER",
-      entityId: id,
+      entityId: args.id,
       entityType: "users",
       details: {
         updates,

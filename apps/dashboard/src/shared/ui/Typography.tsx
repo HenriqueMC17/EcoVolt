@@ -14,7 +14,7 @@ export const Typography: React.FC<TypographyProps> = ({
   className,
   as,
 }) => {
-  const Component = as || (variant.startsWith('h') ? variant : 'p');
+  const Component = as || (variant.startsWith('h') ? (variant as any) : 'p');
 
   const styles = {
     h1: 'text-5xl md:text-7xl font-bold tracking-tight text-white leading-[1.1]',
