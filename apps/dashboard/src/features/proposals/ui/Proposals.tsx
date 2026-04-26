@@ -18,7 +18,11 @@ import {
   X,
   Loader2,
   TrendingUp,
-  ChevronRight
+  ChevronRight,
+  ShieldCheck,
+  Zap,
+  Activity,
+  ArrowUpRight
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Typography } from '@/shared/ui/Typography';
@@ -109,205 +113,267 @@ export const Proposals: React.FC = () => {
 
   const getStatusConfig = (status: string) => {
     switch (status) {
-      case 'accepted': return { color: 'text-emerald-400', bg: 'bg-emerald-400/10', icon: CheckCircle2, label: 'Aceita' };
-      case 'rejected': return { color: 'text-red-400', bg: 'bg-red-400/10', icon: XCircle, label: 'Recusada' };
-      default: return { color: 'text-amber-400', bg: 'bg-amber-400/10', icon: Clock, label: 'Pendente' };
+      case 'accepted': return { color: 'text-emerald-400', bg: 'bg-emerald-400/10', glow: 'shadow-[0_0_20px_rgba(16,185,129,0.3)]', icon: ShieldCheck, label: 'Aceita' };
+      case 'rejected': return { color: 'text-red-400', bg: 'bg-red-400/10', glow: 'shadow-[0_0_20px_rgba(248,113,113,0.3)]', icon: XCircle, label: 'Recusada' };
+      default: return { color: 'text-amber-400', bg: 'bg-amber-400/10', glow: 'shadow-[0_0_20px_rgba(251,191,36,0.3)]', icon: Clock, label: 'Pendente' };
     }
   };
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <Typography variant="h2" className="text-3xl font-bold tracking-tight text-white">
-            Gestão de Propostas
-          </Typography>
-          <Typography variant="body" className="text-slate-400 mt-1">
-            Negociação e aprovação de fornecimento energético.
-          </Typography>
+    <div className="space-y-10 animate-luxury">
+      {/* Header Section */}
+      <header className="relative py-6">
+        <div className="absolute -left-10 top-0 w-32 h-32 bg-primary/20 blur-[100px] pointer-events-none" />
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative">
+          <div className="space-y-2">
+            <div className="flex items-center gap-3">
+              <div className="w-1.5 h-10 bg-primary glow-primary rounded-full" />
+              <div>
+                <Typography variant="h2" className="text-4xl font-black tracking-tighter text-white uppercase italic">
+                  Registry <span className="text-primary">Negotiation</span>
+                </Typography>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <Typography variant="body" className="text-slate-500 text-xs font-bold uppercase tracking-[0.2em]">
+                    Terminal de Propostas Energéticas
+                  </Typography>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {user?.role === 'provider' && (
+            <Button 
+              onClick={() => setShowNewProposalModal(true)}
+              className="btn-premium-primary h-14 px-10 group"
+            >
+              <Plus className="w-5 h-5 mr-3 group-hover:rotate-90 transition-transform duration-500" /> 
+              Nova Oferta Comercial
+            </Button>
+          )}
         </div>
-        
-        {user?.role === 'provider' && (
-          <Button 
-            onClick={() => setShowNewProposalModal(true)}
-            className="btn-premium-primary"
-          >
-            <Plus className="w-5 h-5 mr-2" /> 
-            Nova Proposta
-          </Button>
-        )}
       </header>
 
-      {/* Stats Cards */}
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Analytics Summary */}
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {[
           { 
-            label: 'Pendentes', 
+            label: 'Processamento Pendente', 
             value: allProposals?.filter(p => p.status === 'pending').length || 0,
-            icon: Clock,
+            icon: Activity,
             color: 'text-amber-400',
-            bg: 'bg-amber-400/10'
+            borderColor: 'border-amber-400/20',
+            bg: 'bg-amber-400/5'
           },
           { 
-            label: 'Aceitas', 
+            label: 'Acordos Firmados', 
             value: allProposals?.filter(p => p.status === 'accepted').length || 0,
-            icon: CheckCircle2,
+            icon: ShieldCheck,
             color: 'text-emerald-400',
-            bg: 'bg-emerald-400/10'
+            borderColor: 'border-emerald-400/20',
+            bg: 'bg-emerald-400/5'
           },
           { 
-            label: 'Total Geral', 
+            label: 'Volume de Negociação', 
             value: allProposals?.length || 0,
-            icon: FileText,
+            icon: Zap,
             color: 'text-blue-400',
-            bg: 'bg-blue-400/10'
+            borderColor: 'border-blue-400/20',
+            bg: 'bg-blue-400/5'
           }
         ].map((stat, i) => (
           <motion.div
             key={i}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
             transition={{ delay: i * 0.1 }}
-            className="glass-card p-6 flex items-center gap-5 border border-slate-800"
+            className={`glass-thick p-8 relative overflow-hidden group border-l-4 ${stat.borderColor}`}
           >
-            <div className={`w-14 h-14 rounded-2xl ${stat.bg} ${stat.color} flex items-center justify-center border border-current/10 shadow-lg shadow-current/5`}>
-              <stat.icon size={28} />
+            <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+              <stat.icon size={120} />
             </div>
-            <div>
-              <Typography className="text-xs font-bold text-slate-500 uppercase tracking-widest">{stat.label}</Typography>
-              <Typography variant="h3" className="text-3xl font-black text-white mt-0.5">{stat.value}</Typography>
+            <div className="relative z-10 space-y-4">
+              <div className="flex items-center justify-between">
+                <Typography className={`text-[10px] font-black uppercase tracking-[0.2em] ${stat.color}`}>
+                  {stat.label}
+                </Typography>
+                <div className={`${stat.bg} ${stat.color} p-2 rounded-lg border border-white/5`}>
+                  <stat.icon size={18} />
+                </div>
+              </div>
+              <div className="flex items-baseline gap-2">
+                <Typography variant="h3" className="text-5xl font-black text-white italic leading-none">
+                  {stat.value.toString().padStart(2, '0')}
+                </Typography>
+                <Typography className="text-slate-600 text-xs font-bold uppercase tracking-widest">Unidades</Typography>
+              </div>
             </div>
           </motion.div>
         ))}
       </section>
 
-      {/* Search & Filters */}
-      <div className="flex flex-col md:flex-row gap-4">
+      {/* Controls Bar */}
+      <div className="flex flex-col lg:flex-row gap-6 p-2 bg-white/5 rounded-[2rem] border border-white/5">
         <div className="relative flex-1 group">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+          <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-primary transition-colors" />
           <input 
             type="text" 
-            placeholder="Buscar por evento ou fornecedor..." 
+            placeholder="SCANNING DATABASE: EVENTO, FORNECEDOR OR ID..." 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-slate-900/50 border border-slate-800 rounded-xl py-3 pl-10 pr-4 text-white placeholder-slate-500 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all"
+            className="w-full bg-slate-950/50 border border-white/5 rounded-2xl py-5 pl-14 pr-6 text-white placeholder-slate-600 outline-none focus:border-primary/30 focus:bg-slate-950 transition-all font-bold uppercase text-xs tracking-widest"
           />
         </div>
-        <div className="flex gap-4">
-          <div className="relative">
-            <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+        <div className="flex gap-4 min-w-[300px]">
+          <div className="relative flex-1">
+            <Filter className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
             <select 
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="bg-slate-900/50 border border-slate-800 rounded-xl py-3 pl-10 pr-8 text-white outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all appearance-none cursor-pointer"
+              className="w-full bg-slate-950/50 border border-white/5 rounded-2xl py-5 pl-12 pr-10 text-white outline-none focus:border-primary/30 transition-all appearance-none cursor-pointer font-bold uppercase text-[10px] tracking-[0.2em]"
             >
-              <option value="all">Todos os Status</option>
-              <option value="pending">Pendente</option>
-              <option value="accepted">Aceita</option>
-              <option value="rejected">Recusada</option>
+              <option value="all">NEGOTIATION_STATUS: ALL</option>
+              <option value="pending">NEGOTIATION_STATUS: PENDING</option>
+              <option value="accepted">NEGOTIATION_STATUS: ACCEPTED</option>
+              <option value="rejected">NEGOTIATION_STATUS: REJECTED</option>
             </select>
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
+              <ChevronRight className="rotate-90" size={16} />
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Proposals Grid */}
-      <div className="relative">
+      {/* Proposals Registry */}
+      <div className="relative min-h-[400px]">
         {!filteredProposals ? (
-          <div className="flex flex-col items-center justify-center py-20 space-y-4">
-            <Loader2 className="w-10 h-10 text-blue-500 animate-spin" />
-            <Typography className="text-slate-400">Processando propostas...</Typography>
+          <div className="flex flex-col items-center justify-center py-32 space-y-6">
+            <div className="relative">
+              <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-8 h-8 bg-primary/20 rounded-full animate-pulse" />
+              </div>
+            </div>
+            <Typography className="text-slate-500 font-bold uppercase tracking-[0.3em] text-xs">
+              Fetching Dossiers...
+            </Typography>
           </div>
         ) : filteredProposals.length === 0 ? (
-          <div className="glass-card flex flex-col items-center justify-center py-20 text-center border border-slate-800">
-            <FileText size={48} className="text-slate-700 mb-4" />
-            <Typography className="text-slate-500">Nenhuma proposta encontrada no momento.</Typography>
-          </div>
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="glass-thick flex flex-col items-center justify-center py-32 text-center border-dashed border-2"
+          >
+            <div className="w-20 h-20 bg-slate-900 rounded-3xl flex items-center justify-center mb-6 border border-white/5">
+              <FileText size={40} className="text-slate-700" />
+            </div>
+            <Typography className="text-slate-500 font-bold uppercase tracking-[0.2em] text-xs">
+              No Proposals Registered in Current Filter
+            </Typography>
+          </motion.div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-8">
             <AnimatePresence mode="popLayout">
-              {filteredProposals.map((proposal) => {
+              {filteredProposals.map((proposal, idx) => {
                 const status = getStatusConfig(proposal.status);
                 return (
                   <motion.div
                     key={proposal._id}
                     layout
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    whileHover={{ y: -4 }}
-                    className="glass-card group overflow-hidden border border-slate-800 hover:border-blue-500/30 transition-all duration-300"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.05 }}
+                    className="glass-thick group p-1 relative overflow-hidden transition-all duration-500 hover:border-primary/40"
                   >
-                    <div className="p-6 space-y-6">
-                      <div className="flex justify-between items-start">
-                        <div className="space-y-1">
-                          <Typography variant="h3" className="text-lg font-bold text-white group-hover:text-blue-400 transition-colors">
+                    <div className="p-8 space-y-8 relative z-10">
+                      {/* Header */}
+                      <div className="flex justify-between items-start gap-4">
+                        <div className="space-y-1.5 flex-1">
+                          <Typography className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">
+                            Dossier #{proposal._id.toString().slice(-6).toUpperCase()}
+                          </Typography>
+                          <Typography variant="h3" className="text-xl font-black text-white italic uppercase tracking-tight group-hover:text-primary transition-colors">
                             {proposal.eventName}
                           </Typography>
-                          <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
-                            <Building2 size={12} />
+                          <div className="flex items-center gap-2 text-xs text-slate-500 font-bold uppercase tracking-widest">
+                            <Building2 size={12} className="text-slate-600" />
                             <span>{proposal.providerName}</span>
                           </div>
                         </div>
-                        <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${status.bg} ${status.color} border border-current/10`}>
-                          <status.icon size={12} />
+                        <div className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] ${status.bg} ${status.color} border border-current/20 ${status.glow}`}>
+                          <status.icon size={14} />
                           {status.label}
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-4 py-4 border-y border-slate-800/50">
-                        <div className="space-y-1">
-                          <Typography className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">Valor da Oferta</Typography>
-                          <div className="flex items-center gap-1.5 text-white font-bold">
-                            <DollarSign size={14} className="text-blue-400" />
-                            <span>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(proposal.value)}</span>
+                      {/* Technical Specs */}
+                      <div className="grid grid-cols-2 gap-px bg-white/5 p-px rounded-2xl overflow-hidden border border-white/5">
+                        <div className="bg-slate-950/40 p-5 space-y-1">
+                          <Typography className="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em]">Offered Value</Typography>
+                          <div className="flex items-center gap-2">
+                            <Typography className="text-xl font-black text-white italic">
+                              {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(proposal.value)}
+                            </Typography>
+                            <ArrowUpRight size={16} className="text-emerald-500" />
                           </div>
                         </div>
-                        <div className="space-y-1">
-                          <Typography className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">Data de Emissão</Typography>
-                          <div className="flex items-center gap-1.5 text-slate-300 text-sm">
-                            <Calendar size={14} className="text-slate-500" />
-                            <span>{new Date(proposal.createdAt).toLocaleDateString('pt-BR')}</span>
+                        <div className="bg-slate-950/40 p-5 space-y-1">
+                          <Typography className="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em]">Registry Date</Typography>
+                          <div className="flex items-center gap-2">
+                            <Calendar size={14} className="text-primary" />
+                            <Typography className="text-sm font-bold text-slate-300">
+                              {new Date(proposal.createdAt).toLocaleDateString('pt-BR')}
+                            </Typography>
                           </div>
                         </div>
                       </div>
 
-                      {proposal.description && (
-                        <Typography className="text-sm text-slate-400 line-clamp-2 leading-relaxed">
-                          {proposal.description}
+                      {/* Description */}
+                      <div className="relative">
+                        <Typography className="text-xs font-bold text-slate-500 leading-relaxed italic border-l-2 border-primary/20 pl-4 py-1">
+                          "{proposal.description || 'Nenhuma descrição técnica fornecida para este dossier.'}"
                         </Typography>
-                      )}
+                      </div>
 
-                      <div className="flex items-center justify-between pt-2">
+                      {/* Actions */}
+                      <div className="pt-2">
                         {user?.role === 'event_company' && proposal.status === 'pending' ? (
-                          <div className="flex gap-3 w-full">
+                          <div className="flex gap-4">
                             <Button 
                               variant="ghost" 
                               onClick={() => handleReject(proposal._id)}
-                              className="flex-1 text-red-400 hover:bg-red-400/10 border border-slate-800"
+                              className="flex-1 h-12 rounded-xl border border-white/5 text-red-400 hover:bg-red-400/10 font-black uppercase tracking-widest text-[10px]"
                             >
-                              Recusar
+                              Reject Dossier
                             </Button>
                             <Button 
                               onClick={() => handleAccept(proposal._id)}
-                              className="flex-1 btn-premium-primary"
+                              className="flex-1 btn-premium-primary h-12 rounded-xl text-[10px]"
                             >
-                              Aceitar Proposta
+                              Finalize Agreement
                             </Button>
                           </div>
                         ) : proposal.status === 'accepted' ? (
                           <button 
                             onClick={() => window.location.href='/dashboard/contratos'}
-                            className="w-full py-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 text-sm font-bold flex items-center justify-center gap-2 border border-emerald-500/20 hover:bg-emerald-500/20 transition-all group/btn"
+                            className="w-full py-4 rounded-2xl bg-emerald-500/5 text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-3 border border-emerald-500/20 hover:bg-emerald-500/10 transition-all group/btn"
                           >
-                            Ver Contrato Ativo
-                            <ChevronRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
+                            <ShieldCheck size={16} />
+                            View Encrypted Contract
+                            <ArrowRight size={16} className="group-hover/btn:translate-x-2 transition-transform duration-500" />
                           </button>
                         ) : (
-                          <Typography className="text-xs text-slate-600 italic italic">Nenhuma ação disponível</Typography>
+                          <div className="w-full py-4 rounded-2xl bg-white/5 flex items-center justify-center border border-white/5">
+                            <Typography className="text-[9px] font-black text-slate-700 uppercase tracking-[0.3em]">
+                              Access Restricted / No Pending Actions
+                            </Typography>
+                          </div>
                         )}
                       </div>
                     </div>
+                    
+                    {/* Corner Accent */}
+                    <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-white/5 to-transparent pointer-events-none" />
                   </motion.div>
                 );
               })}
@@ -316,108 +382,124 @@ export const Proposals: React.FC = () => {
         )}
       </div>
 
-      {/* Modal */}
+      {/* Creation Modal */}
       <AnimatePresence>
         {showNewProposalModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8">
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowNewProposalModal(false)}
-              className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"
+              className="absolute inset-0 bg-slate-950/90 backdrop-blur-xl"
             />
             
             <motion.div 
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              initial={{ opacity: 0, scale: 0.9, y: 40 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-lg bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden"
+              exit={{ opacity: 0, scale: 0.9, y: 40 }}
+              className="relative w-full max-w-2xl glass-thick border-white/10 rounded-[3rem] shadow-[0_0_100px_rgba(0,0,0,0.8)] overflow-hidden"
             >
-              <div className="p-6 sm:p-8">
-                <div className="flex items-center justify-between mb-8">
-                  <div>
-                    <Typography variant="h3" className="text-xl font-bold text-white">
-                      Nova Proposta Comercial
-                    </Typography>
-                    <Typography className="text-sm text-slate-400 mt-1">
-                      Envie sua oferta competitiva para o evento selecionado.
+              {/* Modal Background Pattern */}
+              <div className="absolute inset-0 opacity-10 pointer-events-none">
+                <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:20px_20px]" />
+              </div>
+
+              <div className="p-10 sm:p-14 relative z-10">
+                <div className="flex items-center justify-between mb-12">
+                  <div className="space-y-1">
+                    <Typography className="text-[10px] font-black text-primary uppercase tracking-[0.4em]">Secure Portal</Typography>
+                    <Typography variant="h3" className="text-3xl font-black text-white italic uppercase">
+                      New <span className="text-primary">Negotiation</span> Dossier
                     </Typography>
                   </div>
                   <button 
                     onClick={() => setShowNewProposalModal(false)}
-                    className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition-all"
+                    className="w-12 h-12 flex items-center justify-center bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 rounded-2xl transition-all border border-white/5"
                   >
-                    <X size={20} />
+                    <X size={24} />
                   </button>
                 </div>
 
-                <form onSubmit={handleCreateProposal} className="space-y-6">
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Evento Alvo</label>
-                    <select 
-                      required
-                      value={selectedEventId}
-                      onChange={(e) => setSelectedEventId(e.target.value)}
-                      className="w-full bg-slate-800/50 border border-slate-700 rounded-xl py-3 px-4 text-white outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all appearance-none cursor-pointer"
-                    >
-                      <option value="">Selecione um evento...</option>
-                      {events?.filter(e => e.status === 'planning').map(event => (
-                        <option key={event._id} value={event._id}>
-                          {event.name} ({event.location})
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Valor da Proposta (R$)</label>
+                <form onSubmit={handleCreateProposal} className="grid grid-cols-1 gap-8">
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-2">Target Registry Event</label>
                     <div className="relative group">
-                      <DollarSign size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
-                      <input 
-                        type="number" 
-                        required 
-                        placeholder="0,00"
-                        value={proposalValue}
-                        onChange={(e) => setProposalValue(e.target.value)}
-                        className="w-full bg-slate-800/50 border border-slate-700 rounded-xl py-3 pl-12 pr-4 text-white outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all font-mono"
-                      />
+                      <select 
+                        required
+                        value={selectedEventId}
+                        onChange={(e) => setSelectedEventId(e.target.value)}
+                        className="w-full bg-slate-950 border border-white/10 rounded-2xl py-5 px-6 text-white outline-none focus:border-primary/50 transition-all appearance-none cursor-pointer font-bold text-sm"
+                      >
+                        <option value="">SELECT TARGET...</option>
+                        {events?.filter(e => e.status === 'planning').map(event => (
+                          <option key={event._id} value={event._id}>
+                            {event.name.toUpperCase()} — {event.location.toUpperCase()}
+                          </option>
+                        ))}
+                      </select>
+                      <ChevronRight className="absolute right-6 top-1/2 -translate-y-1/2 rotate-90 text-slate-500 pointer-events-none" />
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Descrição / Condições</label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="space-y-3">
+                      <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-2">Economic Value (BRL)</label>
+                      <div className="relative group">
+                        <DollarSign size={20} className="absolute left-6 top-1/2 -translate-y-1/2 text-primary" />
+                        <input 
+                          type="number" 
+                          required 
+                          placeholder="0.00"
+                          value={proposalValue}
+                          onChange={(e) => setProposalValue(e.target.value)}
+                          className="w-full bg-slate-950 border border-white/10 rounded-2xl py-5 pl-14 pr-6 text-white outline-none focus:border-primary/50 transition-all font-black text-lg italic"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-2">Operational Integrity</label>
+                      <div className="w-full h-16 bg-emerald-500/5 border border-emerald-500/20 rounded-2xl flex items-center justify-center gap-3">
+                        <ShieldCheck size={20} className="text-emerald-500" />
+                        <span className="text-emerald-500 text-[10px] font-black uppercase tracking-widest">Secure Link Verified</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-2">Technical Conditions & Description</label>
                     <textarea 
                       rows={4}
-                      placeholder="Detalhes sobre o fornecimento de energia, prazos e condições comerciais..."
+                      placeholder="Specify energy load capacity, distribution terms, and compliance conditions..."
                       value={proposalDesc}
                       onChange={(e) => setProposalDesc(e.target.value)}
-                      className="w-full bg-slate-800/50 border border-slate-700 rounded-xl py-3 px-4 text-white outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all resize-none"
+                      className="w-full bg-slate-950 border border-white/10 rounded-3xl py-6 px-6 text-white outline-none focus:border-primary/50 transition-all resize-none font-bold text-sm italic"
                     ></textarea>
                   </div>
 
-                  <div className="flex gap-3 pt-4">
+                  <div className="flex gap-4 pt-6">
                     <Button 
                       type="button" 
                       variant="ghost" 
-                      className="flex-1 border border-slate-700 hover:bg-slate-800"
+                      className="flex-1 h-16 rounded-2xl border border-white/10 hover:bg-white/5 font-black uppercase tracking-[0.2em] text-xs"
                       onClick={() => setShowNewProposalModal(false)}
                     >
-                      Cancelar
+                      Abort Mission
                     </Button>
                     <Button 
                       type="submit" 
-                      className="flex-1 btn-premium-primary"
+                      className="flex-1 btn-premium-primary h-16 rounded-2xl text-xs"
                     >
-                      Enviar Proposta
+                      Transmit Proposal Dossier
                     </Button>
                   </div>
                 </form>
               </div>
-            </motion.div>
+            </div>
           </div>
         )}
       </AnimatePresence>
     </div>
   );
 };
+
