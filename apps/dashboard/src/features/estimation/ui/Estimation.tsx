@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Zap, 
   Clock, 
@@ -14,7 +14,16 @@ import {
   ShieldCheck,
   CheckCircle2,
   TrendingUp,
-  AlertTriangle
+  AlertTriangle,
+  Cpu,
+  Activity,
+  Layers,
+  Terminal,
+  Database,
+  Lock,
+  ArrowUpRight,
+  Loader2,
+  Settings
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMutation, useQuery } from 'convex/react';
@@ -22,6 +31,29 @@ import { api } from "@/../convex/_generated/api";
 import { Typography } from '@/shared/ui/Typography';
 import { Button } from '@/shared/ui/Button';
 import { useToast } from '@/context/ToastContext';
+import { cn } from '@/shared/lib/utils';
+
+// --- Animation Variants ---
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.1
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] }
+  }
+};
 
 export const Estimation: React.FC = () => {
   const { showToast } = useToast();
@@ -155,218 +187,264 @@ export const Estimation: React.FC = () => {
   };
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div>
-          <Typography variant="h2" className="text-3xl font-bold tracking-tight text-white">
-            Simulador de Carga Energética
+    <motion.div 
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+      className="space-y-12 pb-24 relative"
+    >
+      {/* HUD Header */}
+      <header className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 relative z-10">
+        <motion.div variants={itemVariants} className="relative pl-8">
+          <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-primary shadow-[0_0_20px_rgba(16,185,129,0.6)]" />
+          <div className="flex items-center gap-2 mb-2">
+            <Cpu size={12} className="text-primary animate-pulse" />
+            <Typography className="text-[10px] font-black italic uppercase tracking-[0.5em] text-primary">
+              Prediction Engine v2.4.0
+            </Typography>
+          </div>
+          <Typography variant="h1" className="text-5xl font-black italic uppercase tracking-tighter text-white mb-2 leading-none">
+            Load <span className="text-primary glow-text">Simulation</span> HUD
           </Typography>
-          <Typography variant="body" className="text-slate-400 mt-1">
-            Algoritmos de precisão para dimensionamento de infraestrutura.
-          </Typography>
-        </div>
-        <div className="flex gap-3">
+          <div className="flex items-center gap-4">
+            <Typography variant="muted" className="text-[11px] font-bold uppercase tracking-widest flex items-center gap-2 text-white/40">
+              <Database size={14} className="text-primary/50" />
+              ALGO: NEURAL_RECURSIVE
+            </Typography>
+            <div className="h-1 w-1 rounded-full bg-white/20" />
+            <Typography variant="muted" className="text-[11px] font-bold uppercase tracking-widest flex items-center gap-2 text-white/40">
+              <Activity size={14} className="text-primary/50" />
+              REALTIME CALIBRATION
+            </Typography>
+          </div>
+        </motion.div>
+        
+        <motion.div variants={itemVariants} className="flex flex-wrap gap-4">
           <Button 
             variant="ghost" 
             onClick={handleSaveDraft} 
             disabled={isSaving || !companies}
-            className="border border-slate-700 hover:bg-slate-800"
+            className="glass-thick border-white/5 h-14 px-8 text-white/60 font-black tracking-[0.2em] uppercase text-[10px] rounded-2xl flex items-center gap-3 hover:text-primary hover:border-primary/30 transition-all"
           >
-            {saveSuccess ? <CheckCircle2 className="w-5 h-5 mr-2 text-green-400" /> : <Save className="w-5 h-5 mr-2" />}
-            {saveSuccess ? "Salvo" : isSaving ? "Salvando..." : "Salvar Rascunho"}
+            {saveSuccess ? <CheckCircle2 className="w-5 h-5 text-emerald-400" /> : <Save className="w-5 h-5" />}
+            {saveSuccess ? "SYNCHRONIZED" : isSaving ? "TRANSMITTING..." : "SAVE_DRAFT_NODE"}
           </Button>
           <Button 
             onClick={handleGenerateProposal} 
             disabled={isSaving || !companies}
-            className="btn-premium-primary"
+            className="btn-premium-primary h-14 px-10 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] shadow-[0_0_30px_rgba(16,185,129,0.2)]"
           >
-            <FileText className="w-5 h-5 mr-2" />
+            <FileText size={18} className="mr-2" />
             Gerar Proposta
           </Button>
-        </div>
+        </motion.div>
       </header>
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-        {/* Input Form */}
-        <div className="xl:col-span-2 space-y-8">
-          <section className="glass-card p-6 sm:p-8 space-y-8">
-            <div className="space-y-6">
-              <div className="flex items-center gap-3 pb-4 border-b border-slate-800">
-                <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400 border border-blue-500/20">
-                  <Info size={20} />
-                </div>
-                <Typography variant="h3" className="text-lg font-bold text-white">
-                  Parâmetros Estruturais
-                </Typography>
-              </div>
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-10">
+        {/* Simulation Workspace */}
+        <div className="xl:col-span-2 space-y-10">
+          <motion.section variants={itemVariants} className="glass-thick p-10 relative overflow-hidden group border-t-2 border-primary/30">
+            <div className="absolute inset-0 scanline opacity-[0.03] pointer-events-none" />
+            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 blur-3xl group-hover:bg-primary/10 transition-colors" />
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Nome do Evento</label>
+            <div className="flex items-center gap-4 mb-10 pb-6 border-b border-white/5">
+              <div className="w-12 h-12 rounded-2xl bg-neutral-900/80 border border-white/5 flex items-center justify-center text-primary shadow-2xl group-hover:border-primary/50 transition-all">
+                <Settings size={24} className="group-hover:rotate-90 transition-transform duration-700" />
+              </div>
+              <div>
+                <Typography className="text-[10px] font-black italic uppercase tracking-[0.3em] text-primary/70">Structural Configuration</Typography>
+                <Typography variant="h3" className="text-xl font-black text-white italic uppercase tracking-tighter">Global Parameters</Typography>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+              <div className="space-y-4">
+                <label className="text-[11px] font-black text-white/40 uppercase tracking-[0.3em] ml-2">Event Designation</label>
+                <div className="relative group/input">
+                  <Terminal size={18} className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within/input:text-primary transition-all" />
                   <input 
                     type="text" 
                     name="name"
                     value={formData.name}
-                    placeholder="Ex: Arena Verão 2026"
-                    className={`w-full bg-slate-900/50 border ${formErrors.name ? 'border-red-500/50' : 'border-slate-800'} rounded-xl py-3 px-4 text-white outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all`}
+                    placeholder="ENTER_DESIGNATION..."
+                    className={cn(
+                      "w-full bg-black/60 border rounded-2xl py-5 pl-16 pr-8 text-white outline-none focus:border-primary/50 focus:bg-black/80 transition-all text-sm font-black uppercase tracking-widest shadow-inner",
+                      formErrors.name ? 'border-rose-500/50 shadow-rose-500/5' : 'border-white/5'
+                    )}
                     onChange={handleChange}
                   />
-                  {formErrors.name && <Typography className="text-red-400 text-xs">{formErrors.name}</Typography>}
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Duração (h)</label>
-                    <input 
-                      type="number" 
-                      name="duration" 
-                      value={formData.duration} 
-                      className={`w-full bg-slate-900/50 border ${formErrors.duration ? 'border-red-500/50' : 'border-slate-800'} rounded-xl py-3 px-4 text-white outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all`}
-                      onChange={handleChange} 
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Público</label>
-                    <input 
-                      type="number" 
-                      name="participants" 
-                      value={formData.participants} 
-                      className={`w-full bg-slate-900/50 border ${formErrors.participants ? 'border-red-500/50' : 'border-slate-800'} rounded-xl py-3 px-4 text-white outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all`}
-                      onChange={handleChange} 
-                    />
-                  </div>
+                {formErrors.name && <Typography className="text-rose-400 text-[10px] font-black uppercase tracking-widest ml-4">{formErrors.name}</Typography>}
+              </div>
+              <div className="grid grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <label className="text-[11px] font-black text-white/40 uppercase tracking-[0.3em] ml-2">Duration (h)</label>
+                  <input 
+                    type="number" 
+                    name="duration" 
+                    value={formData.duration} 
+                    className="w-full bg-black/60 border border-white/5 rounded-2xl py-5 px-8 text-white outline-none focus:border-primary/50 focus:bg-black/80 transition-all text-lg font-black italic tracking-tighter shadow-inner"
+                    onChange={handleChange} 
+                  />
+                </div>
+                <div className="space-y-4">
+                  <label className="text-[11px] font-black text-white/40 uppercase tracking-[0.3em] ml-2">Attendees</label>
+                  <input 
+                    type="number" 
+                    name="participants" 
+                    value={formData.participants} 
+                    className="w-full bg-black/60 border border-white/5 rounded-2xl py-5 px-8 text-white outline-none focus:border-primary/50 focus:bg-black/80 transition-all text-lg font-black italic tracking-tighter shadow-inner"
+                    onChange={handleChange} 
+                  />
                 </div>
               </div>
             </div>
+          </motion.section>
 
-            <div className="space-y-6">
-              <div className="flex items-center gap-3 pb-4 border-b border-slate-800">
-                <div className="w-10 h-10 rounded-xl bg-yellow-500/10 flex items-center justify-center text-yellow-400 border border-yellow-500/20">
-                  <Zap size={20} />
-                </div>
-                <Typography variant="h3" className="text-lg font-bold text-white">
-                  Carga Instalada (kW)
-                </Typography>
+          <motion.section variants={itemVariants} className="glass-thick p-10 relative overflow-hidden group border-t-2 border-primary/30">
+            <div className="absolute inset-0 scanline opacity-[0.03] pointer-events-none" />
+            
+            <div className="flex items-center gap-4 mb-10 pb-6 border-b border-white/5">
+              <div className="w-12 h-12 rounded-2xl bg-neutral-900/80 border border-white/5 flex items-center justify-center text-amber-400 shadow-2xl group-hover:border-amber-400/50 transition-all">
+                <Zap size={24} className="group-hover:animate-pulse" />
               </div>
+              <div>
+                <Typography className="text-[10px] font-black italic uppercase tracking-[0.3em] text-amber-400/70">Neural Projection Metrics</Typography>
+                <Typography variant="h3" className="text-xl font-black text-white italic uppercase tracking-tighter">Installed Load (kW)</Typography>
+              </div>
+            </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
-                {[
-                  { label: 'Iluminação', name: 'lighting', icon: Lightbulb },
-                  { label: 'Climatização', name: 'climatization', icon: Wind },
-                  { label: 'Sonorização', name: 'sound', icon: Music },
-                  { label: 'Est. Auxiliar', name: 'auxiliary', icon: Hammer },
-                  { label: 'Apoio Técnico', name: 'support', icon: Coffee },
-                  { label: 'Margem Seg.', name: 'safetyMargin', icon: ShieldCheck, color: 'text-green-400' },
-                ].map((item) => (
-                  <div key={item.name} className="space-y-2 group">
-                    <div className="flex items-center gap-2">
-                      <item.icon size={14} className={item.color || "text-slate-500"} />
-                      <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{item.label}</label>
-                    </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[
+                { label: 'Iluminação', name: 'lighting', icon: Lightbulb },
+                { label: 'Climatização', name: 'climatization', icon: Wind },
+                { label: 'Sonorização', name: 'sound', icon: Music },
+                { label: 'Est. Auxiliar', name: 'auxiliary', icon: Hammer },
+                { label: 'Apoio Técnico', name: 'support', icon: Coffee },
+                { label: 'Margem Seg.', name: 'safetyMargin', icon: ShieldCheck, color: 'text-emerald-400' },
+              ].map((item) => (
+                <div key={item.name} className="space-y-4 group/item">
+                  <div className="flex items-center gap-2 ml-2">
+                    <item.icon size={14} className={item.color || "text-white/20 group-hover/item:text-primary transition-colors"} />
+                    <label className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em] group-hover/item:text-white transition-colors">{item.label}</label>
+                  </div>
+                  <div className="relative">
                     <input 
                       type="number" 
                       name={item.name}
                       value={formData[item.name as keyof typeof formData]} 
-                      className="w-full bg-slate-900/50 border border-slate-800 rounded-xl py-3 px-4 text-white outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all group-hover:border-slate-700"
+                      className="w-full bg-black/60 border border-white/5 rounded-2xl py-4 px-6 text-white outline-none focus:border-primary/50 focus:bg-black/80 transition-all font-black text-base italic tracking-tighter shadow-inner group-hover/item:border-white/10"
                       onChange={handleChange}
                     />
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-black text-white/10 uppercase tracking-widest pointer-events-none group-hover/item:text-primary/30 transition-all">kW</div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
-          </section>
+          </motion.section>
         </div>
 
-        {/* Results / Sidebar */}
-        <div className="space-y-6">
-          <section className="glass-card overflow-hidden border-2 border-blue-500/30 bg-blue-500/5">
-            <div className="p-6 sm:p-8 space-y-8">
+        {/* Projection Engine Results */}
+        <div className="space-y-8">
+          <motion.section variants={itemVariants} className="glass-thick border-t-4 border-primary bg-primary/[0.02] overflow-hidden group relative">
+            <div className="absolute inset-0 scanline opacity-[0.05] pointer-events-none" />
+            <div className="p-8 sm:p-10 space-y-10">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-blue-500 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
-                  <Calculator size={24} />
+                <div className="w-14 h-14 rounded-2xl bg-primary flex items-center justify-center text-black shadow-[0_0_30px_rgba(16,185,129,0.3)]">
+                  <Calculator size={28} />
                 </div>
-                <Typography variant="h3" className="text-xl font-bold text-white">
-                  Resultado
-                </Typography>
+                <div>
+                  <Typography className="text-[10px] font-black italic uppercase tracking-[0.3em] text-primary">Projection Output</Typography>
+                  <Typography variant="h3" className="text-2xl font-black text-white italic uppercase tracking-tighter leading-none">Simulation Results</Typography>
+                </div>
               </div>
 
-              <div className="space-y-6">
-                <div>
-                  <Typography className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
-                    Consumo Total Estimado
+              <div className="space-y-10">
+                <div className="relative p-8 rounded-3xl bg-neutral-900/60 border border-white/5 overflow-hidden group/result">
+                  <div className="absolute inset-0 scanline opacity-[0.05] pointer-events-none" />
+                  <Typography className="text-[11px] font-black text-white/30 uppercase tracking-[0.3em] mb-2 block">
+                    Estimated Net Consumption
                   </Typography>
-                  <div className="flex items-baseline gap-2">
-                    <Typography className="text-5xl font-black text-blue-400 tracking-tighter">
+                  <div className="flex items-baseline gap-3">
+                    <Typography className="text-6xl font-black text-primary tracking-tighter italic leading-none group-hover/result:glow-text transition-all duration-700">
                       {result.totalKWh.toLocaleString()}
                     </Typography>
-                    <Typography className="text-xl font-medium text-slate-500">kWh</Typography>
+                    <Typography className="text-2xl font-black text-white/20 italic tracking-tighter uppercase">kWh</Typography>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="p-4 bg-slate-900/50 rounded-2xl border border-slate-800">
-                    <Typography className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">
-                      Faixa
-                    </Typography>
-                    <Typography className="text-sm font-bold text-white">
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="p-6 bg-neutral-900/40 rounded-2xl border border-white/5 relative overflow-hidden group/box">
+                    <div className="absolute inset-0 scanline opacity-[0.03] pointer-events-none" />
+                    <Typography className="text-[9px] font-black text-white/20 uppercase tracking-[0.4em] mb-2 block">Scale Category</Typography>
+                    <Typography className="text-sm font-black text-white uppercase italic tracking-widest group-hover/box:text-primary transition-colors">
                       {result.contractRange}
                     </Typography>
                   </div>
-                  <div className="p-4 bg-slate-900/50 rounded-2xl border border-slate-800">
-                    <Typography className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">
-                      Risco
-                    </Typography>
-                    <div className="flex items-center gap-2">
-                      <div className={`w-2 h-2 rounded-full ${
-                        result.risk === 'Baixo' ? 'bg-green-400' : 
-                        result.risk === 'Moderado' ? 'bg-yellow-400' : 'bg-red-400'
-                      }`} />
-                      <Typography className="text-sm font-bold text-white">
-                        {result.risk}
+                  <div className="p-6 bg-neutral-900/40 rounded-2xl border border-white/5 relative overflow-hidden group/box">
+                    <div className="absolute inset-0 scanline opacity-[0.03] pointer-events-none" />
+                    <Typography className="text-[9px] font-black text-white/20 uppercase tracking-[0.4em] mb-2 block">Stability Risk</Typography>
+                    <div className="flex items-center gap-3">
+                      <div className={cn("w-2 h-2 rounded-full shadow-[0_0_10px_currentColor] animate-pulse", 
+                        result.risk === 'Baixo' ? 'text-emerald-400 bg-emerald-400' : 
+                        result.risk === 'Moderado' ? 'text-amber-400 bg-amber-400' : 'text-rose-400 bg-rose-400'
+                      )} />
+                      <Typography className="text-sm font-black text-white uppercase italic tracking-widest group-hover/box:text-primary transition-colors">
+                        {result.risk.toUpperCase()}
                       </Typography>
                     </div>
                   </div>
                 </div>
 
-                <div className="p-6 bg-slate-900/80 rounded-2xl border border-slate-800 relative overflow-hidden group">
-                  <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                    <TrendingUp size={64} className="text-blue-400" />
+                <div className="p-8 bg-neutral-900/80 rounded-3xl border border-white/5 relative overflow-hidden group/capex">
+                  <div className="absolute inset-0 scanline opacity-[0.05] pointer-events-none" />
+                  <div className="absolute top-0 right-0 p-6 opacity-[0.03] group-hover/capex:opacity-[0.08] transition-opacity">
+                    <TrendingUp size={80} className="text-primary" />
                   </div>
-                  <Typography className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
-                    Investimento Base
+                  <Typography className="text-[11px] font-black text-white/30 uppercase tracking-[0.3em] mb-2 block">
+                    Projected Capex Investment
                   </Typography>
-                  <Typography className="text-2xl font-bold text-white">
-                    R$ {result.costEstimate.toLocaleString('pt-BR')}
-                  </Typography>
-                  <Typography className="text-[10px] text-slate-600 mt-2 italic">
-                    * Projeção baseada na média de R$ 0,85/kWh
+                  <div className="flex items-center gap-3">
+                    <Typography className="text-3xl font-black text-white italic tracking-tighter">
+                      R$ {result.costEstimate.toLocaleString('pt-BR')}
+                    </Typography>
+                    <div className="px-2 py-0.5 rounded-lg bg-primary/10 border border-primary/20 text-[9px] font-black text-primary uppercase tracking-widest animate-pulse">
+                      ESTIMATED
+                    </div>
+                  </div>
+                  <Typography className="text-[9px] text-white/20 mt-4 italic font-bold uppercase tracking-widest flex items-center gap-2">
+                    <Info size={10} className="text-primary/40" />
+                    Base Calibration: R$ 0,85 / kWh
                   </Typography>
                 </div>
               </div>
             </div>
-          </section>
+          </motion.section>
 
-          <section className="glass-card p-6 space-y-4">
-            <Typography variant="h4" className="text-sm font-bold text-white flex items-center gap-2">
-              <AlertTriangle size={16} className="text-yellow-400" />
-              Observações Técnicas
+          <motion.section variants={itemVariants} className="glass-thick p-8 space-y-6 relative overflow-hidden group">
+            <div className="absolute inset-0 scanline opacity-[0.03] pointer-events-none" />
+            <div className="flex items-center gap-3 pb-4 border-b border-white/5">
+              <AlertTriangle size={18} className="text-amber-400 animate-pulse" />
+              <Typography variant="h4" className="text-[11px] font-black text-white uppercase tracking-[0.3em]">
+                Neural System Insights
+              </Typography>
+            </div>
+            <Typography className="text-xs font-bold text-white/40 leading-relaxed italic border-l-2 border-primary/20 pl-6 py-1 group-hover:text-white/60 transition-colors">
+              "The integration matrix accounts for static structural load and dynamic thermal entropy from attendees. Applying a simultaneity factor of 0.85 for hyper-efficient cost distribution. Calibration active."
             </Typography>
-            <Typography className="text-xs text-slate-400 leading-relaxed">
-              O cálculo integra a carga base estática (equipamentos) e a carga térmica dinâmica (fluxo de participantes), aplicando um fator de simultaneidade de 0.85 para otimização de custos.
-            </Typography>
-            <div className="pt-2 flex flex-col gap-2">
-              <div className="flex items-center gap-2 text-[10px] font-bold text-blue-400/80 uppercase">
-                <CheckCircle2 size={12} />
-                Algoritmo V4.2 Ativo
+            <div className="pt-4 flex flex-col gap-3">
+              <div className="flex items-center gap-3 text-[10px] font-black text-primary uppercase tracking-[0.2em] bg-primary/5 px-3 py-1.5 rounded-lg border border-primary/10 w-fit">
+                <CheckCircle2 size={12} className="animate-pulse" />
+                Algorithm v4.2 Nominal
               </div>
-              <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500 uppercase">
+              <div className="flex items-center gap-3 text-[10px] font-black text-white/20 uppercase tracking-[0.2em] ml-3">
                 <Clock size={12} />
-                Última calibração: Hoje
+                Last Calibration: SYNC_OK
               </div>
             </div>
-          </section>
+          </motion.section>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };

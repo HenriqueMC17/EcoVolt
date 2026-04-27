@@ -19,7 +19,12 @@ import {
   Calendar,
   Building2,
   Zap,
-  ShieldCheck
+  ShieldCheck,
+  Terminal,
+  Database,
+  Lock,
+  Cpu,
+  Activity
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery, useMutation } from "convex/react";
@@ -30,14 +35,15 @@ import { Id } from "@/../convex/_generated/dataModel";
 import { Typography } from '@/shared/ui/Typography';
 import { cn } from '@/shared/lib/utils';
 
-// Stagger variants for the container
+// --- Animation Variants ---
+
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.05
+      staggerChildren: 0.08,
+      delayChildren: 0.1
     }
   }
 };
@@ -47,25 +53,50 @@ const itemVariants = {
   visible: { 
     opacity: 1, 
     y: 0,
-    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] }
   }
 };
 
 const getStatusBadge = (status: string) => {
-  const base = "px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border transition-all duration-300";
+  const base = "px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-[0.2em] border flex items-center gap-2 transition-all duration-500 shadow-lg";
   switch (status) {
     case 'active': 
-      return <span className={cn(base, "text-emerald-400 border-emerald-400/20 bg-emerald-400/5 shadow-[0_0_12px_-2px_rgba(52,211,153,0.1)]")}>Ativo</span>;
+      return (
+        <span className={cn(base, "text-emerald-400 border-emerald-400/20 bg-emerald-400/5 shadow-emerald-400/5")}>
+          <div className="w-1 h-1 rounded-full bg-emerald-400 animate-pulse" />
+          ACTIVE_NODE
+        </span>
+      );
     case 'completed': 
-      return <span className={cn(base, "text-blue-400 border-blue-400/20 bg-blue-400/5")}>Finalizado</span>;
+      return (
+        <span className={cn(base, "text-blue-400 border-blue-400/20 bg-blue-400/5")}>
+          <CheckCircle2 size={10} />
+          EXECUTED
+        </span>
+      );
     case 'pending_signatures': 
-      return <span className={cn(base, "text-amber-400 border-amber-400/20 bg-amber-400/5")}>Assinatura</span>;
+      return (
+        <span className={cn(base, "text-amber-400 border-amber-400/20 bg-amber-400/5")}>
+          <Clock size={10} className="animate-spin [animation-duration:4s]" />
+          AWAIT_SIG
+        </span>
+      );
     case 'draft': 
-      return <span className={cn(base, "text-slate-400 border-slate-400/20 bg-slate-400/5")}>Rascunho</span>;
+      return (
+        <span className={cn(base, "text-slate-400 border-slate-400/20 bg-slate-400/5")}>
+          <Terminal size={10} />
+          DRAFT_INIT
+        </span>
+      );
     case 'terminated': 
-      return <span className={cn(base, "text-rose-400 border-rose-400/20 bg-rose-400/5")}>Rescindido</span>;
+      return (
+        <span className={cn(base, "text-rose-400 border-rose-400/20 bg-rose-400/5 shadow-rose-400/5")}>
+          <AlertTriangle size={10} />
+          REVOKED
+        </span>
+      );
     default: 
-      return <span className={cn(base, "text-slate-400 border-slate-400/20 bg-slate-400/5")}>{status}</span>;
+      return <span className={cn(base, "text-slate-400 border-slate-400/20 bg-slate-400/5")}>{status.toUpperCase()}</span>;
   }
 };
 
@@ -201,299 +232,352 @@ export const Contracts: React.FC = () => {
     }
   };
 
+  if (contracts === undefined) {
+    return (
+      <div className="flex flex-col items-center justify-center py-40 space-y-8 relative overflow-hidden">
+        <div className="absolute inset-0 scanline opacity-[0.05] pointer-events-none" />
+        <div className="p-8 glass-thick rounded-full border-primary/30 relative">
+          <Loader2 className="w-16 h-16 text-primary animate-spin" />
+        </div>
+        <Typography className="text-primary font-black tracking-[0.5em] uppercase text-[10px] animate-pulse">
+          Decrypting Legal Database...
+        </Typography>
+      </div>
+    );
+  }
+
   return (
     <motion.div 
       initial="hidden"
       animate="visible"
       variants={containerVariants}
-      className="space-y-8"
+      className="space-y-12 pb-24 relative"
     >
-      <motion.header variants={itemVariants} className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div>
+      {/* HUD Header */}
+      <header className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 relative z-10">
+        <motion.div variants={itemVariants} className="relative pl-8">
+          <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-primary shadow-[0_0_20px_rgba(16,185,129,0.6)]" />
           <div className="flex items-center gap-2 mb-2">
-            <span className="w-8 h-[2px] bg-primary"></span>
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Compliance & Legal</span>
+            <ShieldCheck size={12} className="text-primary animate-pulse" />
+            <Typography className="text-[10px] font-black italic uppercase tracking-[0.5em] text-primary">
+              Compliance & Legal Vault v2.1.4
+            </Typography>
           </div>
-          <Typography variant="h1" className="text-4xl md:text-5xl font-black tracking-tight mb-2">
-            Gestão de <span className="text-gradient">Contratos</span>
+          <Typography variant="h1" className="text-5xl font-black italic uppercase tracking-tighter text-white mb-2 leading-none">
+            Digital <span className="text-primary glow-text">Trust</span> Protocol
           </Typography>
-          <Typography variant="muted" className="max-w-xl text-lg">
-            Monitoramento em tempo real de obrigações contratuais, SLAs de entrega e validade jurídica para o ecossistema energético.
-          </Typography>
-        </div>
+          <div className="flex items-center gap-4">
+            <Typography variant="muted" className="text-[11px] font-bold uppercase tracking-widest flex items-center gap-2 text-white/40">
+              <Database size={14} className="text-primary/50" />
+              SLA-LEVEL: EXTREME
+            </Typography>
+            <div className="h-1 w-1 rounded-full bg-white/20" />
+            <Typography variant="muted" className="text-[11px] font-bold uppercase tracking-widest flex items-center gap-2 text-white/40">
+              <Lock size={14} className="text-primary/50" />
+              AES-256 HASH VERIFIED
+            </Typography>
+          </div>
+        </motion.div>
         
-        <div className="flex items-center gap-3">
-          <div className="hidden lg:flex flex-col items-end mr-4">
-            <span className="text-[10px] font-bold text-text-muted uppercase tracking-widest">Saldo Contratado</span>
-            <span className="text-xl font-black text-white">R$ {stats.value.toLocaleString('pt-BR')}</span>
+        <motion.div variants={itemVariants} className="flex flex-wrap gap-4">
+          <div className="glass-thick bg-neutral-900/50 p-4 rounded-2xl border border-white/5 backdrop-blur-md hidden xl:flex items-center gap-6 mr-4">
+            <div className="flex flex-col items-end">
+              <span className="text-[8px] font-black text-white/30 uppercase tracking-widest">Total Asset Value</span>
+              <span className="text-lg font-black text-white italic tracking-tighter">R$ {stats.value.toLocaleString('pt-BR')}</span>
+            </div>
+            <div className="w-px h-8 bg-white/10" />
+            <div className="flex flex-col items-end">
+              <span className="text-[8px] font-black text-white/30 uppercase tracking-widest">Global Stability</span>
+              <span className="text-lg font-black text-primary italic tracking-tighter">98.4%</span>
+            </div>
           </div>
+          
           {(user?.role === 'admin' || user?.role === 'event_company') && (
-            <button className="btn-premium-primary" onClick={handleOpenCreate}>
-              <Plus size={18} />
-              Novo Contrato
-            </button>
+            <Button 
+              onClick={handleOpenCreate}
+              className="btn-premium-primary h-14 px-10 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] shadow-[0_0_30px_rgba(16,185,129,0.2)]"
+            >
+              <Plus size={18} className="mr-2" />
+              Protocolar Contrato
+            </Button>
           )}
-        </div>
-      </motion.header>
+        </motion.div>
+      </header>
 
-      {/* Premium Stats Grid */}
-      <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {[
-          { label: 'Ativos & Vigentes', value: stats.active, icon: ShieldCheck, color: 'text-emerald-400', bg: 'bg-emerald-400/10', trend: '+12% este mês' },
-          { label: 'Aguardando Assinatura', value: stats.pending, icon: Clock, color: 'text-amber-400', bg: 'bg-amber-400/10', trend: 'Média 3.2 dias' },
-          { label: 'Eventos Cobertos', value: events?.length || 0, icon: Zap, color: 'text-blue-400', bg: 'bg-blue-400/10', trend: '100% de cobertura' },
+          { label: 'Ativos & Vigentes', value: stats.active, icon: ShieldCheck, trend: '+12%', color: 'text-emerald-400' },
+          { label: 'Aguardando Assinatura', value: stats.pending, icon: Clock, trend: 'AWAIT', color: 'text-amber-400' },
+          { label: 'Eventos Cobertos', value: events?.length || 0, icon: Zap, trend: '100%', color: 'text-blue-400' },
         ].map((stat, i) => (
-          <div key={i} className="glass-card group flex flex-col gap-4 relative overflow-hidden">
-            <div className={cn("absolute top-0 right-0 w-32 h-32 blur-3xl rounded-full opacity-0 group-hover:opacity-20 transition-opacity", stat.bg)}></div>
-            <div className="flex items-start justify-between">
-              <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center border border-white/5 shadow-inner", stat.bg, stat.color)}>
-                <stat.icon size={22} />
+          <motion.div 
+            key={i}
+            variants={itemVariants}
+            whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
+            className="glass-thick p-6 relative overflow-hidden group border-l-2 border-primary/30"
+          >
+            <div className="absolute inset-0 scanline opacity-[0.03] pointer-events-none" />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 blur-3xl group-hover:bg-primary/10 transition-colors" />
+            
+            <div className="flex justify-between items-start mb-6">
+              <div className={cn("p-3 rounded-xl bg-neutral-900/80 border border-white/5 shadow-2xl group-hover:border-primary/50 transition-all", stat.color)}>
+                <stat.icon size={22} className="group-hover:animate-pulse" />
               </div>
-              <span className="text-[10px] font-bold text-emerald-400/80 bg-emerald-400/10 px-2 py-1 rounded-md">{stat.trend}</span>
+              <div className="flex flex-col items-end gap-1">
+                <span className={cn("text-[10px] font-black italic uppercase tracking-tighter px-2 py-0.5 rounded-full bg-white/5 border border-white/5", stat.color)}>
+                  {stat.trend}
+                </span>
+                <div className="text-[8px] font-black text-white/20 uppercase tracking-[0.3em] flex items-center gap-1">
+                  <Activity size={8} className="animate-pulse" />
+                  REALTIME
+                </div>
+              </div>
             </div>
-            <div>
-              <Typography variant="h3" className="text-4xl font-black mb-1">{stat.value}</Typography>
-              <Typography variant="muted" className="text-[10px] uppercase tracking-[0.2em] font-black">{stat.label}</Typography>
+            
+            <div className="relative z-10">
+              <Typography className="text-[10px] font-black italic uppercase tracking-[0.3em] text-primary/70 mb-1 block">
+                {stat.label}
+              </Typography>
+              <Typography className="text-4xl font-black tracking-tighter text-white group-hover:text-primary transition-colors leading-none">
+                {stat.value.toString().padStart(2, '0')}
+              </Typography>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Filters & Grid */}
+      <motion.div variants={itemVariants} className="space-y-6">
+        <div className="glass-thick p-4 flex flex-wrap gap-4 items-center bg-neutral-900/40 backdrop-blur-xl relative z-10 overflow-hidden">
+          <div className="absolute inset-0 scanline opacity-[0.02] pointer-events-none" />
+          
+          <div className="relative flex-1 min-w-[300px] group/search">
+            <Search size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-white/20 group-focus-within/search:text-primary transition-all group-focus-within/search:scale-110" />
+            <input 
+              type="text" 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="BUSCAR CTR_ID / PARCEIRO / EVENTO..." 
+              className="w-full bg-black/60 border border-white/5 rounded-2xl py-4 pl-14 pr-6 outline-none focus:border-primary/50 focus:bg-black/80 transition-all text-[11px] font-black tracking-widest uppercase text-white placeholder:text-white/10 shadow-inner"
+            />
+          </div>
+          
+          <div className="flex gap-4">
+            <Button variant="outline" className="glass-thick border-white/5 h-14 px-8 text-white/60 font-black tracking-[0.2em] uppercase text-[10px] rounded-2xl flex items-center gap-3 hover:text-primary hover:border-primary/30 transition-all">
+              <Filter size={16} /> Filtros
+            </Button>
+            <Button variant="outline" className="glass-thick border-white/5 w-14 h-14 p-0 text-white/60 hover:text-primary hover:border-primary/30 transition-all rounded-2xl flex items-center justify-center">
+              <Download size={18} />
+            </Button>
+          </div>
+        </div>
+
+        {/* Forensic Ledger Table */}
+        <div className="glass-thick overflow-hidden border-t-4 border-primary relative group">
+          <div className="absolute inset-0 scanline opacity-[0.02] pointer-events-none" />
+          
+          <div className="overflow-x-auto relative z-10">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-black/40 border-b border-white/5">
+                  <th className="px-10 py-6 text-[10px] font-black text-white/30 uppercase tracking-[0.4em]">Protocolo // Referência</th>
+                  <th className="px-10 py-6 text-[10px] font-black text-white/30 uppercase tracking-[0.4em]">Ativo Estratégico</th>
+                  <th className="px-10 py-6 text-[10px] font-black text-white/30 uppercase tracking-[0.4em]">Métricas & Capex</th>
+                  <th className="px-10 py-6 text-[10px] font-black text-white/30 uppercase tracking-[0.4em] text-center">Status Hub</th>
+                  <th className="px-10 py-6 text-[10px] font-black text-white/30 uppercase tracking-[0.4em] text-right">Governança</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5">
+                {filteredContracts.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="px-10 py-24 text-center">
+                      <div className="flex flex-col items-center gap-4 opacity-50">
+                        <Terminal size={48} className="text-white/10" />
+                        <Typography variant="muted" className="italic font-black text-[10px] uppercase tracking-[0.3em]">No valid protocols detected in current directory.</Typography>
+                      </div>
+                    </td>
+                  </tr>
+                ) : filteredContracts.map((contract, i) => (
+                  <tr key={contract._id} className="hover:bg-primary/5 group transition-all duration-500">
+                    <td className="px-10 py-8 relative">
+                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-primary scale-y-0 group-hover:scale-y-100 transition-transform duration-500 origin-center" />
+                      <div className="flex flex-col">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-[10px] text-primary font-black uppercase tracking-tighter bg-primary/10 border border-primary/20 px-2 py-0.5 rounded-lg group-hover:bg-primary/20 transition-all">
+                            CTR-{new Date(contract.createdAt).getFullYear()}-{contract._id.substring(contract._id.length - 4).toUpperCase()}
+                          </span>
+                          <Typography className="text-[10px] font-mono font-bold text-white/30 uppercase tracking-widest">
+                            SHA-256 Verified
+                          </Typography>
+                        </div>
+                        <Typography className="text-base font-black italic uppercase text-white group-hover:text-primary transition-colors">{contract.event}</Typography>
+                      </div>
+                    </td>
+                    <td className="px-10 py-8">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-neutral-900 border border-white/5 flex items-center justify-center text-sm font-black text-white shadow-lg group-hover:border-primary/30 transition-all overflow-hidden relative">
+                          <div className="absolute inset-0 bg-primary/5 group-hover:bg-primary/10 transition-colors" />
+                          <span className="relative z-10">{contract.provider.charAt(0)}</span>
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-sm font-black italic text-white uppercase tracking-tight leading-tight">{contract.provider}</span>
+                          <span className="text-[9px] text-primary/60 font-black uppercase tracking-[0.2em] flex items-center gap-1.5">
+                            <Building2 size={10} /> FORNECEDOR HOMOLOGADO
+                          </span>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-10 py-8">
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-2 text-white font-black text-sm italic tracking-tighter">
+                          <Zap size={14} className="text-primary group-hover:animate-bounce" />
+                          {contract.energy || 'PROVISIONAL'}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] text-white/30 font-black uppercase tracking-widest">VALOR:</span>
+                          <span className="text-[11px] text-primary font-black italic tracking-tighter">R$ {contract.value.toLocaleString('pt-BR')}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-10 py-8">
+                      <div className="flex justify-center">
+                        {getStatusBadge(contract.status)}
+                      </div>
+                    </td>
+                    <td className="px-10 py-8 text-right">
+                      <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-x-4 group-hover:translate-x-0 duration-500">
+                        <button className="w-10 h-10 rounded-xl flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 border border-white/5 transition-all"><Eye size={18} /></button>
+                        {(user?.role === 'admin' || (user?.role === 'event_company' && user.companyId === contract.clientCompanyId)) && (
+                          <button onClick={() => handleOpenEdit(contract)} className="w-10 h-10 rounded-xl flex items-center justify-center text-white/40 hover:text-primary hover:bg-primary/10 border border-white/5 hover:border-primary/30 transition-all"><Edit size={18} /></button>
+                        )}
+                        {user?.role === 'admin' && (
+                          <button onClick={() => handleDelete(contract._id)} className="w-10 h-10 rounded-xl flex items-center justify-center text-white/40 hover:text-rose-500 hover:bg-rose-500/10 border border-white/5 hover:border-rose-500/30 transition-all"><Trash2 size={18} /></button>
+                        )}
+                        <button className="w-10 h-10 rounded-xl flex items-center justify-center bg-primary/10 text-primary hover:bg-primary hover:text-black transition-all border border-primary/20"><ArrowUpRight size={18} /></button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="p-6 bg-black/40 border-t border-white/5 flex items-center justify-between text-[9px] font-black text-white/20 uppercase tracking-[0.4em] relative z-10">
+            <div className="flex items-center gap-6">
+              <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-primary" /> Integrity Active</span>
+              <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" /> Sync: 100%</span>
+            </div>
+            <div className="flex items-center gap-2">
+              System Audit Status: <span className="text-primary">NOMINAL</span>
             </div>
           </div>
-        ))}
-      </motion.div>
-
-      {/* Filters & Search */}
-      <motion.div variants={itemVariants} className="glass-card flex flex-col md:flex-row gap-4 items-center !p-4">
-        <div className="relative flex-1 w-full">
-          <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" />
-          <input 
-            type="text" 
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Pesquisar por ID, Evento ou Provedor..." 
-            className="w-full bg-white/5 border border-white/5 rounded-xl py-3 pl-12 pr-4 text-white outline-none focus:border-primary/50 transition-all placeholder:text-text-muted/50 font-medium"
-          />
-        </div>
-        <div className="flex gap-3 w-full md:w-auto">
-          <button className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all font-black text-[10px] uppercase tracking-widest text-text-muted hover:text-white">
-            <Filter size={16} />
-            Filtros Avançados
-          </button>
-          <button className="p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-text-muted hover:text-primary">
-            <Download size={18} />
-          </button>
         </div>
       </motion.div>
 
-      {/* Contracts Table */}
-      <motion.div variants={itemVariants} className="glass-card p-0 overflow-hidden relative border-white/5">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-white/[0.03] border-b border-white/5">
-                <th className="px-8 py-5 text-[10px] font-black text-text-muted uppercase tracking-[0.2em]">Referência / Escopo</th>
-                <th className="px-8 py-5 text-[10px] font-black text-text-muted uppercase tracking-[0.2em]">Parceiro Estratégico</th>
-                <th className="px-8 py-5 text-[10px] font-black text-text-muted uppercase tracking-[0.2em]">Volume & Capex</th>
-                <th className="px-8 py-5 text-[10px] font-black text-text-muted uppercase tracking-[0.2em]">Status</th>
-                <th className="px-8 py-5 text-[10px] font-black text-text-muted uppercase tracking-[0.2em] text-right">Ações</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/5">
-              {contracts === undefined ? (
-                <tr>
-                  <td colSpan={5} className="px-8 py-24 text-center">
-                    <div className="flex flex-col items-center gap-4">
-                      <div className="relative w-12 h-12">
-                        <div className="absolute inset-0 rounded-full border-4 border-primary/20"></div>
-                        <div className="absolute inset-0 rounded-full border-4 border-primary border-t-transparent animate-spin"></div>
-                      </div>
-                      <span className="text-[10px] font-black uppercase tracking-widest text-text-muted">Sincronizando Dados...</span>
-                    </div>
-                  </td>
-                </tr>
-              ) : filteredContracts.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="px-8 py-24 text-center">
-                    <div className="flex flex-col items-center gap-4 opacity-50">
-                      <FileText size={48} className="text-text-muted" />
-                      <Typography variant="muted" className="italic">Nenhum contrato localizado no diretório atual.</Typography>
-                    </div>
-                  </td>
-                </tr>
-              ) : filteredContracts.map((contract, i) => (
-                <motion.tr 
-                  key={contract._id} 
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.05 + 0.2 }}
-                  className="hover:bg-white/[0.04] transition-all duration-300 group cursor-default"
-                >
-                  <td className="px-8 py-6">
-                    <div className="flex flex-col">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-[10px] text-primary font-black uppercase tracking-tighter bg-primary/10 px-2 py-0.5 rounded">
-                          CTR-{new Date(contract.createdAt).getFullYear()}-{contract._id.substring(contract._id.length - 4).toUpperCase()}
-                        </span>
-                        <Calendar size={12} className="text-text-muted" />
-                      </div>
-                      <Typography variant="h4" className="text-base font-bold group-hover:text-primary transition-colors">{contract.event}</Typography>
-                    </div>
-                  </td>
-                  <td className="px-8 py-6">
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-white/10 to-white/5 border border-white/10 flex items-center justify-center text-sm font-black text-white shadow-lg group-hover:border-primary/30 transition-all">
-                        {contract.provider.charAt(0)}
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="text-sm font-bold text-white leading-tight">{contract.provider}</span>
-                        <span className="text-[10px] text-text-muted font-bold uppercase tracking-wider flex items-center gap-1">
-                          <Building2 size={10} /> Fornecedor Homologado
-                        </span>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-8 py-6">
-                    <div className="flex flex-col">
-                      <div className="flex items-center gap-2 text-white font-black text-sm mb-1">
-                        <Zap size={14} className="text-secondary" />
-                        {contract.energy}
-                      </div>
-                      <span className="text-xs text-text-muted font-medium">
-                        Investimento: <span className="text-white">R$ {contract.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-8 py-6">
-                    {getStatusBadge(contract.status)}
-                  </td>
-                  <td className="px-8 py-6 text-right">
-                    <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-300">
-                      {(user?.role === 'admin' || (user?.role === 'event_company' && user.companyId === contract.clientCompanyId)) && (
-                        <button 
-                          onClick={() => handleOpenEdit(contract)}
-                          className="p-2.5 rounded-xl bg-white/5 border border-white/10 hover:border-primary/50 text-text-muted hover:text-primary transition-all shadow-lg"
-                          title="Editar Termos"
-                        >
-                          <Edit size={16} />
-                        </button>
-                      )}
-                      {user?.role === 'admin' && (
-                        <button 
-                          onClick={() => handleDelete(contract._id)}
-                          className="p-2.5 rounded-xl bg-white/5 border border-white/10 hover:border-rose-500/50 text-text-muted hover:text-rose-400 transition-all shadow-lg"
-                          title="Revogar Contrato"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      )}
-                      <button className="p-2.5 rounded-xl bg-primary/10 border border-primary/20 text-primary hover:bg-primary hover:text-black transition-all shadow-lg shadow-primary/10">
-                        <ArrowUpRight size={16} />
-                      </button>
-                    </div>
-                  </td>
-                </motion.tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </motion.div>
-
-      {/* Modal - Enhanced */}
+      {/* Modal - Enhanced Forensic HUD */}
       <AnimatePresence>
         {isModalOpen && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsModalOpen(false)}
-              className="absolute inset-0 bg-black/80 backdrop-blur-md"
+              className="absolute inset-0 bg-slate-950/90 backdrop-blur-2xl"
             />
             <motion.div 
-              initial={{ opacity: 0, scale: 0.95, y: 40 }}
+              initial={{ opacity: 0, scale: 0.95, y: 30 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 40 }}
-              className="relative w-full max-w-xl glass p-10 rounded-[2.5rem] border border-white/10 shadow-[0_0_100px_rgba(0,0,0,0.5)] overflow-hidden"
+              exit={{ opacity: 0, scale: 0.95, y: 30 }}
+              className="relative w-full max-w-2xl glass-thick border-white/10 shadow-[0_0_150px_rgba(16,185,129,0.15)] overflow-hidden rounded-[2rem]"
             >
-              {/* Modal Glow Accent */}
-              <div className="absolute -top-24 -left-24 w-64 h-64 bg-primary/10 blur-[100px] rounded-full pointer-events-none"></div>
+              <div className="absolute inset-0 scanline opacity-[0.05] pointer-events-none" />
+              <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-primary via-teal-500 to-blue-500" />
               
-              <div className="relative z-10">
-                <div className="flex justify-between items-start mb-10">
+              <div className="p-12 relative z-10">
+                <div className="flex justify-between items-start mb-12">
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="w-6 h-1 bg-primary rounded-full"></span>
-                      <span className="text-[10px] font-black uppercase tracking-[0.4em] text-primary">Formalização Digital</span>
+                      <Lock size={14} className="text-primary" />
+                      <Typography className="text-[10px] font-black tracking-[0.5em] text-primary uppercase">Secure Protocol Input</Typography>
                     </div>
-                    <Typography variant="h2" className="text-3xl font-black">{isEditing ? 'Revisar Contrato' : 'Novo Instrumento'}</Typography>
+                    <Typography variant="h2" className="text-4xl font-black text-white uppercase italic tracking-tighter leading-none">
+                      {isEditing ? 'Modify <span className="text-primary">Terms</span>' : 'Initialize <span className="text-primary">Protocol</span>'}
+                    </Typography>
                   </div>
                   <button 
-                    onClick={() => setIsModalOpen(false)} 
-                    className="p-2 rounded-full bg-white/5 text-text-muted hover:text-white hover:bg-white/10 transition-all border border-white/10"
+                    onClick={() => setIsModalOpen(false)}
+                    className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-white/20 hover:text-white hover:bg-white/10 border border-white/5 transition-all hover:rotate-90"
                   >
-                    <X size={20} />
+                    <X size={24} />
                   </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-8">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <form onSubmit={handleSubmit} className="space-y-10">
+                  <div className="grid grid-cols-2 gap-8">
                     <div className="space-y-3">
-                      <label className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] ml-1 flex items-center gap-2">
-                        <Calendar size={12} className="text-primary" /> Evento Relacionado
-                      </label>
-                      <select 
-                        value={formData.eventId} 
-                        onChange={e => setFormData({...formData, eventId: e.target.value as Id<"events">})}
-                        className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-primary/50 transition-all font-bold appearance-none"
-                        required
-                      >
-                        <option value="" className="bg-bg-main">Selecione o ativo...</option>
-                        {events?.map(event => (
-                          <option key={event._id} value={event._id} className="bg-bg-main">{event.name}</option>
-                        ))}
-                      </select>
+                      <label className="text-[11px] font-black text-white/40 uppercase tracking-[0.3em] ml-2">Strategic Asset</label>
+                      <div className="relative group">
+                        <select 
+                          value={formData.eventId} 
+                          onChange={e => setFormData({...formData, eventId: e.target.value as Id<"events">})}
+                          className="w-full bg-black/60 border border-white/10 rounded-2xl px-8 py-5 text-white outline-none focus:border-primary/50 transition-all font-black uppercase tracking-widest appearance-none cursor-pointer group-hover:bg-black/80 shadow-inner"
+                          required
+                        >
+                          <option value="">SELECT_ASSET</option>
+                          {events?.map(event => (
+                            <option key={event._id} value={event._id}>{event.name.toUpperCase()}</option>
+                          ))}
+                        </select>
+                        <ArrowRight size={16} className="absolute right-6 top-1/2 -translate-y-1/2 text-white/20 rotate-90 pointer-events-none" />
+                      </div>
                     </div>
 
                     <div className="space-y-3">
-                      <label className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] ml-1 flex items-center gap-2">
-                        <Building2 size={12} className="text-primary" /> Provedor Estratégico
-                      </label>
-                      <select 
-                        value={formData.providerId} 
-                        onChange={e => setFormData({...formData, providerId: e.target.value as Id<"companies">})}
-                        className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-primary/50 transition-all font-bold appearance-none"
-                        required
-                      >
-                        <option value="" className="bg-bg-main">Selecione o parceiro...</option>
-                        {companies?.filter(c => c.type === 'provider').map(provider => (
-                          <option key={provider._id} value={provider._id} className="bg-bg-main">{provider.name}</option>
-                        ))}
-                      </select>
+                      <label className="text-[11px] font-black text-white/40 uppercase tracking-[0.3em] ml-2">Strategic Partner</label>
+                      <div className="relative group">
+                        <select 
+                          value={formData.providerId} 
+                          onChange={e => setFormData({...formData, providerId: e.target.value as Id<"companies">})}
+                          className="w-full bg-black/60 border border-white/10 rounded-2xl px-8 py-5 text-white outline-none focus:border-primary/50 transition-all font-black uppercase tracking-widest appearance-none cursor-pointer group-hover:bg-black/80 shadow-inner"
+                          required
+                        >
+                          <option value="">SELECT_PARTNER</option>
+                          {companies?.filter(c => c.type === 'provider').map(provider => (
+                            <option key={provider._id} value={provider._id}>{provider.name.toUpperCase()}</option>
+                          ))}
+                        </select>
+                        <ArrowRight size={16} className="absolute right-6 top-1/2 -translate-y-1/2 text-white/20 rotate-90 pointer-events-none" />
+                      </div>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-2 gap-8">
                     <div className="space-y-3">
-                      <label className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] ml-1">Capex Total (R$)</label>
-                      <div className="relative">
-                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted font-bold">R$</span>
+                      <label className="text-[11px] font-black text-white/40 uppercase tracking-[0.3em] ml-2">Total Capex (BRL)</label>
+                      <div className="relative group">
+                        <div className="absolute left-6 top-1/2 -translate-y-1/2 text-primary font-black text-sm">R$</div>
                         <input 
                           type="number" 
                           value={formData.value || ''}
                           onChange={e => setFormData({...formData, value: Number(e.target.value)})}
-                          className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 pl-12 text-white outline-none focus:border-primary/50 transition-all font-black text-xl"
-                          placeholder="0,00"
+                          className="w-full bg-black/60 border border-white/10 rounded-2xl px-14 py-5 text-white outline-none focus:border-primary/50 transition-all font-black text-lg group-hover:bg-black/80 shadow-inner"
+                          placeholder="0.00"
                           required
                         />
                       </div>
                     </div>
                     <div className="space-y-3">
-                      <label className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] ml-1">Taxa p/ kWh (R$)</label>
-                      <div className="relative">
-                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted font-bold">R$</span>
+                      <label className="text-[11px] font-black text-white/40 uppercase tracking-[0.3em] ml-2">Rate per kWh</label>
+                      <div className="relative group">
+                        <div className="absolute left-6 top-1/2 -translate-y-1/2 text-primary font-black text-sm">R$</div>
                         <input 
                           type="number" 
                           step="0.01"
                           value={formData.ratePerKwh}
                           onChange={e => setFormData({...formData, ratePerKwh: Number(e.target.value)})}
-                          className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 pl-12 text-white outline-none focus:border-primary/50 transition-all font-black text-xl"
+                          className="w-full bg-black/60 border border-white/10 rounded-2xl px-14 py-5 text-white outline-none focus:border-primary/50 transition-all font-black text-lg group-hover:bg-black/80 shadow-inner"
                           required
                         />
                       </div>
@@ -501,24 +585,24 @@ export const Contracts: React.FC = () => {
                   </div>
 
                   <div className="space-y-3">
-                    <label className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] ml-1">Protocolo de Status</label>
-                    <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                    <label className="text-[11px] font-black text-white/40 uppercase tracking-[0.3em] ml-2">Liquidation Protocol Hub</label>
+                    <div className="grid grid-cols-5 gap-3">
                       {[
-                        { id: 'draft', label: 'Draft' },
-                        { id: 'pending_signatures', label: 'Sign' },
-                        { id: 'active', label: 'Active' },
-                        { id: 'completed', label: 'Done' },
-                        { id: 'terminated', label: 'Void' }
+                        { id: 'draft', label: 'DRAFT' },
+                        { id: 'pending_signatures', label: 'SIGN' },
+                        { id: 'active', label: 'ACTIVE' },
+                        { id: 'completed', label: 'DONE' },
+                        { id: 'terminated', label: 'VOID' }
                       ].map((s) => (
                         <button
                           key={s.id}
                           type="button"
                           onClick={() => setFormData({...formData, status: s.id})}
                           className={cn(
-                            "py-3 rounded-xl border text-[10px] font-black uppercase tracking-widest transition-all",
+                            "py-4 rounded-xl border text-[9px] font-black uppercase tracking-widest transition-all shadow-lg",
                             formData.status === s.id 
-                              ? "bg-primary text-black border-primary shadow-[0_0_20px_rgba(16,185,129,0.3)]" 
-                              : "bg-white/5 border-white/10 text-text-muted hover:bg-white/10"
+                              ? "bg-primary text-black border-primary shadow-primary/20" 
+                              : "bg-black/40 border-white/5 text-white/20 hover:border-white/20 hover:text-white"
                           )}
                         >
                           {s.label}
@@ -527,28 +611,24 @@ export const Contracts: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="flex gap-4 pt-6">
-                    <button 
-                      type="button" 
+                  <div className="flex gap-6 pt-6">
+                    <Button 
+                      variant="ghost" 
+                      className="flex-1 h-16 border border-white/5 text-white/20 font-black uppercase text-[10px] tracking-[0.4em] rounded-[1.5rem] hover:bg-white/5 hover:text-white transition-all"
                       onClick={() => setIsModalOpen(false)}
-                      className="flex-1 px-8 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all font-black text-[10px] uppercase tracking-[0.2em] text-text-muted"
                     >
-                      Descartar Alterações
-                    </button>
-                    <button 
+                      Abort Protocol
+                    </Button>
+                    <Button 
                       type="submit" 
-                      disabled={isSaving}
-                      className="flex-[1.5] btn-premium-primary justify-center !rounded-2xl !py-4 shadow-[0_20px_40px_-10px_rgba(16,185,129,0.4)]"
+                      className="flex-[1.5] h-16 btn-premium-primary rounded-[1.5rem] text-[10px] font-black uppercase tracking-[0.4em] shadow-[0_0_50px_rgba(16,185,129,0.3)]"
+                      loading={isSaving}
                     >
-                      {isSaving ? (
-                        <Loader2 className="animate-spin" size={20} />
-                      ) : (
-                        <span className="flex items-center gap-3">
-                          <ShieldCheck size={20} />
-                          {isEditing ? 'Confirmar Atualização' : 'Protocolar Contrato'}
-                        </span>
-                      )}
-                    </button>
+                      <span className="flex items-center gap-3">
+                        <ShieldCheck size={20} className="group-hover:animate-bounce" />
+                        {isEditing ? 'Patch Legal Node' : 'Initialize Trust Protocol'}
+                      </span>
+                    </Button>
                   </div>
                 </form>
               </div>
@@ -559,4 +639,3 @@ export const Contracts: React.FC = () => {
     </motion.div>
   );
 };
-

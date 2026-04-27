@@ -45,32 +45,38 @@ export const DashboardSidebar: React.FC = () => {
   );
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-80 glass-thick border-r border-white/5 flex flex-col z-50">
+    <aside className="fixed left-0 top-0 h-screen w-80 glass-thick border-r border-white/5 flex flex-col z-50 shadow-[20px_0_100px_rgba(0,0,0,0.4)]">
+      {/* Scanline Overlay */}
+      <div className="absolute inset-0 scanline opacity-[0.03] pointer-events-none" />
+      
       {/* High-Tech Branding */}
-      <div className="p-10 relative overflow-hidden group">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 opacity-50" />
+      <div className="p-12 relative overflow-hidden group border-b border-white/[0.03]">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-blue-500/5 opacity-30" />
+        <div className="absolute -top-24 -left-24 w-48 h-48 bg-primary/10 blur-[100px] rounded-full" />
         
         <div 
-          className="flex items-center gap-5 cursor-pointer relative z-10" 
+          className="flex items-center gap-6 cursor-pointer relative z-10" 
           onClick={() => navigate('/')}
         >
           <motion.div 
-            whileHover={{ scale: 1.05, rotate: 2 }}
+            whileHover={{ scale: 1.05, rotate: 5 }}
             whileTap={{ scale: 0.95 }}
-            className="w-14 h-14 rounded-[1.25rem] bg-slate-950 flex items-center justify-center border border-white/10 shadow-[0_0_40px_rgba(16,185,129,0.15)] relative group-hover:border-primary/40 transition-all duration-700"
+            className="w-16 h-16 rounded-none bg-slate-950 flex items-center justify-center border border-white/10 shadow-[0_0_50px_rgba(16,185,129,0.15)] relative group-hover:border-primary/40 transition-all duration-700"
           >
-            <div className="absolute inset-0 bg-primary/10 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-            <Zap className="text-primary relative z-10 animate-pulse" size={30} strokeWidth={2.5} />
+            <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+            <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-primary/40" />
+            <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-primary/40" />
+            <Zap className="text-primary relative z-10 animate-pulse" size={32} strokeWidth={2.5} />
           </motion.div>
           
           <div className="space-y-1">
-            <Typography variant="h4" className="text-2xl font-black tracking-[-0.05em] leading-none text-white uppercase italic">
-              ECO<span className="text-primary">VOLT</span>
+            <Typography variant="h4" className="text-3xl font-black tracking-[-0.08em] leading-none text-white uppercase italic">
+              ECO<span className="text-primary glow-text drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]">VOLT</span>
             </Typography>
             <div className="flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
-              <Typography className="text-[9px] font-black tracking-[0.4em] text-slate-500 uppercase">
-                Enterprise OS
+              <div className="w-2 h-[2px] bg-primary animate-pulse" />
+              <Typography className="text-[10px] font-black tracking-[0.5em] text-slate-500 uppercase leading-none italic">
+                CORE_SYSTEM <span className="text-primary/50">v4.1</span>
               </Typography>
             </div>
           </div>
@@ -78,12 +84,12 @@ export const DashboardSidebar: React.FC = () => {
       </div>
 
       {/* Navigation Ledger */}
-      <nav className="flex-1 px-6 space-y-2 overflow-y-auto custom-scrollbar pt-4">
-        <div className="mb-6 px-4 flex items-center justify-between">
-          <Typography className="text-[10px] uppercase tracking-[0.3em] text-slate-500 font-black">
-            System Protocols
+      <nav className="flex-1 px-4 space-y-1 overflow-y-auto custom-scrollbar py-8">
+        <div className="mb-6 px-4 flex items-center justify-between opacity-50">
+          <Typography className="text-[9px] uppercase tracking-[0.4em] text-slate-400 font-black italic">
+            OPERATIONAL_PROTOCOLS
           </Typography>
-          <Sparkles size={12} className="text-primary/40" />
+          <div className="w-1 h-1 rounded-full bg-primary/50 animate-ping" />
         </div>
         
         {filteredItems.map((item, index) => {
@@ -100,39 +106,60 @@ export const DashboardSidebar: React.FC = () => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.04 + 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                 className={cn(
-                  "nav-link-premium min-h-[56px] px-5",
-                  isActive ? "text-white" : "text-slate-400 hover:text-white"
+                  "relative min-h-[64px] px-6 flex items-center gap-5 transition-all duration-500 rounded-2xl overflow-hidden",
+                  isActive ? "text-white bg-white/5 border border-white/5 shadow-2xl" : "text-slate-500 hover:text-slate-200 hover:bg-white/[0.02]"
                 )}
               >
                 {isActive && (
                   <motion.div
-                    layoutId="active-nav-bg"
-                    className="absolute inset-0 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border-l-2 border-primary rounded-r-2xl -z-10"
-                    transition={{ type: 'spring', bounce: 0.15, duration: 0.8 }}
+                    layoutId="nav-glow"
+                    className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-transparent -z-10"
                   />
                 )}
                 
-                <item.icon 
-                  size={22} 
-                  strokeWidth={isActive ? 2.5 : 2}
-                  className={cn(
-                    "transition-all duration-500",
-                    isActive ? "text-primary drop-shadow-[0_0_8px_rgba(16,185,129,0.4)]" : "group-hover:text-primary group-hover:scale-110"
-                  )} 
-                />
+                <div className="relative shrink-0">
+                  <item.icon 
+                    size={20} 
+                    strokeWidth={isActive ? 2.5 : 1.5}
+                    className={cn(
+                      "transition-all duration-500",
+                      isActive ? "text-primary drop-shadow-[0_0_12px_rgba(16,185,129,0.8)]" : "group-hover:text-primary group-hover:scale-110"
+                    )} 
+                  />
+                  {isActive && (
+                    <motion.div 
+                      layoutId="icon-bloom"
+                      className="absolute inset-0 bg-primary/30 blur-xl rounded-full -z-10"
+                    />
+                  )}
+                </div>
                 
-                <span className={cn(
-                  "text-xs font-black uppercase tracking-[0.1em] transition-all duration-500",
-                  isActive ? "translate-x-1" : "group-hover:translate-x-1"
-                )}>
-                  {item.label}
-                </span>
+                <div className="flex flex-col">
+                  <span className={cn(
+                    "text-[11px] font-black uppercase tracking-[0.2em] transition-all duration-500 leading-none italic",
+                    isActive ? "text-white translate-x-1" : "group-hover:translate-x-1"
+                  )}>
+                    {item.label}
+                  </span>
+                  <div className="flex items-center gap-2 mt-1.5 overflow-hidden">
+                    <span className="text-[7px] text-slate-700 font-black tracking-widest uppercase">
+                      SEC_ID: {index.toString().padStart(2, '0')}
+                    </span>
+                    <div className="h-px flex-1 bg-white/5" />
+                    <span className="text-[7px] text-primary/40 font-black tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
+                      EXE_AUTH
+                    </span>
+                  </div>
+                </div>
 
                 {isActive && (
-                  <motion.div 
-                    layoutId="active-nav-glow"
-                    className="absolute right-4 w-1 h-1 rounded-full bg-primary shadow-[0_0_12px_rgba(16,185,129,1)]"
-                  />
+                  <div className="ml-auto">
+                    <div className="flex gap-0.5">
+                      <div className="w-1 h-3 bg-primary/80" />
+                      <div className="w-1 h-3 bg-primary/40" />
+                      <div className="w-1 h-3 bg-primary/20" />
+                    </div>
+                  </div>
                 )}
               </motion.div>
             </NavLink>
@@ -141,31 +168,34 @@ export const DashboardSidebar: React.FC = () => {
       </nav>
 
       {/* Profile & Security Vault */}
-      <div className="p-8 border-t border-white/5 relative overflow-hidden bg-slate-950/20">
-        <div className="absolute inset-0 bg-gradient-to-t from-primary/5 to-transparent pointer-events-none" />
+      <div className="p-8 border-t border-white/[0.03] relative overflow-hidden bg-slate-950/40">
+        <div className="absolute inset-0 bg-gradient-to-t from-primary/10 via-transparent to-transparent pointer-events-none opacity-50" />
         
         <div className="relative">
           <motion.button 
             whileHover={{ y: -4 }}
             whileTap={{ scale: 0.97 }}
             onClick={() => setIsSwitcherOpen(!isSwitcherOpen)}
-            className="w-full flex items-center gap-4 p-4 rounded-3xl bg-slate-900/60 border border-white/5 hover:border-white/10 transition-all text-left shadow-2xl backdrop-blur-xl group"
+            className="w-full flex items-center gap-5 p-5 rounded-[2rem] bg-slate-900/60 border border-white/10 hover:border-primary/30 transition-all text-left shadow-2xl backdrop-blur-3xl group"
           >
-            <div className="relative">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-950 border border-white/10 flex items-center justify-center font-black text-primary shadow-2xl relative overflow-hidden">
+            <div className="relative shrink-0">
+              <div className="w-14 h-14 rounded-2xl bg-slate-950 border border-white/10 flex items-center justify-center font-black text-primary shadow-[0_0_20px_rgba(0,0,0,0.5)] relative overflow-hidden text-lg italic">
                 <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                 {user?.name.substring(0, 2).toUpperCase() || '??'}
               </div>
-              <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-4 border-slate-950 shadow-lg" />
+              <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 border-4 border-slate-950 shadow-[0_0_15px_rgba(16,185,129,0.5)]" />
             </div>
             
             <div className="flex-1 min-w-0">
-              <Typography className="text-sm font-black truncate text-white tracking-tight uppercase italic leading-none mb-1">
-                {user?.name || 'Authorized'}
+              <Typography className="text-sm font-black truncate text-white tracking-tight uppercase italic leading-none mb-1.5">
+                {user?.name || 'Operator_Root'}
               </Typography>
-              <Typography className="text-[9px] font-black tracking-[0.2em] text-primary uppercase opacity-70">
-                {user?.role?.replace('_', ' ') || 'Protocol Guest'}
-              </Typography>
+              <div className="flex items-center gap-2">
+                <ShieldCheck size={10} className="text-primary/70" />
+                <Typography className="text-[9px] font-black tracking-[0.25em] text-primary uppercase leading-none italic opacity-80">
+                  {user?.role?.replace('_', ' ') || 'SYSTEM_ADMIN'}
+                </Typography>
+              </div>
             </div>
             
             <ChevronDown size={14} className={cn("text-slate-500 transition-transform duration-700", isSwitcherOpen && "rotate-180")} />
@@ -174,25 +204,26 @@ export const DashboardSidebar: React.FC = () => {
           <AnimatePresence>
             {isSwitcherOpen && (
               <motion.div
-                initial={{ opacity: 0, y: 15, scale: 0.9 }}
+                initial={{ opacity: 0, y: 15, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 15, scale: 0.9 }}
+                exit={{ opacity: 0, y: 15, scale: 0.95 }}
                 transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                className="absolute bottom-full left-0 right-0 mb-6 glass-thick rounded-[2.5rem] p-4 border border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.8)] z-[60]"
+                className="absolute bottom-full left-0 right-0 mb-6 glass-thick rounded-[2.5rem] p-4 border border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.9)] z-[60] overflow-hidden"
               >
-                <div className="px-5 py-3 mb-2">
-                  <Typography className="text-[10px] uppercase tracking-[0.4em] text-slate-500 font-black">
-                    Security Session
+                <div className="absolute inset-0 scanline opacity-[0.05] pointer-events-none" />
+                <div className="px-5 py-4 mb-2 border-b border-white/5">
+                  <Typography className="text-[9px] uppercase tracking-[0.5em] text-slate-500 font-black italic">
+                    SESSION_TERMINAL
                   </Typography>
                 </div>
                 
                 <div className="space-y-1">
                   <button 
                     onClick={() => { logout(); setIsSwitcherOpen(false); }}
-                    className="w-full flex items-center justify-between px-6 py-4 rounded-2xl text-rose-500 hover:bg-rose-500/10 transition-all duration-300 text-[10px] font-black uppercase tracking-widest group"
+                    className="w-full flex items-center justify-between px-6 py-5 rounded-2xl text-rose-500 hover:bg-rose-500/10 transition-all duration-300 text-[10px] font-black uppercase tracking-[0.3em] group italic"
                   >
-                    <span>Terminate Session</span>
-                    <LogOut size={16} className="group-hover:translate-x-1 transition-transform" />
+                    <span>PURGE_SESSION</span>
+                    <LogOut size={16} className="group-hover:translate-x-2 transition-transform duration-500" />
                   </button>
                 </div>
               </motion.div>

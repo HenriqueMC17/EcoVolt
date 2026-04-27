@@ -700,7 +700,3 @@ export const Events: React.FC = () => {
   );
 };
 
-    </motion.div>
-  );
-};
-

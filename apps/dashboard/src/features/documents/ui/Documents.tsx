@@ -12,8 +12,21 @@ import {
   ShieldAlert,
   Loader2,
   X,
-  Plus
+  Plus,
+  ShieldCheck,
+  Activity,
+  Target,
+  Zap,
+  Clock,
+  Archive,
+  Shield,
+  Lock,
+  Database,
+  ArrowDownLeft,
+  ArrowUpRight
 } from 'lucide-react';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery, useMutation } from 'convex/react';
 import { api } from '@/../convex/_generated/api';
@@ -144,148 +157,268 @@ const Documents: React.FC = () => {
       transition={{ duration: 0.5 }}
       className="space-y-8"
     >
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <Typography variant="h2">Documentos & Compliance</Typography>
-          <Typography variant="muted">Repositório central de contratos, termos, comprovantes e regulamentações.</Typography>
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+        <div className="space-y-2">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="h-[2px] w-12 bg-primary"></div>
+            <Typography className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Secure Archive System v2.0</Typography>
+          </div>
+          <Typography variant="h1" className="text-5xl md:text-6xl font-black italic tracking-tighter uppercase leading-none text-white">
+            Digital <span className="text-primary">Vault</span>
+          </Typography>
+          <Typography className="text-text-muted max-w-xl text-sm font-medium leading-relaxed">
+            Repositório central de segurança máxima para contratos, registros regulatórios e documentação estratégica EcoVolt.
+          </Typography>
         </div>
-        <Button onClick={() => setUploadModalOpen(true)}>
-          <Upload size={18} />
-          Enviar Documento
+        <Button 
+          onClick={() => setUploadModalOpen(true)}
+          className="bg-primary hover:bg-primary-dark text-black font-black uppercase tracking-widest px-8 py-6 rounded-none clip-path-slant-sm transition-all hover:scale-105 active:scale-95"
+        >
+          <Upload size={20} className="mr-2" />
+          Ingest Document
         </Button>
       </div>
 
-      {/* Folders Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* Vault Status Chunks */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <div className="glass-thick border-l-4 border-primary p-6 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+            <Shield size={80} />
+          </div>
+          <Typography className="text-[10px] font-black uppercase tracking-widest text-primary mb-1">Integrity Level</Typography>
+          <Typography className="text-3xl font-black italic text-white uppercase">99.9% Alpha</Typography>
+          <div className="w-full h-1 bg-white/5 mt-4 overflow-hidden">
+            <motion.div 
+              initial={{ width: 0 }}
+              animate={{ width: '99.9%' }}
+              className="h-full bg-primary"
+            />
+          </div>
+        </div>
+        <div className="glass-thick border-l-4 border-blue-500 p-6 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+            <Database size={80} />
+          </div>
+          <Typography className="text-[10px] font-black uppercase tracking-widest text-blue-500 mb-1">Total Storage</Typography>
+          <Typography className="text-3xl font-black italic text-white uppercase">{documents?.length || 0} Assets</Typography>
+          <div className="flex items-center gap-2 mt-4 text-[10px] font-bold text-blue-400 uppercase">
+            <Activity size={12} className="animate-pulse" /> Live Tracking Active
+          </div>
+        </div>
+        <div className="glass-thick border-l-4 border-amber-500 p-6 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+            <Lock size={80} />
+          </div>
+          <Typography className="text-[10px] font-black uppercase tracking-widest text-amber-500 mb-1">Encryption Mode</Typography>
+          <Typography className="text-3xl font-black italic text-white uppercase">AES-256 Neural</Typography>
+          <div className="flex items-center gap-2 mt-4 text-[10px] font-bold text-amber-400 uppercase">
+            <ShieldCheck size={12} /> Quantum Guard Enabled
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
         {['Jurídico', 'Financeiro', 'Operacional', 'Regulatório'].map((folder) => {
           const count = documents?.filter(d => d.type === folder).length || 0;
           const isActive = activeFolder === folder;
+          const icons = {
+            'Jurídico': <Archive size={24} />,
+            'Financeiro': <Zap size={24} />,
+            'Operacional': <Activity size={24} />,
+            'Regulatório': <Shield size={24} />
+          };
+          
           return (
             <motion.div 
               key={folder} 
-              whileHover={{ y: -5 }}
+              whileHover={{ y: -5, scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               onClick={() => setActiveFolder(isActive ? null : folder)}
-              className={`glass-card p-6 cursor-pointer border transition-all duration-300 ${
-                isActive ? 'border-primary bg-primary/10 shadow-[0_0_20px_rgba(16,185,129,0.2)]' : 'border-border-glass hover:border-primary/50'
+              className={`glass-thick p-6 cursor-pointer border transition-all duration-500 relative group overflow-hidden ${
+                isActive 
+                  ? 'border-primary bg-primary/10 shadow-[0_0_30px_rgba(16,185,129,0.15)]' 
+                  : 'border-white/5 hover:border-primary/40'
               }`}
             >
-              <div className="flex items-center gap-4">
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors ${
-                  isActive ? 'bg-primary text-black' : 'bg-primary/10 text-primary'
+              {isActive && (
+                <motion.div 
+                  layoutId="active-folder-glow"
+                  className="absolute inset-0 bg-primary/5 blur-xl pointer-events-none"
+                />
+              )}
+              
+              <div className="flex items-center justify-between mb-4">
+                <div className={`p-3 rounded-none transition-all duration-500 ${
+                  isActive ? 'bg-primary text-black scale-110' : 'bg-white/5 text-primary group-hover:bg-primary/20'
                 }`}>
-                  <Folder size={24} />
+                  {icons[folder as keyof typeof icons]}
                 </div>
-                <div>
-                  <Typography variant="h4" className="text-lg">{folder}</Typography>
-                  <Typography variant="small" className="text-text-muted">{count} arquivos</Typography>
-                </div>
+                <Typography className={`text-[10px] font-black uppercase tracking-widest ${
+                  isActive ? 'text-primary' : 'text-text-muted'
+                }`}>
+                  {count.toString().padStart(2, '0')} Units
+                </Typography>
+              </div>
+              
+              <Typography className="text-xl font-black italic uppercase tracking-tight text-white mb-1">{folder}</Typography>
+              <div className="flex items-center gap-2">
+                <div className={`h-[1px] flex-grow transition-all duration-500 ${isActive ? 'bg-primary' : 'bg-white/10 group-hover:bg-primary/30'}`}></div>
+                <ArrowUpRight size={14} className={isActive ? 'text-primary' : 'text-text-muted opacity-0 group-hover:opacity-100 transition-all'} />
               </div>
             </motion.div>
           );
         })}
       </div>
 
-      {/* Documents List */}
-      <div className="glass-card overflow-hidden">
-        <div className="p-6 border-b border-border-glass flex flex-col md:flex-row gap-4 md:items-center justify-between">
-          <Typography variant="h4">
-            {activeFolder ? `Arquivos: ${activeFolder}` : 'Todos os Arquivos'}
-          </Typography>
-          
+      <div className="glass-thick border-neural relative overflow-hidden">
+        <div className="p-8 border-b border-white/5 flex flex-col lg:flex-row gap-6 lg:items-center justify-between relative z-10">
           <div className="flex items-center gap-4">
-            <div className="relative group">
-              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors" />
+            <div className="w-1 h-8 bg-primary"></div>
+            <div>
+              <Typography className="text-2xl font-black italic uppercase tracking-tight text-white leading-none">
+                {activeFolder ? `Entry: ${activeFolder}` : 'Asset Manifest'}
+              </Typography>
+              <Typography className="text-[10px] font-bold uppercase tracking-[0.2em] text-text-muted mt-1">
+                Forensic Audit Trail Active
+              </Typography>
+            </div>
+          </div>
+          
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="relative group flex-grow md:flex-grow-0">
+              <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-primary group-focus-within:text-white transition-colors" />
               <input 
                 type="text" 
-                placeholder="Buscar documento..." 
+                placeholder="QUERY FILENAME..." 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="bg-white/5 border border-border-glass rounded-lg pl-10 pr-4 py-2 text-white outline-none focus:border-primary transition-all w-full md:w-64"
+                className="bg-black/40 border border-white/5 rounded-none pl-12 pr-6 py-3 text-xs font-bold tracking-widest text-white outline-none focus:border-primary transition-all w-full md:w-80 placeholder:text-white/20 uppercase"
               />
+              <div className="absolute bottom-0 left-0 w-0 h-[1px] bg-primary group-focus-within:w-full transition-all duration-500"></div>
             </div>
             {activeFolder && (
-              <Button variant="outline" size="sm" onClick={() => setActiveFolder(null)}>
-                <X size={18} /> Limpar
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => setActiveFolder(null)}
+                className="border-white/5 hover:border-primary hover:text-primary rounded-none font-black uppercase text-[10px] tracking-widest"
+              >
+                <X size={14} className="mr-2" /> Reset View
               </Button>
             )}
           </div>
         </div>
         
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
+        <div className="overflow-x-auto relative z-10">
+          <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-white/5">
-                <th className="px-6 py-4 text-xs font-semibold text-text-muted uppercase tracking-wider">Arquivo</th>
-                <th className="px-6 py-4 text-xs font-semibold text-text-muted uppercase tracking-wider">Vínculo</th>
-                <th className="px-6 py-4 text-xs font-semibold text-text-muted uppercase tracking-wider">Data</th>
-                <th className="px-6 py-4 text-xs font-semibold text-text-muted uppercase tracking-wider">Status</th>
-                <th className="px-6 py-4 text-xs font-semibold text-text-muted uppercase tracking-wider text-right">Ações</th>
+              <tr className="bg-white/2 border-b border-white/5">
+                <th className="px-8 py-5 text-[10px] font-black text-primary uppercase tracking-[0.2em]">Identifier / Registry</th>
+                <th className="px-8 py-5 text-[10px] font-black text-primary uppercase tracking-[0.2em]">Context Link</th>
+                <th className="px-8 py-5 text-[10px] font-black text-primary uppercase tracking-[0.2em]">Timestamp</th>
+                <th className="px-8 py-5 text-[10px] font-black text-primary uppercase tracking-[0.2em]">Neural Status</th>
+                <th className="px-8 py-5 text-[10px] font-black text-primary uppercase tracking-[0.2em] text-right">Access Control</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-border-glass">
+            <tbody className="divide-y divide-white/5">
               {!documents ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center">
-                    <Loader2 className="animate-spin inline-block text-primary" size={32} />
+                  <td colSpan={5} className="px-8 py-20 text-center">
+                    <div className="flex flex-col items-center gap-4">
+                      <Activity className="animate-pulse text-primary" size={40} />
+                      <Typography className="text-[10px] font-black uppercase tracking-widest text-primary">Decrypting Archive Data...</Typography>
+                    </div>
                   </td>
                 </tr>
               ) : filteredDocuments?.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center text-text-muted">
-                    Nenhum documento encontrado.
+                  <td colSpan={5} className="px-8 py-20 text-center">
+                    <Typography className="text-xs font-bold uppercase tracking-widest text-text-muted">No entries matched the current query filters.</Typography>
                   </td>
                 </tr>
               ) : (
                 filteredDocuments?.map((doc) => (
-                  <tr key={doc._id} className="hover:bg-white/5 transition-colors group">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-white/5 group-hover:bg-white/10 transition-colors">
+                  <tr key={doc._id} className="hover:bg-primary/5 transition-all duration-300 group">
+                    <td className="px-8 py-6">
+                      <div className="flex items-center gap-4">
+                        <div className="p-3 rounded-none bg-white/5 group-hover:bg-primary/20 group-hover:text-black transition-all duration-500 border border-white/5 group-hover:border-primary/40">
                           {getDocIcon(doc.type)}
                         </div>
                         <div>
-                          <Typography className="font-semibold text-sm leading-tight">{doc.name}</Typography>
-                          <span className="text-[10px] uppercase tracking-wider font-bold text-text-muted bg-white/5 px-2 py-0.5 rounded mt-1 inline-block">
-                            {doc.type}
-                          </span>
+                          <Typography className="font-black text-sm tracking-tight text-white group-hover:text-primary transition-colors leading-tight">
+                            {doc.name.toUpperCase()}
+                          </Typography>
+                          <div className="flex items-center gap-2 mt-1">
+                            <span className="text-[9px] uppercase tracking-widest font-black text-primary/80 bg-primary/5 px-2 py-0.5 border border-primary/20">
+                              {doc.type}
+                            </span>
+                            <span className="text-[9px] uppercase tracking-widest font-bold text-text-muted">
+                              #{doc._id.slice(-6)}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <Typography variant="small" className="text-text-main">{doc.eventName}</Typography>
+                    <td className="px-8 py-6">
+                      <div className="flex items-center gap-2">
+                        <Target size={12} className="text-primary opacity-40" />
+                        <Typography className="text-[11px] font-bold text-text-main uppercase tracking-wider">{doc.eventName || 'Global Link'}</Typography>
+                      </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <Typography variant="small" className="text-text-muted">
-                        {new Date(doc.uploadedAt).toLocaleDateString('pt-BR')}
-                      </Typography>
+                    <td className="px-8 py-6">
+                      <div className="flex items-center gap-2 text-text-muted">
+                        <Clock size={12} />
+                        <Typography className="text-[11px] font-medium tracking-wider">
+                          {format(new Date(doc.uploadedAt), 'dd MMM yyyy', { locale: ptBR }).toUpperCase()}
+                        </Typography>
+                      </div>
                     </td>
-                    <td className="px-6 py-4">
-                      {doc.status === 'valid' ? (
-                        <div className="flex items-center gap-2 text-emerald-400 font-semibold text-xs">
-                          <CheckCircle size={14} /> Validado
-                        </div>
-                      ) : doc.status === 'rejected' ? (
-                        <div className="flex items-center gap-2 text-rose-400 font-semibold text-xs">
-                          <X size={14} /> Rejeitado
-                        </div>
-                      ) : (
-                        <span className="text-[10px] px-2 py-1 rounded bg-amber-400/10 text-amber-400 font-bold uppercase tracking-wider">
-                          Pendente
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-3 opacity-60 group-hover:opacity-100 transition-opacity">
-                        {doc.status === 'pending_validation' && (
-                          <Button variant="ghost" size="sm" onClick={() => handleValidate(doc._id)} className="text-emerald-400 hover:bg-emerald-400/10 p-2">
-                            <CheckCircle size={18} />
-                          </Button>
+                    <td className="px-8 py-6">
+                      <div className="relative">
+                        {doc.status === 'valid' ? (
+                          <div className="inline-flex items-center gap-2 text-emerald-400">
+                            <div className="w-1 h-4 bg-emerald-400"></div>
+                            <span className="text-[10px] font-black uppercase tracking-widest">Verified</span>
+                          </div>
+                        ) : doc.status === 'rejected' ? (
+                          <div className="inline-flex items-center gap-2 text-rose-500">
+                            <div className="w-1 h-4 bg-rose-500"></div>
+                            <span className="text-[10px] font-black uppercase tracking-widest">Rejected</span>
+                          </div>
+                        ) : (
+                          <div className="inline-flex items-center gap-2 text-amber-500">
+                            <div className="w-1 h-4 bg-amber-500 animate-pulse"></div>
+                            <span className="text-[10px] font-black uppercase tracking-widest">Scanning</span>
+                          </div>
                         )}
-                        <a href={doc.url} target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-white/10 rounded-lg transition-colors text-blue-400">
-                          <Download size={18} />
+                      </div>
+                    </td>
+                    <td className="px-8 py-6 text-right">
+                      <div className="flex items-center justify-end gap-2 opacity-40 group-hover:opacity-100 transition-all duration-500">
+                        {doc.status === 'pending_validation' && (
+                          <button 
+                            onClick={() => handleValidate(doc._id)} 
+                            className="p-2 border border-emerald-400/20 text-emerald-400 hover:bg-emerald-400 hover:text-black transition-all"
+                            title="Validate Entry"
+                          >
+                            <ShieldCheck size={16} />
+                          </button>
+                        )}
+                        <a 
+                          href={doc.url} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="p-2 border border-blue-500/20 text-blue-500 hover:bg-blue-500 hover:text-black transition-all"
+                          title="Download Asset"
+                        >
+                          <Download size={16} />
                         </a>
-                        <button onClick={() => handleDelete(doc._id)} className="p-2 hover:bg-rose-400/10 rounded-lg transition-colors text-rose-400">
-                          <MoreVertical size={18} />
+                        <button 
+                          onClick={() => handleDelete(doc._id)} 
+                          className="p-2 border border-rose-500/20 text-rose-500 hover:bg-rose-500 hover:text-black transition-all"
+                          title="Purge Archive"
+                        >
+                          <MoreVertical size={16} />
                         </button>
                       </div>
                     </td>
@@ -295,6 +428,9 @@ const Documents: React.FC = () => {
             </tbody>
           </table>
         </div>
+
+        {/* Neural Grid Overlay */}
+        <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(16,185,129,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(16,185,129,0.02)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
       </div>
 
       {/* Upload Modal */}

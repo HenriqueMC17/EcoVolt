@@ -88,41 +88,52 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 const ConsumptionStat = ({ title, value, unit, icon: Icon, color, trend, trendValue }: any) => (
   <motion.div 
     variants={itemVariants}
-    whileHover={{ y: -4, scale: 1.02 }}
-    className="glass-thick group relative overflow-hidden p-6 border-white/5 hover:border-white/20 transition-all duration-500"
+    whileHover={{ y: -5, backgroundColor: 'rgba(255,255,255,0.03)' }}
+    className="glass-card group relative overflow-hidden p-8 border-white/5 transition-all duration-500"
   >
+    {/* Scanline Effect */}
+    <div className="absolute inset-0 scanline opacity-[0.02] pointer-events-none" />
+    
+    {/* Corner Accents */}
+    <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-white/10 rounded-tl-xl" />
+    <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-white/10 rounded-br-xl" />
+
     {/* Background Glow */}
-    <div className={`absolute -top-12 -right-12 w-24 h-24 blur-[60px] opacity-20 rounded-full transition-all duration-700 group-hover:scale-150 bg-gradient-to-br ${color}`} />
+    <div className={`absolute -top-12 -right-12 w-32 h-32 blur-[80px] opacity-10 rounded-full transition-all duration-700 group-hover:scale-150 group-hover:opacity-20 bg-gradient-to-br ${color}`} />
     
     <div className="relative z-10 flex flex-col h-full">
-      <div className="flex justify-between items-start mb-6">
+      <div className="flex justify-between items-start mb-8">
         <div className="relative">
-          <div className={`absolute inset-0 blur-lg opacity-40 rounded-full bg-gradient-to-br ${color}`} />
-          <div className="relative p-3 rounded-xl bg-white/5 border border-white/10 text-white shadow-inner">
-            <Icon size={18} strokeWidth={2.5} />
+          <div className={`absolute inset-0 blur-xl opacity-30 rounded-xl bg-gradient-to-br ${color}`} />
+          <div className="relative p-3.5 rounded-xl bg-slate-950 border border-white/10 text-white shadow-2xl">
+            <Icon size={22} strokeWidth={1.5} />
           </div>
         </div>
         {trend && (
-          <div className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[9px] font-black tracking-[0.15em] uppercase border backdrop-blur-md shadow-lg ${
+          <div className={cn(
+            "flex items-center gap-2 px-3 py-1.5 rounded-full text-[9px] font-black tracking-[0.1em] uppercase border backdrop-blur-md",
             trend === 'up' 
-              ? 'text-rose-400 bg-rose-400/10 border-rose-400/20' 
-              : 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20 shadow-emerald-500/10'
-          }`}>
-            {trend === 'up' ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
+              ? 'text-rose-400 border-rose-400/20 bg-rose-400/5' 
+              : 'text-emerald-400 border-emerald-400/20 bg-emerald-400/5 shadow-[0_0_15px_rgba(16,185,129,0.1)]'
+          )}>
+            {trend === 'up' ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
             {trendValue}
           </div>
         )}
       </div>
 
       <div className="mt-auto">
-        <Typography className="text-[10px] font-black tracking-[0.3em] text-slate-500 uppercase italic mb-1 group-hover:text-slate-300 transition-colors">
-          {title}
-        </Typography>
-        <div className="flex items-baseline gap-2">
-          <Typography className="text-4xl font-black text-white tracking-tight leading-none">
+        <div className="flex items-center gap-2 mb-2">
+          <Typography className="text-[10px] font-black tracking-[0.4em] text-slate-500 uppercase italic leading-none group-hover:text-slate-300 transition-colors">
+            {title}
+          </Typography>
+          <div className="flex-1 h-px bg-white/5" />
+        </div>
+        <div className="flex items-baseline gap-3">
+          <Typography className="text-4xl font-black text-white tracking-tighter leading-none">
             {value}
           </Typography>
-          <Typography className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic">
+          <Typography className="text-[11px] font-black text-slate-500 uppercase tracking-[0.2em] italic">
             {unit}
           </Typography>
         </div>
@@ -283,37 +294,40 @@ const Consumption: React.FC = () => {
       className="space-y-12 pb-24"
     >
       {/* Header */}
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-8 relative">
-        <div className="absolute -top-24 -left-24 w-64 h-64 bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none" />
+      <header className="flex flex-col md:flex-row md:items-end justify-between gap-10 relative">
+        <div className="absolute -top-32 -left-32 w-96 h-96 bg-emerald-500/10 blur-[120px] rounded-full pointer-events-none" />
         
         <motion.div variants={itemVariants} className="relative">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-              <span className="text-[9px] font-black tracking-[0.2em] text-emerald-500 uppercase">Neural performance engine v4.0</span>
+          <div className="flex items-center gap-4 mb-6">
+            <div className="px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-3">
+              <div className="relative">
+                <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,1)]" />
+                <div className="absolute inset-0 w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+              </div>
+              <span className="text-[10px] font-black tracking-[0.3em] text-emerald-400 uppercase italic">NEURAL_PERFORMANCE_ENGINE_V4.0</span>
             </div>
-            <div className="h-px w-16 bg-white/10" />
+            <div className="h-px w-24 bg-gradient-to-r from-white/20 to-transparent" />
           </div>
           
-          <Typography variant="h1" className="text-6xl font-black tracking-tight text-white mb-3 uppercase leading-none italic">
-            ENERGY <span className="text-gradient">DIAGNOSTIC</span>
+          <Typography variant="h1" className="text-7xl font-black tracking-tighter text-white mb-4 uppercase leading-none italic">
+            ENERGY <span className="text-emerald-500 drop-shadow-[0_0_30px_rgba(16,185,129,0.3)]">DIAGNOSTIC</span>
           </Typography>
           
-          <div className="flex items-center gap-4">
-            <Typography variant="body" className="text-slate-400 font-medium tracking-wide text-sm max-w-md">
-              Real-time consumption forensics, load prediction, and cryptographic reconciliation protocol.
+          <div className="flex items-center gap-4 border-l-2 border-emerald-500/30 pl-6">
+            <Typography variant="body" className="text-slate-400 font-medium tracking-wide text-sm max-w-md leading-relaxed">
+              Real-time consumption forensics, load prediction, and <span className="text-white font-bold italic">cryptographic reconciliation</span> protocol.
             </Typography>
           </div>
         </motion.div>
         
-        <motion.div variants={itemVariants} className="flex gap-4 relative z-10">
-          <Button variant="ghost" className="h-14 px-8 border border-white/5 bg-white/5 hover:bg-white/10 text-white font-black tracking-[0.2em] uppercase text-[10px] rounded-2xl group transition-all">
-            <FileText className="w-4 h-4 mr-3 text-slate-400 group-hover:text-emerald-500 transition-colors" />
-            Audit Ledger
+        <motion.div variants={itemVariants} className="flex gap-4 relative z-10 pb-2">
+          <Button variant="ghost" className="h-16 px-10 border border-white/5 bg-slate-900/40 hover:bg-slate-900/60 text-white font-black tracking-[0.3em] uppercase text-[10px] rounded-2xl group transition-all backdrop-blur-3xl">
+            <FileText className="w-4 h-4 mr-4 text-slate-400 group-hover:text-emerald-500 transition-colors" />
+            AUDIT_LEDGER
           </Button>
-          <Button className="btn-premium-primary h-14 px-10 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] italic shadow-[0_20px_40px_-12px_rgba(16,185,129,0.3)] hover:shadow-[0_25px_50px_-12px_rgba(16,185,129,0.5)]">
-            <Target size={16} className="mr-3" />
-            KPI SETTINGS
+          <Button className="h-16 px-12 rounded-2xl text-[10px] font-black uppercase tracking-[0.4em] italic bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-[0_20px_50px_-12px_rgba(16,185,129,0.4)] transition-all hover:scale-105 active:scale-95">
+            <Target size={18} className="mr-4" />
+            KPI_SETTINGS
           </Button>
         </motion.div>
       </header>
@@ -354,37 +368,47 @@ const Consumption: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Main Analytics Card */}
-        <motion.div variants={itemVariants} className="lg:col-span-8 glass-thick border-white/5 p-10 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-emerald-500/5 blur-[120px] rounded-full pointer-events-none" />
+        <motion.div variants={itemVariants} className="lg:col-span-8 glass-card border-white/5 p-12 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-500/5 blur-[150px] rounded-full pointer-events-none transition-all duration-1000 group-hover:bg-emerald-500/10" />
           
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-12 gap-6 relative z-10">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-16 gap-8 relative z-10">
             <div>
-              <Typography variant="h3" className="text-2xl font-black text-white mb-2 uppercase tracking-tight italic">Flux <span className="text-emerald-500">Variance</span></Typography>
-              <Typography variant="body" className="text-xs text-slate-500 font-bold tracking-widest uppercase italic">Neural-mapped comparative analysis [PLAN vs EXEC]</Typography>
-            </div>
-            <div className="flex items-center gap-6 p-2 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-md">
-              <div className="flex items-center gap-2.5 px-3">
-                <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
-                <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Plan</span>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+                  <BarChart3 size={16} />
+                </div>
+                <Typography className="text-[10px] font-black text-emerald-500/50 uppercase tracking-[0.5em] leading-none italic">FLUX_VARIANCE_MATRIX</Typography>
               </div>
-              <div className="flex items-center gap-2.5 px-3 border-l border-white/10">
-                <div className="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_100px_rgba(59,130,246,0.5)]" />
-                <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Exec</span>
+              <Typography variant="h3" className="text-3xl font-black text-white uppercase tracking-tighter italic">Delta de <span className="text-emerald-500">Carga</span></Typography>
+            </div>
+            <div className="flex items-center gap-8 p-3 rounded-2xl bg-slate-950/50 border border-white/10 backdrop-blur-3xl shadow-2xl">
+              <div className="flex items-center gap-3 px-4">
+                <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.8)]" />
+                <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em]">PLAN</span>
+              </div>
+              <div className="w-px h-4 bg-white/10" />
+              <div className="flex items-center gap-3 px-4">
+                <div className="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-[0_0_12px_rgba(59,130,246,0.8)]" />
+                <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em]">EXEC</span>
               </div>
             </div>
           </div>
           
-          <div className="h-[380px] relative">
-            <div className="absolute inset-0 scanline pointer-events-none opacity-[0.03]" />
+          <div className="h-[420px] relative">
+            {/* Chart Grid Accents */}
+            <div className="absolute inset-0 scanline pointer-events-none opacity-[0.04]" />
+            <div className="absolute top-0 left-0 w-12 h-12 border-t border-l border-white/10 rounded-tl-3xl pointer-events-none" />
+            <div className="absolute bottom-0 right-0 w-12 h-12 border-b border-r border-white/10 rounded-br-3xl pointer-events-none" />
+            
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData} barGap={12}>
+              <BarChart data={chartData} barGap={16}>
                 <defs>
                   <linearGradient id="barGradientPrev" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#10b981" stopOpacity={0.8}/>
+                    <stop offset="0%" stopColor="#10b981" stopOpacity={0.9}/>
                     <stop offset="100%" stopColor="#10b981" stopOpacity={0.05}/>
                   </linearGradient>
                   <linearGradient id="barGradientReal" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.8}/>
+                    <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.9}/>
                     <stop offset="100%" stopColor="#3b82f6" stopOpacity={0.05}/>
                   </linearGradient>
                 </defs>
@@ -394,36 +418,37 @@ const Consumption: React.FC = () => {
                   stroke="#475569" 
                   axisLine={false} 
                   tickLine={false} 
-                  fontSize={9} 
+                  fontSize={10} 
                   fontWeight="900"
-                  tick={{ dy: 15 }}
-                  className="uppercase tracking-widest"
+                  tick={{ dy: 20 }}
+                  className="uppercase tracking-[0.2em] italic"
                 />
                 <YAxis 
                   stroke="#475569" 
                   axisLine={false} 
                   tickLine={false} 
-                  fontSize={9} 
+                  fontSize={10} 
                   fontWeight="900"
+                  tick={{ dx: -10 }}
                   className="tabular-nums"
                 />
                 <Tooltip 
                   content={<CustomTooltip />} 
-                  cursor={{ fill: 'rgba(255,255,255,0.03)', radius: [8, 8, 0, 0] }} 
+                  cursor={{ fill: 'rgba(255,255,255,0.02)', radius: [12, 12, 0, 0] }} 
                 />
                 <Bar 
                   dataKey="Previsto" 
                   fill="url(#barGradientPrev)" 
-                  radius={[4, 4, 0, 0]} 
-                  barSize={10} 
-                  animationDuration={2000}
+                  radius={[6, 6, 0, 0]} 
+                  barSize={12} 
+                  animationDuration={3000}
                 />
                 <Bar 
                   dataKey="Realizado" 
                   fill="url(#barGradientReal)" 
-                  radius={[4, 4, 0, 0]} 
-                  barSize={10}
-                  animationDuration={2500}
+                  radius={[6, 6, 0, 0]} 
+                  barSize={12}
+                  animationDuration={3500}
                 />
               </BarChart>
             </ResponsiveContainer>
@@ -431,76 +456,89 @@ const Consumption: React.FC = () => {
         </motion.div>
 
         {/* Side Reconciliation Panel */}
-        <motion.div variants={itemVariants} className="lg:col-span-4 glass-thick border-white/5 flex flex-col relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 blur-3xl pointer-events-none" />
+        <motion.div variants={itemVariants} className="lg:col-span-4 glass-card border-white/5 flex flex-col relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/[0.03] blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2" />
           
-          <div className="p-8 border-b border-white/5 relative z-10">
-            <Typography variant="h3" className="text-xl font-black text-white mb-2 uppercase tracking-tight italic">RECON <span className="text-emerald-500">VAULT</span></Typography>
-            <Typography variant="body" className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic">Cryptographic financial clearing</Typography>
+          <div className="p-10 border-b border-white/5 relative z-10 bg-white/[0.01]">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="p-2 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400">
+                <Scale size={16} />
+              </div>
+              <Typography className="text-[10px] font-black text-blue-500/50 uppercase tracking-[0.5em] leading-none italic">RECON_VAULT_PROTOCOL</Typography>
+            </div>
+            <Typography variant="h3" className="text-2xl font-black text-white uppercase tracking-tighter italic">Reconciliação</Typography>
           </div>
           
-          <div className="flex-1 p-6 space-y-6 max-h-[480px] overflow-y-auto custom-scrollbar relative z-10">
+          <div className="flex-1 p-8 space-y-6 max-h-[520px] overflow-y-auto custom-scrollbar relative z-10">
             {consumptions.filter(c => c.actualKwh && !c.isReconciled && (c.status === 'Consumo Excedente' || c.status === 'Consumo Inferior')).map(c => (
               <motion.div 
                 key={c._id} 
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className={`p-6 rounded-2xl border relative overflow-hidden group transition-all duration-300 hover:scale-[1.02] bg-white/5 ${
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                whileHover={{ scale: 1.02, backgroundColor: 'rgba(255,255,255,0.03)' }}
+                className={cn(
+                  "p-8 rounded-[2rem] border relative overflow-hidden transition-all duration-500 bg-slate-950/40 backdrop-blur-3xl group/alert",
                   c.status === 'Consumo Excedente' 
-                    ? 'border-rose-500/20 hover:border-rose-500/40' 
-                    : 'border-emerald-500/20 hover:border-emerald-500/40'
-                }`}
+                    ? 'border-rose-500/20 hover:border-rose-500/40 shadow-[0_0_30px_rgba(244,63,94,0.05)]' 
+                    : 'border-emerald-500/20 hover:border-emerald-500/40 shadow-[0_0_30px_rgba(16,185,129,0.05)]'
+                )}
               >
-                <div className={`absolute -top-12 -right-12 w-24 h-24 blur-[40px] rounded-full opacity-10 transition-all group-hover:scale-150 ${
+                <div className={`absolute -top-16 -right-16 w-32 h-32 blur-[50px] rounded-full opacity-10 transition-all group-hover/alert:scale-150 group-hover/alert:opacity-20 ${
                   c.status === 'Consumo Excedente' ? 'bg-rose-500' : 'bg-emerald-500'
                 }`} />
                 
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-lg bg-white/5 border border-white/5 ${
+                <div className="flex items-center gap-4 mb-4">
+                  <div className={cn(
+                    "w-12 h-12 rounded-xl flex items-center justify-center border transition-all duration-500",
+                    c.status === 'Consumo Excedente' 
+                      ? 'text-rose-400 bg-rose-400/10 border-rose-400/20 group-hover/alert:bg-rose-400/20' 
+                      : 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20 group-hover/alert:bg-emerald-400/20'
+                  )}>
+                    {c.status === 'Consumo Excedente' ? <AlertCircle size={24} /> : <TrendingDown size={24} />}
+                  </div>
+                  <div>
+                    <Typography className={cn(
+                      "text-[10px] font-black uppercase tracking-[0.3em] italic",
                       c.status === 'Consumo Excedente' ? 'text-rose-400' : 'text-emerald-400'
-                    }`}>
-                      {c.status === 'Consumo Excedente' ? <AlertCircle size={16} /> : <TrendingDown size={16} />}
-                    </div>
-                    <Typography className={`text-[10px] font-black uppercase tracking-[0.2em] italic ${
-                      c.status === 'Consumo Excedente' ? 'text-rose-400' : 'text-emerald-400'
-                    }`}>
-                      {c.status === 'Consumo Excedente' ? 'DEBIT_CLEAR' : 'CREDIT_CLEAR'}
+                    )}>
+                      {c.status === 'Consumo Excedente' ? 'DEBIT_CLEARANCE' : 'CREDIT_ADJUST'}
                     </Typography>
+                    <Typography className="text-lg font-black text-white italic tracking-tight uppercase">{c.eventName}</Typography>
                   </div>
                 </div>
                 
-                <Typography className="text-base font-black text-white mb-2 block uppercase italic tracking-tight">{c.eventName}</Typography>
-                <Typography className="text-[11px] text-slate-400 font-bold uppercase tracking-wide mb-6 block leading-relaxed">
-                  Delta anomaly of <span className="text-white">{Math.abs(c.difference).toFixed(1)} kWh</span> identified. Requires clearance.
+                <Typography className="text-[11px] text-slate-400 font-bold uppercase tracking-widest mb-8 leading-relaxed italic">
+                  Anomaly detected: <span className="text-white font-black underline decoration-2 underline-offset-4">{Math.abs(c.difference).toFixed(1)} kWh</span> variance.
                 </Typography>
                 
                 {isManagementRole && (
                   <Button 
-                    variant="ghost" 
-                    className={`w-full h-12 text-[10px] font-black uppercase tracking-[0.2em] italic rounded-xl transition-all border shadow-lg ${
+                    className={cn(
+                      "w-full h-14 text-[10px] font-black uppercase tracking-[0.3em] italic rounded-2xl transition-all border shadow-2xl",
                       c.status === 'Consumo Excedente' 
-                        ? 'bg-rose-500/10 hover:bg-rose-500 text-rose-400 hover:text-white border-rose-500/30' 
-                        : 'bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-white border-emerald-500/30'
-                    }`}
+                        ? 'bg-rose-500 hover:bg-rose-400 text-slate-950 border-rose-500 shadow-rose-500/20' 
+                        : 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 border-emerald-500 shadow-emerald-500/20'
+                    )}
                     onClick={() => handleProcessReconciliation(c._id)}
                     loading={isProcessing === c._id}
                   >
-                    {c.status === 'Consumo Excedente' ? 'EXECUTE CLEARANCE' : 'AUTHORIZE REBATE'}
+                    {c.status === 'Consumo Excedente' ? 'EXECUTE_LIQUIDATION' : 'AUTHORIZE_REBATE'}
                   </Button>
                 )}
               </motion.div>
             ))}
 
             {consumptions.filter(c => c.actualKwh && !c.isReconciled && (c.status === 'Consumo Excedente' || c.status === 'Consumo Inferior')).length === 0 && (
-              <div className="flex flex-col items-center justify-center py-20 text-center space-y-6 opacity-30">
-                <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center border border-white/10 relative">
-                  <div className="absolute inset-0 bg-emerald-500/20 blur-xl rounded-full" />
-                  <CheckCircle2 size={32} className="text-emerald-500 relative z-10" />
+              <div className="flex flex-col items-center justify-center py-24 text-center space-y-8 relative overflow-hidden">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-emerald-500/20 blur-3xl rounded-full animate-pulse" />
+                  <div className="w-20 h-20 rounded-3xl bg-slate-950 border border-emerald-500/30 flex items-center justify-center text-emerald-400 relative z-10 shadow-2xl">
+                    <CheckCircle2 size={40} strokeWidth={1} />
+                  </div>
                 </div>
-                <div className="space-y-1">
-                  <Typography className="text-[10px] font-black tracking-[0.3em] text-white uppercase italic">ALL CLEAR</Typography>
-                  <Typography className="text-[9px] font-black tracking-[0.2em] text-slate-500 uppercase">Secure protocol synchronized</Typography>
+                <div className="space-y-2">
+                  <Typography className="text-[12px] font-black tracking-[0.5em] text-white uppercase italic leading-none">ALL_CLEAR</Typography>
+                  <Typography className="text-[10px] font-black tracking-[0.3em] text-slate-500 uppercase">SECURE_PROTOCOL_SYNCED</Typography>
                 </div>
               </div>
             )}
@@ -509,138 +547,150 @@ const Consumption: React.FC = () => {
       </div>
 
       {/* Main Table */}
-      <motion.div variants={itemVariants} className="glass-thick overflow-hidden border-white/5 relative">
-        <div className="absolute top-0 left-0 w-full h-1 scanline pointer-events-none opacity-[0.05]" />
+      <motion.div variants={itemVariants} className="glass-card overflow-hidden border-white/5 relative group">
+        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
         
-        <div className="p-10 border-b border-white/5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 bg-white/[0.02] relative z-10">
-          <div>
-            <Typography variant="h3" className="text-2xl font-black text-white mb-2 uppercase tracking-tight italic">Registry <span className="text-emerald-500">Forensics</span></Typography>
-            <Typography variant="body" className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic">Cryptographically signed energy audit trail</Typography>
+        <div className="p-12 border-b border-white/5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-10 bg-white/[0.01] relative z-10">
+          <div className="flex items-center gap-6">
+            <div className="w-14 h-14 rounded-2xl bg-slate-950 border border-white/5 flex items-center justify-center text-emerald-400">
+              <RefreshCw size={28} strokeWidth={1.5} />
+            </div>
+            <div>
+              <Typography className="text-[10px] font-black text-emerald-500/50 uppercase tracking-[0.5em] leading-none mb-2">NEURAL_AUDIT_LOG</Typography>
+              <Typography variant="h3" className="text-3xl font-black text-white uppercase tracking-tighter italic">Forense de <span className="text-emerald-500">Registros</span></Typography>
+            </div>
           </div>
-          <Button variant="ghost" size="sm" className="h-12 px-8 border border-white/10 bg-white/5 text-slate-300 font-black tracking-[0.2em] uppercase text-[9px] rounded-xl flex items-center gap-4 hover:text-white hover:bg-white/10 transition-all group">
-            <FileText size={14} className="group-hover:text-emerald-500 transition-colors" /> EXPORT_AUDIT_CSV
+          <Button variant="ghost" className="h-14 px-10 border border-white/10 bg-slate-900/60 text-slate-400 font-black tracking-[0.3em] uppercase text-[10px] rounded-2xl flex items-center gap-4 hover:text-white hover:bg-white/10 transition-all group/btn backdrop-blur-3xl">
+            <FileText size={18} className="group-hover/btn:text-emerald-500 transition-colors" /> EXPORT_AUDIT_CSV
           </Button>
-                <div className="overflow-x-auto relative z-10">
+        </div>
+        
+        <div className="overflow-x-auto relative z-10">
           <table className="w-full text-left">
             <thead>
-              <tr className="bg-white/5 border-b border-white/5">
-                <th className="px-10 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] italic">ASSET_IDENTITY</th>
-                <th className="px-10 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] italic">PLAN_LOAD</th>
-                <th className="px-10 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] italic">REAL_LOAD</th>
-                <th className="px-10 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] italic">VARIANCE_DELTA</th>
-                <th className="px-10 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] italic text-center">PROTOCOL_STATUS</th>
-                <th className="px-10 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] italic text-right">COMMAND_CENTER</th>
+              <tr className="bg-slate-950/80 border-b border-white/5">
+                <th className="px-12 py-8 text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] italic">ASSET_IDENTITY</th>
+                <th className="px-12 py-8 text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] italic">PLAN_LOAD</th>
+                <th className="px-12 py-8 text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] italic">REAL_LOAD</th>
+                <th className="px-12 py-8 text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] italic">VARIANCE_DELTA</th>
+                <th className="px-12 py-8 text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] italic text-center">PROTOCOL_STATUS</th>
+                <th className="px-12 py-8 text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] italic text-right">COMMAND_CENTER</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/[0.03]">
               {consumptions.map((item) => (
-                <tr key={item._id} className="hover:bg-white/[0.03] group transition-all duration-300">
-                  <td className="px-10 py-8">
-                    <Typography className="text-sm font-black text-white group-hover:text-emerald-400 transition-colors uppercase italic tracking-tight">{item.eventName}</Typography>
+                <tr key={item._id} className="hover:bg-emerald-500/[0.02] group/row transition-all duration-300">
+                  <td className="px-12 py-10">
+                    <Typography className="text-base font-black text-white group-hover/row:text-emerald-400 transition-colors uppercase italic tracking-tight">{item.eventName}</Typography>
+                    <Typography className="text-[9px] font-bold text-slate-600 uppercase tracking-[0.2em] mt-1">UUID: {item._id.slice(-8).toUpperCase()}</Typography>
                   </td>
-                  <td className="px-10 py-8">
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-sm font-black text-slate-300 tabular-nums">{item.predictedKwh.toFixed(1)}</span>
-                      <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest italic">kWh</span>
+                  <td className="px-12 py-10">
+                    <div className="flex items-baseline gap-3">
+                      <span className="text-base font-black text-slate-300 tabular-nums">{item.predictedKwh.toFixed(1)}</span>
+                      <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest italic">kWh</span>
                     </div>
                   </td>
-                  <td className="px-10 py-8">
+                  <td className="px-12 py-10">
                     {editingId === item._id ? (
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-4">
                         <input 
                           type="number" 
                           value={actualValue}
                           onChange={e => setActualValue(e.target.value)}
-                          className="w-28 bg-slate-950/80 border border-emerald-500/40 rounded-xl px-4 py-2 text-sm text-white outline-none focus:ring-4 focus:ring-emerald-500/10 transition-all font-black"
+                          className="w-32 bg-slate-950 border border-emerald-500/50 rounded-2xl px-6 py-3 text-sm text-white outline-none focus:ring-4 focus:ring-emerald-500/10 transition-all font-black"
                           autoFocus
                         />
                         <button 
                           onClick={() => handleUpdateConsumption(item._id)} 
                           disabled={isUpdating}
-                          className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all border border-emerald-500/20 shadow-lg"
+                          className="w-12 h-12 rounded-2xl bg-emerald-500 text-slate-950 flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:scale-110 active:scale-95 transition-all"
                         >
-                          <CheckCircle2 size={16} />
+                          <CheckCircle2 size={20} />
                         </button>
                         <button 
                           onClick={() => setEditingId(null)}
-                          className="p-2 rounded-xl bg-white/5 text-slate-500 hover:text-white transition-all"
+                          className="w-12 h-12 rounded-2xl bg-white/5 text-slate-500 hover:text-white transition-all flex items-center justify-center"
                         >
-                          <X size={16} />
+                          <X size={20} />
                         </button>
                       </div>
                     ) : (
-                      <div className="flex items-center gap-4">
-                        <div className={`flex items-baseline gap-2 ${!item.actualKwh ? 'opacity-20 italic' : ''}`}>
-                          <span className="text-sm font-black text-white tabular-nums">{item.actualKwh ? item.actualKwh.toFixed(1) : 'PENDING'}</span>
-                          <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest italic">kWh</span>
+                      <div className="flex items-center gap-5">
+                        <div className={cn("flex items-baseline gap-3", !item.actualKwh && 'opacity-20 italic')}>
+                          <span className="text-base font-black text-white tabular-nums">{item.actualKwh ? item.actualKwh.toFixed(1) : 'PENDING'}</span>
+                          <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest italic">kWh</span>
                         </div>
                         {isManagementRole && !item.actualKwh && (
                           <button 
                             onClick={() => setEditingId(item._id)}
-                            className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 opacity-0 group-hover:opacity-100 transition-all hover:bg-emerald-500 hover:text-white shadow-lg border border-emerald-500/20"
+                            className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 opacity-0 group-hover/row:opacity-100 transition-all hover:bg-emerald-500 hover:text-slate-950 shadow-2xl border border-emerald-500/20 flex items-center justify-center"
                           >
-                            <Plus size={16} />
+                            <Plus size={18} />
                           </button>
                         )}
                       </div>
                     )}
                   </td>
-                  <td className="px-10 py-8">
+                  <td className="px-12 py-10">
                     {item.actualKwh ? (
-                      <div className={`flex items-center gap-2 font-black text-xs tabular-nums ${
-                        item.difference > 0 ? 'text-rose-400' : item.difference < 0 ? 'text-blue-400' : 'text-emerald-400'
-                      }`}>
-                        {item.difference > 0 ? <TrendingUp size={14} /> : item.difference < 0 ? <TrendingDown size={14} /> : null}
+                      <div className={cn(
+                        "flex items-center gap-3 font-black text-sm tabular-nums px-4 py-2 rounded-xl border w-fit",
+                        item.difference > 0 ? 'text-rose-400 bg-rose-400/5 border-rose-400/10' : 
+                        item.difference < 0 ? 'text-blue-400 bg-blue-400/5 border-blue-400/10' : 
+                        'text-emerald-400 bg-emerald-400/5 border-emerald-400/10'
+                      )}>
+                        {item.difference > 0 ? <TrendingUp size={16} /> : item.difference < 0 ? <TrendingDown size={16} /> : <CheckCircle2 size={16} />}
                         {item.difference > 0 ? '+' : ''}{item.difference.toFixed(1)}
                       </div>
                     ) : (
-                      <span className="text-slate-800 text-xs font-black tracking-widest italic">NOT_CALCULATED</span>
+                      <span className="text-slate-800 text-xs font-black tracking-[0.2em] italic">NULL_VALUE</span>
                     )}
                   </td>
-                  <td className="px-10 py-8">
+                  <td className="px-12 py-10">
                     <div className="flex justify-center">
-                      <span className={`px-4 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] italic border backdrop-blur-md transition-all ${
-                        item.status === 'Dentro da Tolerância' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.1)]' :
-                        item.status === 'Consumo Excedente' ? 'bg-rose-500/10 text-rose-400 border-rose-500/20 shadow-[0_0_20px_rgba(244,63,94,0.1)]' :
-                        item.actualKwh ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' : 'bg-white/5 text-slate-500 border-white/10'
-                      }`}>
-                        {item.actualKwh ? item.status : 'AWAITING_MED'}
+                      <span className={cn(
+                        "px-5 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.2em] italic border backdrop-blur-xl transition-all shadow-lg",
+                        item.status === 'Dentro da Tolerância' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-emerald-500/10' :
+                        item.status === 'Consumo Excedente' ? 'bg-rose-500/10 text-rose-400 border-rose-500/20 shadow-rose-500/10' :
+                        item.actualKwh ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' : 'bg-white/5 text-slate-600 border-white/5'
+                      )}>
+                        {item.actualKwh ? item.status : 'AWAIT_METRIC'}
                       </span>
                     </div>
                   </td>
-                  <td className="px-10 py-8 text-right">
-                    <div className="flex justify-end items-center gap-4">
+                  <td className="px-12 py-10 text-right">
+                    <div className="flex justify-end items-center gap-6">
                       {item.actualKwh && item.status === 'Dentro da Tolerância' && !item.isReconciled && isManagementRole && (
                         <button 
-                          className="h-10 px-6 rounded-xl bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500 hover:text-white font-black uppercase text-[9px] tracking-[0.2em] italic transition-all flex items-center gap-3 border border-emerald-500/20 shadow-lg"
+                          className="h-12 px-8 rounded-2xl bg-emerald-500 text-slate-950 hover:bg-emerald-400 font-black uppercase text-[10px] tracking-[0.3em] italic transition-all flex items-center gap-4 shadow-[0_10px_30px_rgba(16,185,129,0.3)] hover:scale-105"
                           onClick={() => handleProcessReconciliation(item._id)}
                           disabled={!!isProcessing}
                         >
-                          {isProcessing === item._id ? <Loader2 size={14} className="animate-spin" /> : <CheckCircle2 size={14} />}
+                          {isProcessing === item._id ? <Loader2 size={16} className="animate-spin" /> : <ShieldCheck size={16} />}
                           CLEAR_RECON
                         </button>
                       )}
                       
                       {item.isReconciled && (
-                        <div className="flex items-center gap-3 px-4 py-2 rounded-xl bg-emerald-500/5 border border-emerald-500/20 shadow-[inset_0_0_20px_rgba(16,185,129,0.05)]">
-                          <CheckCircle2 size={14} className="text-emerald-500" />
-                          <span className="text-[9px] font-black uppercase tracking-[0.2em] italic text-emerald-500">FINALIZED</span>
+                        <div className="flex items-center gap-4 px-6 py-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 shadow-[inset_0_0_30px_rgba(16,185,129,0.05)]">
+                          <CheckCircle2 size={16} className="text-emerald-500" />
+                          <span className="text-[10px] font-black uppercase tracking-[0.3em] italic text-emerald-400">LEDGER_FINALIZED</span>
                         </div>
                       )}
  
                       {isManagementRole && (
-                        <div className="flex items-center gap-1 ml-4 p-1 rounded-xl bg-white/5 border border-white/5">
+                        <div className="flex items-center gap-2 ml-4 p-2 rounded-2xl bg-white/[0.02] border border-white/5 backdrop-blur-xl">
                           <button 
                             onClick={() => handleEditItem(item)}
-                            className="p-2.5 rounded-lg text-slate-500 hover:text-white hover:bg-white/5 transition-all"
+                            className="p-3 rounded-xl text-slate-500 hover:text-white hover:bg-white/5 transition-all"
                           >
-                            <Edit2 size={14} />
+                            <Edit2 size={16} />
                           </button>
                           <button 
                             onClick={() => handleDeleteConsumption(item._id)}
-                            className="p-2.5 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-400/5 transition-all"
+                            className="p-3 rounded-xl text-slate-500 hover:text-rose-400 hover:bg-rose-400/5 transition-all"
                           >
-                            <Trash2 size={14} />
+                            <Trash2 size={16} />
                           </button>
                         </div>
                       )}
