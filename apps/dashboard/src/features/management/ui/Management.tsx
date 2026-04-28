@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery, useMutation } from 'convex/react';
-import { api } from '@/../convex/_generated/api';
+import { api } from '@convex/_generated/api';
 import { useToast } from '@/context/ToastContext';
 import { useUser } from '@/context/UserContext';
 import { Button } from '@/shared/ui/Button';

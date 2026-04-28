@@ -28,7 +28,7 @@ import {
   Pie
 } from 'recharts';
 import { useQuery } from "convex/react";
-import { api } from "@/../convex/_generated/api";
+import { api } from "@convex/_generated/api";
 import { useUser } from "@/context/UserContext";
 import { useNavigate } from 'react-router-dom';
 import { Typography } from '@/shared/ui/Typography';

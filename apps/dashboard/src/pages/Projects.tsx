@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation } from 'convex/react';
-import { api } from '../../convex/_generated/api';
+import { api } from '@convex/_generated/api';
 import { motion } from 'framer-motion';
 import { Plus, MapPin, Activity, Calendar, Trash2, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';

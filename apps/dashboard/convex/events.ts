@@ -72,6 +72,90 @@ export const getEventById = query({
   },
 });
 
+export const getEventPipeline = query({
+  args: { 
+    eventId: v.id("events"),
+    userEmail: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", args.userEmail))
+      .unique();
+    
+    if (!user) throw new Error("Unauthorized");
+
+    const event = await ctx.db.get(args.eventId);
+    if (!event) return null;
+
+    // Permissions check
+    if (user.role === "event_company" && user.companyId !== event.companyId) {
+      throw new Error("Permissão negada para este evento.");
+    }
+
+    const company = await ctx.db.get(event.companyId);
+    
+    // Fetch proposals
+    const proposals = await ctx.db
+      .query("proposals")
+      .withIndex("by_eventId", (q) => q.eq("eventId", args.eventId))
+      .collect();
+    
+    const acceptedProposal = proposals.find(p => p.status === "accepted");
+    
+    // Fetch contract
+    const contract = await ctx.db
+      .query("contracts")
+      .withIndex("by_eventId", (q) => q.eq("eventId", args.eventId))
+      .unique();
+    
+    // Fetch consumptions and calculate stats
+    const consumptions = await ctx.db
+      .query("consumptions")
+      .withIndex("by_eventId", (q) => q.eq("eventId", args.eventId))
+      .collect();
+
+    const consumptionStats = consumptions.length > 0 ? {
+      totalPredicted: consumptions.reduce((acc, c) => acc + c.predictedKwh, 0),
+      totalActual: consumptions.reduce((acc, c) => acc + (c.actualKwh || 0), 0),
+      lastUpdate: consumptions[consumptions.length - 1].recordedAt,
+    } : null;
+
+    // Financial summary
+    let financialSummary = null;
+    if (contract) {
+      financialSummary = {
+        totalValue: contract.value,
+        ratePerKwh: contract.ratePerKwh,
+        providerId: contract.providerCompanyId,
+      };
+    } else if (acceptedProposal) {
+      financialSummary = {
+        totalValue: acceptedProposal.value,
+        providerId: acceptedProposal.providerCompanyId,
+      };
+    }
+
+    return {
+      event: {
+        ...event,
+        companyName: company ? company.name : "Desconhecida",
+      },
+      proposals: {
+        count: proposals.length,
+        hasAccepted: !!acceptedProposal,
+        acceptedId: acceptedProposal?._id,
+      },
+      contract: contract ? {
+        id: contract._id,
+        status: contract.status,
+      } : null,
+      consumption: consumptionStats,
+      financial: financialSummary,
+    };
+  },
+});
+
 export const createEvent = mutation({
   args: {
     name: v.string(),

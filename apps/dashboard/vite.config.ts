@@ -15,6 +15,7 @@ export default defineConfig({
       '@app': path.resolve(__dirname, './src/app'),
       '@features': path.resolve(__dirname, './src/features'),
       '@shared': path.resolve(__dirname, './src/shared'),
+      '@convex': path.resolve(__dirname, './convex'),
     },
   },
 })

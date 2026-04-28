@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useAction } from 'convex/react';
-import { api } from '../../convex/_generated/api';
+import { api } from '@convex/_generated/api';
 import { motion } from 'framer-motion';
 import { 
   ArrowLeft, 

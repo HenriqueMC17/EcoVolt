@@ -50,6 +50,42 @@ export const getContracts = query({
   },
 });
 
+export const getContractByEventId = query({
+  args: { 
+    eventId: v.id("events"),
+    userEmail: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", args.userEmail))
+      .unique();
+    
+    if (!user) throw new Error("Unauthorized");
+
+    const contract = await ctx.db
+      .query("contracts")
+      .withIndex("by_eventId", (q) => q.eq("eventId", args.eventId))
+      .unique();
+    
+    if (!contract) return null;
+
+    // Check permissions
+    if (user.role === "event_company" && user.companyId !== contract.clientCompanyId) {
+      throw new Error("Permissão negada.");
+    }
+    
+    const event = await ctx.db.get(contract.eventId);
+    const provider = await ctx.db.get(contract.providerCompanyId);
+    
+    return {
+      ...contract,
+      eventName: event ? event.name : "Desconhecido",
+      providerName: provider ? provider.name : "Desconhecido",
+    };
+  },
+});
+
 export const createContract = mutation({
   args: {
     eventId: v.id("events"),

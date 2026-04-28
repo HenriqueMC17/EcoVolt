@@ -114,3 +114,68 @@ export const getOperationalAlerts = query({
     return alerts;
   },
 });
+
+export const getAlertsByEventId = query({
+  args: { 
+    eventId: v.id("events"),
+    userEmail: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", args.userEmail))
+      .unique();
+    
+    if (!user) throw new Error("Unauthorized");
+
+    const event = await ctx.db.get(args.eventId);
+    if (!event) return [];
+
+    if (user.role === "event_company" && user.companyId !== event.companyId) {
+      return [];
+    }
+
+    const alerts = [];
+
+    // 1. Consumption Deviation
+    const consumptions = await ctx.db
+      .query("consumptions")
+      .withIndex("by_eventId", (q) => q.eq("eventId", args.eventId))
+      .collect();
+
+    for (const cons of consumptions) {
+      if (cons.actualKwh) {
+        const diff = cons.actualKwh - cons.predictedKwh;
+        const tolerance = 5; // Fixed for now or get from event if added to schema
+        if (Math.abs(diff) > tolerance) {
+          alerts.push({
+            id: `dev-${cons._id}`,
+            type: diff > 0 ? "error" : "warning",
+            title: diff > 0 ? "Excesso de Consumo" : "Sub-consumo Detectado",
+            description: `Desvio de ${Math.abs(diff).toFixed(1)} kWh em relação ao previsto.`,
+            timestamp: cons.recordedAt
+          });
+        }
+      }
+    }
+
+    // 2. Financial Overdue
+    const financials = await ctx.db
+      .query("financials")
+      .withIndex("by_eventId", (q) => q.eq("eventId", args.eventId))
+      .filter((q) => q.eq(q.field("status"), "overdue"))
+      .collect();
+
+    for (const fin of financials) {
+      alerts.push({
+        id: `fin-${fin._id}`,
+        type: "error",
+        title: "Pagamento Pendente",
+        description: `Vencimento em ${new Date(fin.dueDate).toLocaleDateString()} no valor de R$ ${fin.amount.toLocaleString()}.`,
+        timestamp: fin.dueDate
+      });
+    }
+
+    return alerts.sort((a, b) => b.timestamp - a.timestamp);
+  },
+});

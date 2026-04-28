@@ -26,7 +26,8 @@
       "@/*": ["./src/*"],
       "@app/*": ["./src/app/*"],
       "@features/*": ["./src/features/*"],
-      "@shared/*": ["./src/shared/*"]
+      "@shared/*": ["./src/shared/*"],
+      "@convex/*": ["./convex/*"]
     }
   },
 

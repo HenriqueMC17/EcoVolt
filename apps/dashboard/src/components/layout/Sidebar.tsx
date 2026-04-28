@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import { useUser } from '../../context/UserContext';
 import { useQuery } from 'convex/react';
-import { api } from '../../../convex/_generated/api';
+import { api } from '@convex/_generated/api';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const menuItems = [

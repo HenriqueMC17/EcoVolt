@@ -296,3 +296,37 @@ export const getConsumptionChartData = query({
     })).reverse(); 
   }
 });
+
+export const getConsumptionByEventId = query({
+  args: { 
+    eventId: v.id("events"),
+    userEmail: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", args.userEmail))
+      .unique();
+    
+    if (!user) throw new Error("Unauthorized");
+
+    const event = await ctx.db.get(args.eventId);
+    if (!event) return null;
+
+    // Check permissions
+    if (user.role === "event_company" && user.companyId !== event.companyId) {
+      throw new Error("Permissão negada.");
+    }
+
+    const consumptions = await ctx.db
+      .query("consumptions")
+      .withIndex("by_eventId", (q) => q.eq("eventId", args.eventId))
+      .order("asc")
+      .collect();
+    
+    return consumptions.map(c => ({
+      ...c,
+      day: new Date(c.recordedAt).toLocaleDateString("pt-BR", { day: '2-digit', month: '2-digit' }),
+    }));
+  },
+});

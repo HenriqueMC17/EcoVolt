@@ -1,6 +1,6 @@
 import { useQuery } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
-import { Id } from "../../../../convex/_generated/dataModel";
+import { api } from "@convex/_generated/api";
+import { Id } from "@convex/_generated/dataModel";
 
 export const useDashboardData = (userId?: string) => {
   // Use a hardcoded ID for dev if none provided, or fetch first user
