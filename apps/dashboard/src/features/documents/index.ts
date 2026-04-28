@@ -1,1 +1,1 @@
-export { default as Documents } from './ui/Documents';
+export * from './ui/Documents';

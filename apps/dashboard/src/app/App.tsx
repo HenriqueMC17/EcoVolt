@@ -1,66 +1,42 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { Navbar } from '@/shared/components/Navbar';
-import { Hero } from '@/features/hero/ui/Hero';
-import { StatsOverview } from '@/features/stats-overview/ui/StatsOverview';
-import { Footer } from '@/shared/components/Footer';
-import { DashboardLayout } from '@/shared/components/DashboardLayout';
-// Features
-import { DashboardOverview } from '@/features/dashboard-overview/ui/DashboardOverview';
-import { Contracts } from '@/features/contracts/ui/Contracts';
-import { Events } from '@/features/events/ui/Events';
-import { Estimation } from '@/features/estimation/ui/Estimation';
-import { Providers } from '@/features/providers/ui/Providers';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { MainLayout } from '../layouts/MainLayout';
+import { Dashboard } from '../features/dashboard/ui/Dashboard';
+import { AuthProvider } from './context/AuthContext';
 
-// Providers
-import { UserProvider } from '@/context/UserContext';
-import { ToastProvider } from '@/context/ToastContext';
+// Pages
+import Events from '../pages/Events';
+import Estimation from '../pages/Estimation';
+import Providers from '../pages/Providers';
+import Proposals from '../pages/Proposals';
+import Contracts from '../pages/Contracts';
+import Consumption from '../pages/Consumption';
+import Financial from '../pages/Financial';
+import Documents from '../pages/Documents';
+import Reports from '../pages/Reports';
+import Settings from '../pages/Settings';
 
-// Legacy Pages (to be migrated)
-import Proposals from '@/pages/Proposals';
-import Consumption from '@/pages/Consumption';
-import Financial from '@/pages/Financial';
-import Documents from '@/pages/Documents';
-import Management from '@/pages/Management';
-
-const LandingPage = () => (
-  <div className="bg-bg-main min-h-screen">
-    <Navbar />
-    <Hero />
-    <StatsOverview />
-    <Footer />
-  </div>
-);
-
-export const App: React.FC = () => {
+export function App() {
   return (
-    <UserProvider>
-      <ToastProvider>
-        <Router>
+    <AuthProvider>
+      <BrowserRouter>
+        <MainLayout>
           <Routes>
-            <Route path="/" element={<LandingPage />} />
-            
-            <Route path="/dashboard" element={<DashboardLayout />}>
-              <Route index element={<DashboardOverview />} />
-              <Route path="contratos" element={<Contracts />} />
-              <Route path="eventos" element={<Events />} />
-              <Route path="estimativas" element={<Estimation />} />
-              <Route path="provedores" element={<Providers />} />
-              <Route path="propostas" element={<Proposals />} />
-              <Route path="consumo" element={<Consumption />} />
-              <Route path="financeiro" element={<Financial />} />
-              <Route path="documentos" element={<Documents />} />
-              <Route path="configuracoes" element={<Management />} />
-              {/* Fallback for dashboard */}
-              <Route path="*" element={<Navigate to="/dashboard" replace />} />
-            </Route>
-            
-            {/* Global Fallback */}
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/events" element={<Events />} />
+            <Route path="/estimation" element={<Estimation />} />
+            <Route path="/providers" element={<Providers />} />
+            <Route path="/proposals" element={<Proposals />} />
+            <Route path="/contracts" element={<Contracts />} />
+            <Route path="/consumption" element={<Consumption />} />
+            <Route path="/financial" element={<Financial />} />
+            <Route path="/documents" element={<Documents />} />
+            <Route path="/reports" element={<Reports />} />
+            <Route path="/settings" element={<Settings />} />
           </Routes>
-        </Router>
-      </ToastProvider>
-    </UserProvider>
+        </MainLayout>
+      </BrowserRouter>
+    </AuthProvider>
   );
-};
+}
 

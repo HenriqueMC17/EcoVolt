@@ -1,1 +1,1 @@
-export { default as Financial } from './ui/Financial';
+export * from './ui/Financial';

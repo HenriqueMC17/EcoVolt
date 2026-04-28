@@ -1,1 +1,1 @@
-export { default as Proposals } from './ui/Proposals';
+export * from './ui/Proposals';

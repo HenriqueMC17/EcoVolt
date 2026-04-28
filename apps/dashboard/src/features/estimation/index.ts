@@ -1,1 +1,1 @@
-export { default as Estimation } from './ui/Estimation';
+export * from './ui/Estimation';
