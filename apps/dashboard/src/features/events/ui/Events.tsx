@@ -113,7 +113,10 @@ const StatCard = ({ title, value, icon: Icon, trend, color, glowColor }: any) =>
   </motion.div>
 );
 
+import { useNavigate } from 'react-router-dom';
+
 export const Events: React.FC = () => {
+  const navigate = useNavigate();
   const { showToast } = useToast();
   const { user } = useUser();
   const events = useQuery(api.events.getEvents, { 
@@ -494,7 +497,10 @@ export const Events: React.FC = () => {
                         <div className={`px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] border ${status.border} ${status.bg} ${status.color} ${status.glow} backdrop-blur-md`}>
                           {status.label}
                         </div>
-                        <button className="h-12 px-8 rounded-2xl bg-slate-900/50 text-slate-400 text-[10px] font-black tracking-[0.2em] uppercase flex items-center gap-3 hover:bg-blue-500/10 hover:text-blue-400 border border-slate-800/50 hover:border-blue-500/30 transition-all group/btn shadow-xl">
+                        <button 
+                          onClick={() => navigate(`/events/${event._id}`)}
+                          className="h-12 px-8 rounded-2xl bg-slate-900/50 text-slate-400 text-[10px] font-black tracking-[0.2em] uppercase flex items-center gap-3 hover:bg-blue-500/10 hover:text-blue-400 border border-slate-800/50 hover:border-blue-500/30 transition-all group/btn shadow-xl"
+                        >
                           Ver Dossier
                           <ArrowRight size={16} className="group-hover/btn:translate-x-1.5 transition-transform duration-500" />
                         </button>

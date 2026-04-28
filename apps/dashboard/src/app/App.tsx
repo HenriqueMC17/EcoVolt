@@ -6,6 +6,7 @@ import { AuthProvider } from './context/AuthContext';
 
 // Pages
 import Events from '../pages/Events';
+import EventHub from '../pages/EventHub';
 import Estimation from '../pages/Estimation';
 import Providers from '../pages/Providers';
 import Proposals from '../pages/Proposals';
@@ -24,6 +25,7 @@ export function App() {
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/events" element={<Events />} />
+            <Route path="/events/:id" element={<EventHub />} />
             <Route path="/estimation" element={<Estimation />} />
             <Route path="/providers" element={<Providers />} />
             <Route path="/proposals" element={<Proposals />} />

@@ -63,8 +63,12 @@ export const getEventById = query({
     }
     
     // Add logic for provider if needed (e.g. must have contract)
+    const company = await ctx.db.get(event.companyId);
     
-    return event;
+    return {
+      ...event,
+      companyName: company ? company.name : "Desconhecida",
+    };
   },
 });
 

@@ -35,21 +35,44 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const location = useLocation();
   const { role, setRole } = useAuth();
 
-  const allNavItems = [
-    { icon: <LayoutDashboard />, label: 'Visão Geral', path: '/', roles: ['ADMIN', 'EVENT_COMPANY', 'ENERGY_PROVIDER', 'FINANCIAL'] },
-    { icon: <Calendar />, label: 'Eventos', path: '/events', roles: ['ADMIN', 'EVENT_COMPANY'] },
-    { icon: <Calculator />, label: 'Estimativas', path: '/estimation', roles: ['ADMIN', 'EVENT_COMPANY'] },
-    { icon: <Zap />, label: 'Provedores', path: '/providers', roles: ['ADMIN', 'EVENT_COMPANY'] },
-    { icon: <FileText />, label: 'Propostas', path: '/proposals', roles: ['ADMIN', 'EVENT_COMPANY', 'ENERGY_PROVIDER'] },
-    { icon: <FileCheck />, label: 'Contratos', path: '/contracts', roles: ['ADMIN', 'EVENT_COMPANY', 'ENERGY_PROVIDER', 'FINANCIAL'] },
-    { icon: <Activity />, label: 'Consumo', path: '/consumption', roles: ['ADMIN', 'EVENT_COMPANY', 'ENERGY_PROVIDER', 'FINANCIAL'] },
-    { icon: <DollarSign />, label: 'Financeiro', path: '/financial', roles: ['ADMIN', 'EVENT_COMPANY', 'ENERGY_PROVIDER', 'FINANCIAL'] },
-    { icon: <Folder />, label: 'Documentos', path: '/documents', roles: ['ADMIN', 'EVENT_COMPANY', 'ENERGY_PROVIDER', 'FINANCIAL'] },
-    { icon: <PieChart />, label: 'Relatórios', path: '/reports', roles: ['ADMIN', 'EVENT_COMPANY', 'ENERGY_PROVIDER', 'FINANCIAL'] },
-    { icon: <Settings />, label: 'Configurações', path: '/settings', roles: ['ADMIN', 'EVENT_COMPANY', 'ENERGY_PROVIDER', 'FINANCIAL'] },
+  const navGroups = [
+    {
+      title: 'Core Hub',
+      items: [
+        { icon: <LayoutDashboard />, label: 'Visão Geral', path: '/', roles: ['ADMIN', 'EVENT_COMPANY', 'ENERGY_PROVIDER', 'FINANCIAL'] },
+        { icon: <Calendar />, label: 'Hub de Eventos', path: '/events', roles: ['ADMIN', 'EVENT_COMPANY'] },
+      ]
+    },
+    {
+      title: 'Operação',
+      items: [
+        { icon: <Calculator />, label: 'Estimativas', path: '/estimation', roles: ['ADMIN', 'EVENT_COMPANY'] },
+        { icon: <Activity />, label: 'Consumo (Live)', path: '/consumption', roles: ['ADMIN', 'EVENT_COMPANY', 'ENERGY_PROVIDER', 'FINANCIAL'] },
+      ]
+    },
+    {
+      title: 'Mercado & Legal',
+      items: [
+        { icon: <Zap />, label: 'Provedores', path: '/providers', roles: ['ADMIN', 'EVENT_COMPANY'] },
+        { icon: <FileText />, label: 'Propostas', path: '/proposals', roles: ['ADMIN', 'EVENT_COMPANY', 'ENERGY_PROVIDER'] },
+        { icon: <FileCheck />, label: 'Contratos', path: '/contracts', roles: ['ADMIN', 'EVENT_COMPANY', 'ENERGY_PROVIDER', 'FINANCIAL'] },
+      ]
+    },
+    {
+      title: 'Gestão',
+      items: [
+        { icon: <DollarSign />, label: 'Financeiro', path: '/financial', roles: ['ADMIN', 'EVENT_COMPANY', 'ENERGY_PROVIDER', 'FINANCIAL'] },
+        { icon: <Folder />, label: 'Documentos', path: '/documents', roles: ['ADMIN', 'EVENT_COMPANY', 'ENERGY_PROVIDER', 'FINANCIAL'] },
+        { icon: <PieChart />, label: 'Relatórios', path: '/reports', roles: ['ADMIN', 'EVENT_COMPANY', 'ENERGY_PROVIDER', 'FINANCIAL'] },
+      ]
+    },
+    {
+      title: 'Sistema',
+      items: [
+        { icon: <Settings />, label: 'Configurações', path: '/settings', roles: ['ADMIN', 'EVENT_COMPANY', 'ENERGY_PROVIDER', 'FINANCIAL'] },
+      ]
+    }
   ];
-
-  const navItems = allNavItems.filter(item => item.roles.includes(role));
 
   return (
     <div className="flex min-h-screen bg-bg-main font-sans text-text-main overflow-hidden">
@@ -67,19 +90,28 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           </div>
         </header>
 
-        <nav className="flex-1 px-4 space-y-1 overflow-y-auto custom-scrollbar pb-8">
-          <div className="mb-4 px-4">
-            <span className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30">Main Menu</span>
-          </div>
-          {navItems.map((item) => (
-            <SidebarLink 
-              key={item.label}
-              icon={item.icon} 
-              label={item.label} 
-              active={location.pathname === item.path}
-              onClick={() => navigate(item.path)}
-            />
-          ))}
+        <nav className="flex-1 px-4 space-y-6 overflow-y-auto custom-scrollbar pb-8 mt-4">
+          {navGroups.map((group) => {
+            const visibleItems = group.items.filter(item => item.roles.includes(role as any));
+            if (visibleItems.length === 0) return null;
+
+            return (
+              <div key={group.title} className="space-y-1">
+                <div className="mb-2 px-4">
+                  <span className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30">{group.title}</span>
+                </div>
+                {visibleItems.map((item) => (
+                  <SidebarLink 
+                    key={item.label}
+                    icon={item.icon} 
+                    label={item.label} 
+                    active={location.pathname.startsWith(item.path) && (item.path !== '/' || location.pathname === '/')}
+                    onClick={() => navigate(item.path)}
+                  />
+                ))}
+              </div>
+            );
+          })}
         </nav>
 
         <footer className="p-6 border-t border-white/5 bg-black/20">
