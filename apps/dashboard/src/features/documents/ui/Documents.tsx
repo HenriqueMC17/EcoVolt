@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import React from 'react';
 import { 
   FileText, 
@@ -15,7 +15,7 @@ import {
   List
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Typography } from '@/shared/ui/Typography';
+import { Typography } from '@/shared/ui/typography';
 import { Button } from '@/shared/ui/Button';
 
 const mockDocs = [
@@ -40,10 +40,10 @@ export const Documents: React.FC = () => {
             </Typography>
           </div>
           <Typography variant="h1" className="text-4xl font-black tracking-tighter text-white uppercase">
-            RepositÃ³rio de <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Documentos</span>
+            Repositório de <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Documentos</span>
           </Typography>
           <Typography className="text-slate-400 max-w-2xl">
-            GestÃ£o EletrÃ´nica de Documentos (GED) para contratos, plantas tÃ©cnicas, licenÃ§as e histÃ³ricos operacionais.
+            Gestão Eletrônica de Documentos (GED) para contratos, plantas técnicas, licenças e históricos operacionais.
           </Typography>
         </div>
         

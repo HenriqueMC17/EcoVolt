@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import React from 'react';
 import { Proposals as ProposalsFeature } from '@/features/proposals';
 

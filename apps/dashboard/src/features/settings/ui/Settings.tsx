@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import React from 'react';
 import { 
   User, 
@@ -17,20 +17,20 @@ export const Settings = () => {
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-white tracking-tight">ConfiguraÃ§Ãµes</h1>
-        <p className="text-slate-400 mt-2">Gerencie sua conta, preferÃªncias e seguranÃ§a da plataforma.</p>
+        <h1 className="text-3xl font-bold text-white tracking-tight">Configurações</h1>
+        <p className="text-slate-400 mt-2">Gerencie sua conta, preferências e segurança da plataforma.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Navigation Tabs (Sidebar de ConfiguraÃ§Ãµes) */}
+        {/* Navigation Tabs (Sidebar de Configurações) */}
         <div className="lg:col-span-1 space-y-2">
           {[
             { id: 'profile', label: 'Perfil', icon: User, active: true },
-            { id: 'notifications', label: 'NotificaÃ§Ãµes', icon: Bell },
-            { id: 'security', label: 'SeguranÃ§a', icon: Shield },
-            { id: 'appearance', label: 'AparÃªncia', icon: Palette },
-            { id: 'integrations', label: 'IntegraÃ§Ãµes', icon: Zap },
-            { id: 'languages', label: 'Idioma e RegiÃ£o', icon: Globe },
+            { id: 'notifications', label: 'Notificações', icon: Bell },
+            { id: 'security', label: 'Segurança', icon: Shield },
+            { id: 'appearance', label: 'Aparência', icon: Palette },
+            { id: 'integrations', label: 'Integrações', icon: Zap },
+            { id: 'languages', label: 'Idioma e Região', icon: Globe },
           ].map((item) => (
             <button
               key={item.id}
@@ -96,7 +96,7 @@ export const Settings = () => {
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-400">Cargo / FunÃ§Ã£o</label>
+                <label className="text-sm font-medium text-slate-400">Cargo / Função</label>
                 <input 
                   type="text" 
                   defaultValue="Engenheiro de Sustentabilidade"
@@ -115,7 +115,7 @@ export const Settings = () => {
 
             <div className="pt-4 border-t border-white/10 flex justify-end">
               <button className="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-xl transition-all shadow-lg shadow-emerald-500/25">
-                Salvar AlteraÃ§Ãµes
+                Salvar Alterações
               </button>
             </div>
           </div>
@@ -127,7 +127,7 @@ export const Settings = () => {
                 <div className="p-2 bg-cyan-500/10 rounded-lg">
                   <Shield size={20} className="text-cyan-400" />
                 </div>
-                <h3 className="text-lg font-semibold text-white">SeguranÃ§a da Conta</h3>
+                <h3 className="text-lg font-semibold text-white">Segurança da Conta</h3>
               </div>
               <button className="text-emerald-400 text-sm font-medium hover:underline">Configurar</button>
             </div>
@@ -137,8 +137,8 @@ export const Settings = () => {
                 <div className="flex items-center gap-4">
                   <Key size={20} className="text-slate-400" />
                   <div>
-                    <p className="text-white font-medium">AutenticaÃ§Ã£o de Dois Fatores (2FA)</p>
-                    <p className="text-xs text-slate-400">Proteja sua conta com um cÃ³digo extra.</p>
+                    <p className="text-white font-medium">Autenticação de Dois Fatores (2FA)</p>
+                    <p className="text-xs text-slate-400">Proteja sua conta com um código extra.</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -154,7 +154,7 @@ export const Settings = () => {
                   <Smartphone size={20} className="text-slate-400" />
                   <div>
                     <p className="text-white font-medium">Dispositivos Conectados</p>
-                    <p className="text-xs text-slate-400">Gerencie onde vocÃª estÃ¡ logado.</p>
+                    <p className="text-xs text-slate-400">Gerencie onde você está logado.</p>
                   </div>
                 </div>
                 <span className="text-sm text-slate-400">3 ativos</span>

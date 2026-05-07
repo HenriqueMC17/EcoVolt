@@ -1,7 +1,8 @@
-﻿'use client';
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Typography } from '@/shared/ui/Typography';
+import { Typography } from '@/shared/ui/typography';
 import { Zap, Menu, X, Shield, Globe } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
 import { useRouter } from 'next/navigation';

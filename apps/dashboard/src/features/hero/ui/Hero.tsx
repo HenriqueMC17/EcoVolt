@@ -1,7 +1,7 @@
-﻿'use client';
+'use client';
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Typography } from '@/shared/ui/Typography';
+import { Typography } from '@/shared/ui/typography';
 import { Button } from '@/shared/ui/Button';
 import { Zap, ArrowRight, ShieldCheck, BarChart3, Globe, Cpu } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -66,7 +66,7 @@ export const Hero: React.FC = () => {
 
         <motion.div variants={itemVariants} className="max-w-2xl">
           <Typography className="text-lg md:text-xl font-medium text-slate-400 tracking-tight leading-relaxed mb-12">
-            EcoVolt orquestra o fluxo de energia de empresas globais atravÃ©s de <span className="text-white font-black italic">Sistemas de Telemetria Neural</span> e OtimizaÃ§Ã£o em Tempo Real.
+            EcoVolt orquestra o fluxo de energia de empresas globais através de <span className="text-white font-black italic">Sistemas de Telemetria Neural</span> e Otimização em Tempo Real.
           </Typography>
         </motion.div>
 
@@ -130,8 +130,8 @@ export const Hero: React.FC = () => {
         {/* Feature Highlights */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-24 w-full">
           {[
-            { icon: <BarChart3 className="text-emerald-400" />, title: "Neural Telemetry", desc: "Monitoramento de carga com precisÃ£o de milissegundos via rede distribuÃ­da." },
-            { icon: <ShieldCheck className="text-blue-400" />, title: "Audit-Grade Trust", desc: "SeguranÃ§a de nÃ­vel soberano para o seu grid energÃ©tico e registros de dados." },
+            { icon: <BarChart3 className="text-emerald-400" />, title: "Neural Telemetry", desc: "Monitoramento de carga com precisão de milissegundos via rede distribuída." },
+            { icon: <ShieldCheck className="text-blue-400" />, title: "Audit-Grade Trust", desc: "Segurança de nível soberano para o seu grid energético e registros de dados." },
             { icon: <Zap className="text-amber-400" />, title: "Predictive Flux", desc: "IA antecipa picos de demanda e otimiza fluxos de custo automaticamente." }
           ].map((feature, idx) => (
             <motion.div 

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Providers } from "./providers";
-import { DashboardLayout } from "@/shared/components/DashboardLayout";
+import { DashboardLayout } from "@/widgets";
 import "../index.css";
 
 export const metadata: Metadata = {

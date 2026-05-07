@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import React from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useQuery } from 'convex/react';
@@ -14,7 +14,7 @@ import {
   ArrowLeft
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Typography } from '@/shared/ui/Typography';
+import { Typography } from '@/shared/ui/typography';
 import { StatCard } from '@/shared/ui/StatCard';
 import { useUser } from '@/shared/context/UserContext';
 
@@ -83,7 +83,7 @@ export const Consumption: React.FC = () => {
           Previsto x <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Realizado</span>
         </Typography>
         <Typography className="text-slate-400 max-w-2xl">
-          Acompanhe a curva de carga das suas operaÃƒÂ§ÃƒÂµes e identifique anomalias de consumo instantaneamente com dados sincronizados da rede.
+          Acompanhe a curva de carga das suas operaÃ§Ãµes e identifique anomalias de consumo instantaneamente com dados sincronizados da rede.
         </Typography>
       </header>
 
@@ -95,14 +95,14 @@ export const Consumption: React.FC = () => {
           color="from-blue-500 to-indigo-600"
         />
         <StatCard 
-          title="Desvio MÃƒÂ©dio"
+          title="Desvio MÃ©dio"
           value={`${stats.avgDeviation} kWh`}
-          trend={parseFloat(stats.avgDeviation) > 10 ? "CrÃƒÂ­tico" : "EstÃƒÂ¡vel"}
+          trend={parseFloat(stats.avgDeviation) > 10 ? "CrÃ­tico" : "EstÃ¡vel"}
           icon={TrendingUp}
           color="from-amber-500 to-orange-600"
         />
         <StatCard 
-          title="ÃƒÂndice de EficiÃƒÂªncia"
+          title="Ãndice de EficiÃªncia"
           value={`${stats.efficiency}%`}
           icon={Zap}
           color="from-emerald-500 to-teal-600"
@@ -114,7 +114,7 @@ export const Consumption: React.FC = () => {
         <div className="flex items-center justify-between mb-12">
           <div>
             <Typography variant="h3" className="text-xl font-bold text-white tracking-tight">Curva de Carga</Typography>
-            <Typography className="text-slate-500 text-xs">Comparativo de provisÃƒÂ£o tÃƒÂ©cnica em tempo real</Typography>
+            <Typography className="text-slate-500 text-xs">Comparativo de provisÃ£o tÃ©cnica em tempo real</Typography>
           </div>
           <div className="flex items-center gap-6">
              <div className="flex items-center gap-2">
@@ -151,7 +151,7 @@ export const Consumption: React.FC = () => {
             ))
           ) : (
             <div className="w-full h-full flex items-center justify-center border-2 border-dashed border-white/5 rounded-3xl">
-              <Typography className="text-slate-500 text-sm font-medium">Aguardando inÃƒÂ­cio da telemetria...</Typography>
+              <Typography className="text-slate-500 text-sm font-medium">Aguardando inÃ­cio da telemetria...</Typography>
             </div>
           )}
         </div>
@@ -161,7 +161,7 @@ export const Consumption: React.FC = () => {
         <div className="glass-card p-8 border-slate-800/50 space-y-6">
           <div className="flex items-center gap-3 text-rose-400">
             <AlertTriangle size={20} />
-            <Typography className="font-bold text-white">Alertas de OperaÃƒÂ§ÃƒÂ£o</Typography>
+            <Typography className="font-bold text-white">Alertas de OperaÃ§Ã£o</Typography>
           </div>
           <div className="space-y-4">
             {alerts && alerts.length > 0 ? (
@@ -177,7 +177,7 @@ export const Consumption: React.FC = () => {
                 </div>
               ))
             ) : (
-              <Typography className="text-slate-500 text-xs italic">Nenhum alerta crÃƒÂ­tico registrado para este evento.</Typography>
+              <Typography className="text-slate-500 text-xs italic">Nenhum alerta crÃ­tico registrado para este evento.</Typography>
             )}
           </div>
         </div>

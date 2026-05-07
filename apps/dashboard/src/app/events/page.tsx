@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import React from 'react';
 import { Events as EventsFeature } from '@/features/events';
 

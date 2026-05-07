@@ -39,14 +39,17 @@ export const getGlobalStats = query({
 
 export const getGlobalChartData = query({
   args: { userId: v.id("users") },
-  handler: async (ctx, args) => {
-    // This would aggregate metrics by date. For now, let's return a simulated sequence
-    // based on real data if possible, or mocked for the demo.
+  handler: async () => {
+    // For a more cinematic and realistic dashboard, we'll return a sequence
+    // that simulates real-time variations in generation and consumption.
     return [
-      { name: 'Jan', previsto: 4000, realizado: 3800 },
-      { name: 'Fev', previsto: 3000, realizado: 3200 },
-      { name: 'Mar', previsto: 2000, realizado: 1800 },
-      { name: 'Abr', previsto: 2780, realizado: 2900 },
+      { time: '00:00', generation: 4200, consumption: 2100 },
+      { time: '04:00', generation: 3100, consumption: 1200 },
+      { time: '08:00', generation: 2200, consumption: 8900 },
+      { time: '12:00', generation: 2800, consumption: 3500 },
+      { time: '16:00', generation: 1900, consumption: 4600 },
+      { time: '20:00', generation: 2400, consumption: 3700 },
+      { time: '23:59', generation: 3500, consumption: 4200 },
     ];
   },
 });

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import React from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useQuery } from 'convex/react';
@@ -17,7 +17,7 @@ import {
   Activity,
   DollarSign
 } from 'lucide-react';
-import { Typography } from '@/shared/ui/Typography';
+import { Typography } from '@/shared/ui/typography';
 
 import { useUser } from '@/shared/context/UserContext';
 
@@ -64,8 +64,8 @@ export const EventHub: React.FC = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
         <div className="p-6 rounded-[2rem] bg-rose-500/10 border border-rose-500/20 text-center space-y-4">
-          <Typography variant="h2" className="text-white">OperaÃƒÂ§ÃƒÂ£o nÃƒÂ£o encontrada</Typography>
-          <Typography className="text-slate-400 max-w-xs mx-auto">NÃƒÂ£o foi possÃƒÂ­vel localizar os dados desta operaÃƒÂ§ÃƒÂ£o ou vocÃƒÂª nÃƒÂ£o possui permissÃƒÂ£o de acesso.</Typography>
+          <Typography variant="h2" className="text-white">OperaÃ§Ã£o nÃ£o encontrada</Typography>
+          <Typography className="text-slate-400 max-w-xs mx-auto">NÃ£o foi possÃ­vel localizar os dados desta operaÃ§Ã£o ou vocÃª nÃ£o possui permissÃ£o de acesso.</Typography>
           <button 
             onClick={() => router.push('/events')} 
             className="flex items-center gap-2 mx-auto text-primary font-bold uppercase text-[10px] tracking-widest hover:underline"
@@ -97,8 +97,8 @@ export const EventHub: React.FC = () => {
   const getNextAction = () => {
     if (event.estimatedConsumption === 0) {
       return {
-        title: 'Calcular Demanda EnergÃƒÂ©tica',
-        description: 'Defina a infraestrutura do evento para provisionar a carga necessÃƒÂ¡ria.',
+        title: 'Calcular Demanda EnergÃ©tica',
+        description: 'Defina a infraestrutura do evento para provisionar a carga necessÃ¡ria.',
         icon: <Calculator className="text-blue-400" />,
         action: () => router.push('/estimation'),
         color: 'blue'
@@ -107,7 +107,7 @@ export const EventHub: React.FC = () => {
     if (proposals.count === 0) {
       return {
         title: 'Solicitar Propostas',
-        description: 'O cÃƒÂ¡lculo estÃƒÂ¡ pronto. Agora, conecte sua demanda aos provedores da rede.',
+        description: 'O cÃ¡lculo estÃ¡ pronto. Agora, conecte sua demanda aos provedores da rede.',
         icon: <Zap className="text-amber-400" />,
         action: () => router.push('/providers'),
         color: 'amber'
@@ -116,7 +116,7 @@ export const EventHub: React.FC = () => {
     if (!proposals.hasAccepted) {
       return {
         title: 'Analisar Propostas Recebidas',
-        description: `VocÃƒÂª recebeu ${proposals.count} propostas. Selecione a melhor oferta para prosseguir.`,
+        description: `VocÃª recebeu ${proposals.count} propostas. Selecione a melhor oferta para prosseguir.`,
         icon: <FileText className="text-emerald-400" />,
         action: () => router.push('/proposals'),
         color: 'emerald'
@@ -124,8 +124,8 @@ export const EventHub: React.FC = () => {
     }
     if (!contract) {
       return {
-        title: 'Gerar Instrumento JurÃƒÂ­dico',
-        description: 'A proposta foi aceita. Formalize a contrataÃƒÂ§ÃƒÂ£o para garantir o fornecimento.',
+        title: 'Gerar Instrumento JurÃ­dico',
+        description: 'A proposta foi aceita. Formalize a contrataÃ§Ã£o para garantir o fornecimento.',
         icon: <FileCheck className="text-purple-400" />,
         action: () => router.push('/contracts'),
         color: 'purple'
@@ -133,8 +133,8 @@ export const EventHub: React.FC = () => {
     }
     if (event.status !== 'active') {
       return {
-        title: 'Ativar OperaÃƒÂ§ÃƒÂ£o',
-        description: 'Contrato assinado. O evento estÃƒÂ¡ pronto para iniciar o monitoramento.',
+        title: 'Ativar OperaÃ§Ã£o',
+        description: 'Contrato assinado. O evento estÃ¡ pronto para iniciar o monitoramento.',
         icon: <Activity className="text-primary" />,
         action: () => {}, // Mutation to start event
         color: 'primary'
@@ -163,7 +163,7 @@ export const EventHub: React.FC = () => {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <Typography className="text-[10px] font-black tracking-[0.3em] text-primary uppercase">
-                Hub da OperaÃƒÂ§ÃƒÂ£o
+                Hub da OperaÃ§Ã£o
               </Typography>
               <span className="px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider bg-white/10 text-slate-300">
                 {event.companyName}
@@ -217,7 +217,7 @@ export const EventHub: React.FC = () => {
                 {React.cloneElement(nextAction.icon as React.ReactElement, { size: 32 })}
               </div>
               <div className="space-y-1">
-                <Typography className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500">PrÃƒÂ³xima AÃƒÂ§ÃƒÂ£o Recomentada</Typography>
+                <Typography className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500">PrÃ³xima AÃ§Ã£o Recomentada</Typography>
                 <Typography variant="h3" className="text-2xl font-bold text-white tracking-tight">{nextAction.title}</Typography>
                 <Typography className="text-slate-400 text-sm">{nextAction.description}</Typography>
               </div>
@@ -245,7 +245,7 @@ export const EventHub: React.FC = () => {
             <Typography className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Demanda</Typography>
           </div>
           <Typography className="text-2xl font-black text-white">{event.estimatedConsumption.toLocaleString()} <span className="text-xs font-medium text-slate-500">kWh</span></Typography>
-          <Typography className="text-[10px] text-slate-500 mt-1">Provisionamento TÃƒÂ©cnico</Typography>
+          <Typography className="text-[10px] text-slate-500 mt-1">Provisionamento TÃ©cnico</Typography>
         </motion.div>
 
         <motion.div variants={itemVariants} className="glass-card p-6 border border-white/5 rounded-3xl">
@@ -255,7 +255,7 @@ export const EventHub: React.FC = () => {
           </div>
           <Typography className="text-2xl font-black text-white">{proposals.count} <span className="text-xs font-medium text-slate-500">recebidas</span></Typography>
           <Typography className={`text-[10px] mt-1 ${proposals.hasAccepted ? 'text-emerald-400' : 'text-slate-500'}`}>
-            {proposals.hasAccepted ? 'Provedor Adjudicado' : 'Em fase de cotaÃƒÂ§ÃƒÂ£o'}
+            {proposals.hasAccepted ? 'Provedor Adjudicado' : 'Em fase de cotaÃ§Ã£o'}
           </Typography>
         </motion.div>
 
@@ -292,10 +292,10 @@ export const EventHub: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Coluna Esquerda: Info BÃƒÂ¡sica */}
+        {/* Coluna Esquerda: Info BÃ¡sica */}
         <motion.div variants={itemVariants} className="lg:col-span-1 space-y-6">
           <div className="glass-card p-6 border border-white/5 rounded-[2rem] space-y-6">
-            <Typography variant="h3" className="text-lg font-bold text-white mb-4">Dossier TÃƒÂ©cnico</Typography>
+            <Typography variant="h3" className="text-lg font-bold text-white mb-4">Dossier TÃ©cnico</Typography>
             
             <div className="space-y-4">
               <div className="flex items-start gap-4 group">
@@ -325,7 +325,7 @@ export const EventHub: React.FC = () => {
                   <Users size={20} />
                 </div>
                 <div>
-                  <Typography className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">PÃƒÂºblico Pax</Typography>
+                  <Typography className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">PÃºblico Pax</Typography>
                   <Typography className="text-sm text-slate-200 font-medium">{event.expectedAttendees.toLocaleString()} pessoas</Typography>
                 </div>
               </div>
@@ -336,7 +336,7 @@ export const EventHub: React.FC = () => {
                 onClick={() => router.push('/reports')}
                 className="w-full flex items-center justify-between p-4 rounded-xl bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white transition-all text-xs font-bold uppercase tracking-widest border border-transparent hover:border-white/10"
                >
-                 <span>Gerar RelatÃƒÂ³rio PDF</span>
+                 <span>Gerar RelatÃ³rio PDF</span>
                  <FileText size={16} />
                </button>
                
@@ -344,7 +344,7 @@ export const EventHub: React.FC = () => {
                 onClick={() => router.push('/documents')}
                 className="w-full flex items-center justify-between p-4 rounded-xl bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white transition-all text-xs font-bold uppercase tracking-widest border border-transparent hover:border-white/10"
                >
-                 <span>RepositÃƒÂ³rio de Docs</span>
+                 <span>RepositÃ³rio de Docs</span>
                  <ArrowLeft size={16} className="rotate-180" />
                </button>
             </div>
@@ -353,14 +353,14 @@ export const EventHub: React.FC = () => {
           {/* Explainability Section */}
           <div className="glass-card p-6 border border-white/5 rounded-[2rem] space-y-6">
             <div className="flex items-center justify-between">
-              <Typography variant="h3" className="text-sm font-bold text-white uppercase tracking-wider">TransparÃƒÂªncia da Carga</Typography>
+              <Typography variant="h3" className="text-sm font-bold text-white uppercase tracking-wider">TransparÃªncia da Carga</Typography>
               <Zap size={14} className="text-primary" />
             </div>
             
             <div className="space-y-4">
               <div className="space-y-2">
                 <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest">
-                  <span className="text-slate-500">ClimatizaÃƒÂ§ÃƒÂ£o</span>
+                  <span className="text-slate-500">ClimatizaÃ§Ã£o</span>
                   <span className="text-slate-200">45%</span>
                 </div>
                 <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
@@ -370,7 +370,7 @@ export const EventHub: React.FC = () => {
 
               <div className="space-y-2">
                 <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest">
-                  <span className="text-slate-500">IluminaÃƒÂ§ÃƒÂ£o & LED</span>
+                  <span className="text-slate-500">IluminaÃ§Ã£o & LED</span>
                   <span className="text-slate-200">30%</span>
                 </div>
                 <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
@@ -390,7 +390,7 @@ export const EventHub: React.FC = () => {
 
               <div className="space-y-2">
                 <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest">
-                  <span className="text-slate-500">MiscelÃƒÂ¢nea (TI/Pax)</span>
+                  <span className="text-slate-500">MiscelÃ¢nea (TI/Pax)</span>
                   <span className="text-slate-200">10%</span>
                 </div>
                 <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
@@ -401,7 +401,7 @@ export const EventHub: React.FC = () => {
 
             <div className="p-4 rounded-xl bg-amber-500/5 border border-amber-500/10 mt-4">
               <Typography className="text-[9px] font-bold text-amber-500/80 uppercase leading-relaxed">
-                AtenÃƒÂ§ÃƒÂ£o: A margem de seguranÃƒÂ§a atual ÃƒÂ© de 20%. Recomendamos manter acima de 15% para picos tÃƒÂ©rmicos.
+                AtenÃ§Ã£o: A margem de seguranÃ§a atual Ã© de 20%. Recomendamos manter acima de 15% para picos tÃ©rmicos.
               </Typography>
             </div>
           </div>
@@ -433,9 +433,9 @@ export const EventHub: React.FC = () => {
                     <Calculator size={24} />
                   </div>
                   <div>
-                    <Typography className="text-base font-bold text-white group-hover:text-primary transition-colors">CÃƒÂ¡lculo de Demanda</Typography>
+                    <Typography className="text-base font-bold text-white group-hover:text-primary transition-colors">CÃ¡lculo de Demanda</Typography>
                     <Typography className="text-xs text-slate-400">
-                      {event.estimatedConsumption > 0 ? 'Provisionamento tÃƒÂ©cnico validado' : 'Requer definiÃƒÂ§ÃƒÂ£o de infraestrutura'}
+                      {event.estimatedConsumption > 0 ? 'Provisionamento tÃ©cnico validado' : 'Requer definiÃ§Ã£o de infraestrutura'}
                     </Typography>
                   </div>
                 </div>
@@ -444,7 +444,7 @@ export const EventHub: React.FC = () => {
                     ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' 
                     : 'bg-blue-500/10 border-blue-500/20 text-blue-400 animate-pulse'
                 }`}>
-                  {event.estimatedConsumption > 0 ? 'ConcluÃƒÂ­do' : 'Pendente'}
+                  {event.estimatedConsumption > 0 ? 'ConcluÃ­do' : 'Pendente'}
                 </div>
               </button>
 
@@ -483,7 +483,7 @@ export const EventHub: React.FC = () => {
                       ? 'bg-blue-500/10 border-blue-500/20 text-blue-400'
                       : 'bg-slate-500/10 border-slate-500/20 text-slate-400'
                 }`}>
-                  {proposals.hasAccepted ? 'Definido' : proposals.count > 0 ? 'Em AnÃƒÂ¡lise' : 'Aguardando'}
+                  {proposals.hasAccepted ? 'Definido' : proposals.count > 0 ? 'Em AnÃ¡lise' : 'Aguardando'}
                 </div>
               </button>
 
@@ -504,9 +504,9 @@ export const EventHub: React.FC = () => {
                     <FileCheck size={24} />
                   </div>
                   <div>
-                    <Typography className="text-base font-bold text-white">Instrumento JurÃƒÂ­dico</Typography>
+                    <Typography className="text-base font-bold text-white">Instrumento JurÃ­dico</Typography>
                     <Typography className="text-xs text-slate-400">
-                      {!proposals.hasAccepted ? 'Requer proposta aceita' : contract ? `Status: ${contract.status}` : 'Aguardando emissÃƒÂ£o da minuta'}
+                      {!proposals.hasAccepted ? 'Requer proposta aceita' : contract ? `Status: ${contract.status}` : 'Aguardando emissÃ£o da minuta'}
                     </Typography>
                   </div>
                 </div>
@@ -548,7 +548,7 @@ export const EventHub: React.FC = () => {
                       ? 'bg-amber-500/10 border-amber-500/20 text-amber-400 animate-pulse'
                       : 'bg-slate-500/10 border-slate-500/20 text-slate-400'
                 }`}>
-                  {consumption ? 'Monitorando' : contract?.status === 'active' ? 'Aguardando InÃƒÂ­cio' : 'IndisponÃƒÂ­vel'}
+                  {consumption ? 'Monitorando' : contract?.status === 'active' ? 'Aguardando InÃ­cio' : 'IndisponÃ­vel'}
                 </div>
               </button>
             </div>

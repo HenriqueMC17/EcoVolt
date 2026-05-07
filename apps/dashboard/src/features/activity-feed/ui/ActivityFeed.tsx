@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import React, { useState } from 'react';
 import { useQuery } from "convex/react";
 import { api } from "@convex/_generated/api";
@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/shared/lib/utils';
-import { Typography } from '@/shared/ui/Typography';
+import { Typography } from '@/shared/ui/typography';
 
 interface ActivityFeedProps {
   limit?: number;
@@ -178,7 +178,7 @@ export const ActivityFeed: React.FC<ActivityFeedProps> = ({ limit = 20, userEmai
   const exportToCSV = () => {
     if (!activities || activities.length === 0) return;
 
-    const headers = ['Data', 'UsuÃ¡rio', 'AÃ§Ã£o', 'Entidade', 'Detalhes'];
+    const headers = ['Data', 'Usuário', 'Ação', 'Entidade', 'Detalhes'];
     const rows = activities.map(a => [
       new Date(a.createdAt).toLocaleString('pt-BR'),
       a.userName,

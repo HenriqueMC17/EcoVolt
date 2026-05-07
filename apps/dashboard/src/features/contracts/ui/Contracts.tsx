@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
@@ -15,16 +15,15 @@ import {
   UserCheck
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Typography } from '@/shared/ui/Typography';
-import { Button } from '@/shared/ui/Button';
+import { Typography, Button } from '@/shared/ui';
 
 const mockContracts = [
   {
     id: 'CTR-2026-001',
-    title: 'Fornecimento Festival VerÃ£o',
-    provider: 'GeraÃ§Ã£o Verde S.A.',
+    title: 'Fornecimento Festival Verão',
+    provider: 'Geração Verde S.A.',
     client: 'EcoEvents Ltda',
-    event: 'Festival de VerÃ£o 2026',
+    event: 'Festival de Verão 2026',
     value: 45000,
     status: 'active',
     date: '2026-04-15',
@@ -43,7 +42,7 @@ const mockContracts = [
   },
   {
     id: 'CTR-2026-003',
-    title: 'OperaÃ§Ã£o HÃ­brida Stadium',
+    title: 'Operação Híbrida Stadium',
     provider: 'SolarGrid Solutions',
     client: 'Arena Multisports',
     event: 'Grand Slam Final',
@@ -80,10 +79,10 @@ export const Contracts: React.FC = () => {
             </Typography>
           </div>
           <Typography variant="h1" className="text-4xl font-black tracking-tighter text-white uppercase">
-            GestÃ£o de <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-500">Contratos</span>
+            Gestão de <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-500">Contratos</span>
           </Typography>
           <Typography className="text-slate-400 max-w-2xl">
-            Centralize o controle jurÃ­dico de propostas, SLAs e termos de responsabilidade tÃ©cnica de todas as operaÃ§Ãµes.
+            Centralize o controle jurídico de propostas, SLAs e termos de responsabilidade técnica de todas as operações.
           </Typography>
         </div>
         
@@ -108,7 +107,7 @@ export const Contracts: React.FC = () => {
         <div className="flex gap-4 w-full md:w-auto">
            <button className="h-14 px-8 rounded-2xl bg-slate-900 border border-slate-800 text-slate-400 flex items-center gap-3 hover:text-white transition-all">
              <Filter size={18} />
-             Filtros AvanÃ§ados
+             Filtros Avançados
            </button>
         </div>
       </div>
@@ -147,7 +146,7 @@ export const Contracts: React.FC = () => {
                       </div>
                       <div className="flex items-center gap-2 text-slate-500">
                         <History size={14} />
-                        <span className="text-xs font-medium">VigÃªncia atÃ©: <span className="text-slate-300">{new Date(contract.expiry).toLocaleDateString('pt-BR')}</span></span>
+                        <span className="text-xs font-medium">Vigência até: <span className="text-slate-300">{new Date(contract.expiry).toLocaleDateString('pt-BR')}</span></span>
                       </div>
                     </div>
                   </div>

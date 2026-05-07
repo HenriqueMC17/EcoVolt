@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import React from 'react';
 import { 
   Send, 
@@ -11,14 +11,14 @@ import {
   DollarSign
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Typography } from '@/shared/ui/Typography';
+import { Typography } from '@/shared/ui/typography';
 import { Button } from '@/shared/ui/Button';
 
 const mockProposals = [
   {
     id: 'PROP-102',
-    event: 'Festival de VerÃ£o 2026',
-    provider: 'GeraÃ§Ã£o Verde S.A.',
+    event: 'Festival de Verão 2026',
+    provider: 'Geração Verde S.A.',
     value: 45000,
     status: 'accepted',
     date: '2026-04-10',
@@ -33,7 +33,7 @@ const mockProposals = [
   },
   {
     id: 'PROP-108',
-    event: 'Festival de VerÃ£o 2026',
+    event: 'Festival de Verão 2026',
     provider: 'SolarGrid Solutions',
     value: 48000,
     status: 'rejected',
@@ -55,10 +55,10 @@ export const Proposals: React.FC = () => {
             </Typography>
           </div>
           <Typography variant="h1" className="text-4xl font-black tracking-tighter text-white uppercase">
-            GestÃ£o de <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-blue-500">Propostas</span>
+            Gestão de <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-blue-500">Propostas</span>
           </Typography>
           <Typography className="text-slate-400 max-w-2xl">
-            Acompanhe o status das negociaÃ§Ãµes comerciais entre empresas de eventos e provedores de energia.
+            Acompanhe o status das negociações comerciais entre empresas de eventos e provedores de energia.
           </Typography>
         </div>
       </header>
@@ -103,7 +103,7 @@ export const Proposals: React.FC = () => {
                 <th className="p-6 text-[10px] font-black uppercase tracking-widest text-slate-500">Fornecedor</th>
                 <th className="p-6 text-[10px] font-black uppercase tracking-widest text-slate-500">Valor</th>
                 <th className="p-6 text-[10px] font-black uppercase tracking-widest text-slate-500">Status</th>
-                <th className="p-6 text-[10px] font-black uppercase tracking-widest text-slate-500">AÃ§Ã£o</th>
+                <th className="p-6 text-[10px] font-black uppercase tracking-widest text-slate-500">Ação</th>
               </tr>
             </thead>
             <tbody>

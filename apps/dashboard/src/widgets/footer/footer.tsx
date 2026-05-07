@@ -1,8 +1,9 @@
-﻿"use client";
+"use client";
+
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Typography } from '@/shared/ui/Typography';
-import { Zap, Github, Twitter, Linkedin, Shield, Globe, Cpu } from 'lucide-react';
+import { Typography } from '@/shared/ui/typography';
+import { Zap, Github, Twitter, Linkedin, Shield, Cpu } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -26,7 +27,7 @@ export const Footer: React.FC = () => {
             </div>
             
             <Typography className="text-slate-400 font-medium leading-relaxed mb-10 max-w-sm">
-              Orquestrando o futuro da infraestrutura energÃ©tica global atravÃ©s de inteligÃªncia preditiva e governanÃ§a de rede autÃ´noma.
+              Orquestrando o futuro da infraestrutura energética global através de inteligência preditiva e governança de rede autônoma.
             </Typography>
             
             <div className="flex gap-4">
@@ -75,7 +76,7 @@ export const Footer: React.FC = () => {
               </div>
               
               <Typography className="text-xs font-medium text-slate-500 mb-6 leading-relaxed">
-                Inscreva-se para receber relatÃ³rios de inteligÃªncia sobre o mercado de energia e atualizaÃ§Ãµes de protocolo.
+                Inscreva-se para receber relatórios de inteligência sobre o mercado de energia e atualizações de protocolo.
               </Typography>
               
               <div className="flex flex-col gap-3">
@@ -95,7 +96,7 @@ export const Footer: React.FC = () => {
         <div className="pt-12 border-t border-white/5 flex flex-col lg:flex-row justify-between items-center gap-8">
           <div className="flex flex-col md:flex-row items-center gap-6 lg:gap-12">
             <Typography className="text-[9px] font-black text-slate-600 uppercase tracking-widest">
-              Â© {currentYear} EcoVolt Strategic Assets. All rights reserved.
+              © {currentYear} EcoVolt Strategic Assets. All rights reserved.
             </Typography>
             <div className="flex gap-8">
               {['Security', 'Privacy', 'Compliance'].map((item) => (
@@ -120,4 +121,3 @@ export const Footer: React.FC = () => {
     </footer>
   );
 };
-

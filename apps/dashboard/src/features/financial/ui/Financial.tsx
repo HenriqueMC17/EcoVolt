@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import React from 'react';
 import { 
   DollarSign, 
@@ -15,13 +15,13 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import { Typography } from '@/shared/ui/Typography';
+import { Typography } from '@/shared/ui/typography';
 import { StatCard } from '@/shared/ui/StatCard';
 
 const mockFinancials = [
   {
     id: 'FIN-5001',
-    event: 'Festival de VerÃ£o 2026',
+    event: 'Festival de Verão 2026',
     client: 'EcoEvents Ltda',
     amount: 45000,
     type: 'invoice',
@@ -63,10 +63,10 @@ export const Financial: React.FC = () => {
             </Typography>
           </div>
           <Typography variant="h1" className="text-4xl font-black tracking-tighter text-white uppercase">
-            GestÃ£o <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500">Financeira</span>
+            Gestão <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500">Financeira</span>
           </Typography>
           <Typography className="text-slate-400 max-w-2xl">
-            ReconciliaÃ§Ã£o de faturas, crÃ©ditos por economia de energia e fechamento financeiro de todas as operaÃ§Ãµes.
+            Reconciliação de faturas, créditos por economia de energia e fechamento financeiro de todas as operações.
           </Typography>
         </div>
       </header>
@@ -100,12 +100,12 @@ export const Financial: React.FC = () => {
 
       <div className="glass-card border-slate-800/50 overflow-hidden">
         <div className="p-8 border-b border-slate-800/50 flex flex-col md:flex-row justify-between items-center gap-6 bg-slate-900/20">
-          <Typography variant="h3" className="text-xl font-bold text-white tracking-tight">TransaÃ§Ãµes Recentes</Typography>
+          <Typography variant="h3" className="text-xl font-bold text-white tracking-tight">Transações Recentes</Typography>
           <div className="relative w-full md:w-96 group">
             <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-amber-500 transition-colors" />
             <input 
               type="text" 
-              placeholder="Filtrar transaÃ§Ãµes..." 
+              placeholder="Filtrar transações..." 
               className="w-full bg-slate-950/40 border border-slate-800/50 rounded-2xl py-3 pl-14 pr-4 text-white placeholder-slate-600 outline-none focus:ring-2 focus:ring-amber-500/20 transition-all text-sm font-medium"
             />
           </div>
@@ -116,11 +116,11 @@ export const Financial: React.FC = () => {
             <thead>
               <tr className="bg-slate-900/40">
                 <th className="p-6 text-[10px] font-black uppercase tracking-widest text-slate-500">ID / Data</th>
-                <th className="p-6 text-[10px] font-black uppercase tracking-widest text-slate-500">OperaÃ§Ã£o / Cliente</th>
+                <th className="p-6 text-[10px] font-black uppercase tracking-widest text-slate-500">Operação / Cliente</th>
                 <th className="p-6 text-[10px] font-black uppercase tracking-widest text-slate-500">Tipo</th>
                 <th className="p-6 text-[10px] font-black uppercase tracking-widest text-slate-500 text-right">Valor</th>
                 <th className="p-6 text-[10px] font-black uppercase tracking-widest text-slate-500">Status</th>
-                <th className="p-6 text-[10px] font-black uppercase tracking-widest text-slate-500 text-center">AÃ§Ãµes</th>
+                <th className="p-6 text-[10px] font-black uppercase tracking-widest text-slate-500 text-center">Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -143,7 +143,7 @@ export const Financial: React.FC = () => {
                       fin.type === 'invoice' ? 'text-blue-400' : 'text-purple-400'
                     }`}>
                       {fin.type === 'invoice' ? <ArrowUpRight size={14} /> : <ArrowDownLeft size={14} />}
-                      {fin.type === 'invoice' ? 'Faturamento' : 'CrÃ©dito'}
+                      {fin.type === 'invoice' ? 'Faturamento' : 'Crédito'}
                     </div>
                   </td>
                   <td className="p-6 text-right">

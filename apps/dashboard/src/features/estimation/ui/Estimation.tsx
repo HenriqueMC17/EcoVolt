@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
@@ -15,13 +15,13 @@ import {
   ChevronLeft
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Typography } from '@/shared/ui/Typography';
+import { Typography } from '@/shared/ui/typography';
 import { Button } from '@/shared/ui/Button';
 
 const steps = [
-  { id: 'basics', title: 'DimensÃµes e PÃºblico', icon: Users },
-  { id: 'technical', title: 'Infraestrutura TÃ©cnica', icon: Music },
-  { id: 'environment', title: 'ClimatizaÃ§Ã£o e Ambiente', icon: Wind },
+  { id: 'basics', title: 'Dimensões e Público', icon: Users },
+  { id: 'technical', title: 'Infraestrutura Técnica', icon: Music },
+  { id: 'environment', title: 'Climatização e Ambiente', icon: Wind },
   { id: 'result', title: 'Resultado do Provisionamento', icon: Zap },
 ];
 
@@ -81,7 +81,7 @@ export const Estimation: React.FC = () => {
           Nova <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Estimativa</span>
         </Typography>
         <Typography className="text-slate-400 max-w-2xl">
-          Calcule a demanda energÃ©tica do seu evento com precisÃ£o tÃ©cnica para evitar apagÃµes e otimizar custos de contrataÃ§Ã£o.
+          Calcule a demanda energética do seu evento com precisão técnica para evitar apagões e otimizar custos de contratação.
         </Typography>
       </header>
 
@@ -121,10 +121,10 @@ export const Estimation: React.FC = () => {
         >
           {currentStep === 0 && (
             <div className="space-y-8">
-              <Typography variant="h3" className="text-2xl font-bold text-white tracking-tight">DimensÃµes da OperaÃ§Ã£o</Typography>
+              <Typography variant="h3" className="text-2xl font-bold text-white tracking-tight">Dimensões da Operação</Typography>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-3">
-                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">PÃºblico Esperado (Pax)</label>
+                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Público Esperado (Pax)</label>
                   <div className="relative group">
                     <Users className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-blue-400 transition-colors" size={20} />
                     <input 
@@ -136,7 +136,7 @@ export const Estimation: React.FC = () => {
                   </div>
                 </div>
                 <div className="space-y-3">
-                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Ãrea Ãštil (mÂ²)</label>
+                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Área Útil (m²)</label>
                   <div className="relative group">
                     <Zap className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-blue-400 transition-colors" size={20} />
                     <input 
@@ -148,7 +148,7 @@ export const Estimation: React.FC = () => {
                   </div>
                 </div>
                 <div className="space-y-3">
-                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">DuraÃ§Ã£o (Dias)</label>
+                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Duração (Dias)</label>
                   <div className="relative group">
                     <Clock className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-blue-400 transition-colors" size={20} />
                     <input 
@@ -177,10 +177,10 @@ export const Estimation: React.FC = () => {
 
           {currentStep === 1 && (
             <div className="space-y-8">
-              <Typography variant="h3" className="text-2xl font-bold text-white tracking-tight">Carga TÃ©cnica</Typography>
+              <Typography variant="h3" className="text-2xl font-bold text-white tracking-tight">Carga Técnica</Typography>
               <div className="space-y-6">
                 <div className="space-y-3">
-                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Complexidade de IluminaÃ§Ã£o</label>
+                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Complexidade de Iluminação</label>
                   <div className="grid grid-cols-3 gap-4">
                     {['low', 'medium', 'high'].map(level => (
                       <button
@@ -192,14 +192,14 @@ export const Estimation: React.FC = () => {
                             : 'bg-slate-950 border-slate-800 text-slate-600 hover:border-slate-700'
                         }`}
                       >
-                        {level === 'low' ? 'BÃ¡sica' : level === 'medium' ? 'IntermediÃ¡ria' : 'Show / Performance'}
+                        {level === 'low' ? 'Básica' : level === 'medium' ? 'Intermediária' : 'Show / Performance'}
                       </button>
                     ))}
                   </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
                   <div className="space-y-3">
-                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">PainÃ©is de LED (mÂ²)</label>
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Painéis de LED (m²)</label>
                     <div className="relative group">
                       <Lightbulb className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-blue-400 transition-colors" size={20} />
                       <input 
@@ -211,7 +211,7 @@ export const Estimation: React.FC = () => {
                     </div>
                   </div>
                   <div className="space-y-3">
-                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">PotÃªncia de Som (Watts RMS)</label>
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Potência de Som (Watts RMS)</label>
                     <div className="relative group">
                       <Music className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-blue-400 transition-colors" size={20} />
                       <input 
@@ -229,7 +229,7 @@ export const Estimation: React.FC = () => {
 
           {currentStep === 2 && (
             <div className="space-y-8">
-              <Typography variant="h3" className="text-2xl font-bold text-white tracking-tight">ClimatizaÃ§Ã£o</Typography>
+              <Typography variant="h3" className="text-2xl font-bold text-white tracking-tight">Climatização</Typography>
               <div className="space-y-6">
                 <div className="flex items-center justify-between p-6 rounded-3xl bg-slate-950/50 border border-slate-800/50">
                   <div className="flex items-center gap-4">
@@ -237,8 +237,8 @@ export const Estimation: React.FC = () => {
                       <Wind size={24} />
                     </div>
                     <div>
-                      <Typography className="text-white font-bold">Ar Condicionado / ClimatizaÃ§Ã£o</Typography>
-                      <Typography className="text-slate-500 text-sm">Ative se o evento necessita de refrigeraÃ§Ã£o forÃ§ada.</Typography>
+                      <Typography className="text-white font-bold">Ar Condicionado / Climatização</Typography>
+                      <Typography className="text-slate-500 text-sm">Ative se o evento necessita de refrigeração forçada.</Typography>
                     </div>
                   </div>
                   <button 
@@ -262,8 +262,8 @@ export const Estimation: React.FC = () => {
                     <div className="flex items-start gap-4">
                       <CheckCircle2 size={18} className="text-blue-400 mt-1" />
                       <Typography className="text-blue-200/70 text-sm leading-relaxed">
-                        Calculamos automaticamente ~150W por mÂ² para ambientes fechados com isolamento tÃ©rmico padrÃ£o. 
-                        Este valor Ã© uma estimativa de carga de pico para dimensionamento de geradores.
+                        Calculamos automaticamente ~150W por m² para ambientes fechados com isolamento térmico padrão. 
+                        Este valor é uma estimativa de carga de pico para dimensionamento de geradores.
                       </Typography>
                     </div>
                   </motion.div>
@@ -276,7 +276,7 @@ export const Estimation: React.FC = () => {
             <div className="space-y-10">
               <div className="text-center space-y-2">
                 <Typography variant="h3" className="text-3xl font-bold text-white tracking-tight">Provisionamento Recomendado</Typography>
-                <Typography className="text-slate-500 uppercase text-[10px] font-black tracking-[0.4em]">ConfiguraÃ§Ã£o Final da Infraestrutura</Typography>
+                <Typography className="text-slate-500 uppercase text-[10px] font-black tracking-[0.4em]">Configuração Final da Infraestrutura</Typography>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -298,10 +298,10 @@ export const Estimation: React.FC = () => {
               </div>
 
               <div className="p-8 rounded-[2.5rem] bg-slate-950/80 border border-slate-800/50 space-y-6">
-                <Typography className="text-white font-bold tracking-tight">Resumo TÃ©cnico p/ Proposta</Typography>
+                <Typography className="text-white font-bold tracking-tight">Resumo Técnico p/ Proposta</Typography>
                 <div className="space-y-3">
                   <div className="flex justify-between text-sm">
-                    <span className="text-slate-500">DuraÃ§Ã£o Total:</span>
+                    <span className="text-slate-500">Duração Total:</span>
                     <span className="text-slate-200 font-medium">{formData.days * formData.hoursPerDay} Horas Operacionais</span>
                   </div>
                   <div className="flex justify-between text-sm">
@@ -309,7 +309,7 @@ export const Estimation: React.FC = () => {
                     <span className="text-slate-200 font-medium">{(Number(result.totalConsumption) / formData.participants).toFixed(2)} kWh/pax</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-slate-500">Complexidade TÃ©cnica:</span>
+                    <span className="text-slate-500">Complexidade Técnica:</span>
                     <span className="text-blue-400 font-black uppercase text-[10px] tracking-widest">{formData.lightingComplexity}</span>
                   </div>
                 </div>

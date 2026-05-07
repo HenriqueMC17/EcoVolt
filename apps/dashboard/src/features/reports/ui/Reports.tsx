@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import React from 'react';
 import { 
   BarChart3, 
@@ -13,7 +13,7 @@ import {
   PieChart
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Typography } from '@/shared/ui/Typography';
+import { Typography } from '@/shared/ui/typography';
 import { Button } from '@/shared/ui/Button';
 
 export const Reports: React.FC = () => {
@@ -30,17 +30,17 @@ export const Reports: React.FC = () => {
             </Typography>
           </div>
           <Typography variant="h1" className="text-4xl font-black tracking-tighter text-white uppercase">
-            RelatÃ³rios & <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">Indicadores</span>
+            Relatórios & <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">Indicadores</span>
           </Typography>
           <Typography className="text-slate-400 max-w-2xl">
-            AnÃ¡lise profunda de performance operacional, impacto ambiental e eficiÃªncia financeira do ecossistema.
+            Análise profunda de performance operacional, impacto ambiental e eficiência financeira do ecossistema.
           </Typography>
         </div>
         
         <div className="flex gap-4">
            <button className="h-14 px-8 rounded-2xl bg-slate-900 border border-slate-800 text-slate-400 flex items-center gap-3 hover:text-white transition-all">
              <Calendar size={18} />
-             Este MÃªs
+             Este Mês
            </button>
            <Button className="btn-premium-primary h-14 px-10 rounded-2xl">
              <Download className="mr-2" size={20} />
@@ -59,7 +59,7 @@ export const Reports: React.FC = () => {
               </div>
               <div>
                 <Typography variant="h3" className="text-xl font-bold text-white tracking-tight">Impacto Ambiental</Typography>
-                <Typography className="text-slate-500 text-xs">EmissÃµes de CO2 e energia renovÃ¡vel</Typography>
+                <Typography className="text-slate-500 text-xs">Emissões de CO2 e energia renovável</Typography>
               </div>
             </div>
           </div>
@@ -70,7 +70,7 @@ export const Reports: React.FC = () => {
               <Typography className="text-3xl font-bold text-emerald-400">14.2 t</Typography>
             </div>
             <div className="p-6 rounded-3xl bg-slate-950/50 border border-slate-800/50 space-y-2">
-              <Typography className="text-slate-500 text-[10px] font-black uppercase tracking-widest">% RenovÃ¡vel</Typography>
+              <Typography className="text-slate-500 text-[10px] font-black uppercase tracking-widest">% Renovável</Typography>
               <Typography className="text-3xl font-bold text-blue-400">78%</Typography>
             </div>
           </div>
@@ -89,8 +89,8 @@ export const Reports: React.FC = () => {
                 <TrendingUp size={24} />
               </div>
               <div>
-                <Typography variant="h3" className="text-xl font-bold text-white tracking-tight">EficiÃªncia Operacional</Typography>
-                <Typography className="text-slate-500 text-xs">Custo por participante e otimizaÃ§Ã£o</Typography>
+                <Typography variant="h3" className="text-xl font-bold text-white tracking-tight">Eficiência Operacional</Typography>
+                <Typography className="text-slate-500 text-xs">Custo por participante e otimização</Typography>
               </div>
             </div>
           </div>
@@ -117,12 +117,12 @@ export const Reports: React.FC = () => {
       <div className="glass-card p-10 border-slate-800/50">
         <div className="flex items-center gap-4 mb-10">
           <PieChart size={24} className="text-purple-400" />
-          <Typography variant="h3" className="text-xl font-bold text-white tracking-tight">DistribuiÃ§Ã£o de Carga por Categoria</Typography>
+          <Typography variant="h3" className="text-xl font-bold text-white tracking-tight">Distribuição de Carga por Categoria</Typography>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
            {[
-             { label: 'ClimatizaÃ§Ã£o', value: 45, color: 'bg-blue-500' },
-             { label: 'IluminaÃ§Ã£o', value: 25, color: 'bg-amber-500' },
+             { label: 'Climatização', value: 45, color: 'bg-blue-500' },
+             { label: 'Iluminação', value: 25, color: 'bg-amber-500' },
              { label: 'Som & LED', value: 20, color: 'bg-purple-500' },
              { label: 'Outros', value: 10, color: 'bg-slate-700' },
            ].map(item => (

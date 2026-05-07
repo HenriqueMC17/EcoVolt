@@ -16,7 +16,7 @@ import {
   Cpu
 } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
-import { Typography } from '@/shared/ui/Typography';
+import { Typography } from '@/shared/ui/typography';
 import { motion } from 'framer-motion';
 
 const menuItems = [
@@ -28,11 +28,19 @@ const menuItems = [
   { icon: Database, label: 'ASSET_MAP', path: '/dashboard/inventario', color: 'text-cyan-400' },
 ];
 
-export const DashboardSidebar: React.FC = () => {
+interface SidebarProps {
+  isFloating?: boolean;
+  onClose?: () => void;
+}
+
+export const DashboardSidebar: React.FC<SidebarProps> = ({ isFloating, onClose }) => {
   const pathname = usePathname();
 
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-80 bg-slate-950/80 backdrop-blur-4xl border-r border-white/5 z-50 flex flex-col p-10 group overflow-hidden">
+    <aside className={cn(
+      "fixed left-0 top-0 bottom-0 w-80 bg-slate-950/80 backdrop-blur-4xl border-r border-white/5 z-50 flex flex-col p-10 group overflow-hidden transition-transform duration-500",
+      isFloating ? "translate-x-0 shadow-5xl" : "translate-x-0"
+    )}>
       {/* Scanline Effect */}
       <div className="absolute inset-0 scanline opacity-[0.05] pointer-events-none" />
       

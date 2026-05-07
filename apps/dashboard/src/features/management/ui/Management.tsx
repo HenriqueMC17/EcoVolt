@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import React, { useState } from 'react';
 import { 
   Building2, 
@@ -20,7 +20,7 @@ import { api } from '@convex/_generated/api';
 import { useToast } from '@/shared/context/ToastContext';
 import { useUser } from '@/shared/context/UserContext';
 import { Button } from '@/shared/ui/Button';
-import { Typography } from '@/shared/ui/Typography';
+import { Typography } from '@/shared/ui/typography';
 
 // --- Constants & Animations ---
 
@@ -180,7 +180,7 @@ export const Management: React.FC = () => {
               <div className="h-px w-12 bg-current" />
             </div>
             <Typography className="text-slate-400 font-bold leading-relaxed text-lg max-w-xl mx-auto italic">
-              Esta seÃ§Ã£o contÃ©m protocolos de governanÃ§a de alta prioridade. Seu perfil atual nÃ£o possui as credenciais "root" necessÃ¡rias para modificaÃ§Ã£o da rede.
+              Esta seção contém protocolos de governança de alta prioridade. Seu perfil atual não possui as credenciais "root" necessárias para modificação da rede.
             </Typography>
           </div>
 
@@ -224,7 +224,7 @@ export const Management: React.FC = () => {
   const handleSubmitCompany = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!companyForm.name) {
-      showToast('O nome da empresa Ã© obrigatÃ³rio', 'error');
+      showToast('O nome da empresa é obrigatório', 'error');
       return;
     }
 
@@ -248,7 +248,7 @@ export const Management: React.FC = () => {
       setEditingCompanyId(null);
       setCompanyForm({ name: '', type: 'client', cnpj: '', status: 'active', region: '', category: '' });
     } catch (err) {
-      showToast('Falha na operaÃ§Ã£o de registro.', 'error');
+      showToast('Falha na operação de registro.', 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -270,7 +270,7 @@ export const Management: React.FC = () => {
           ...userForm,
           companyId: userForm.companyId ? (userForm.companyId as any) : undefined
         });
-        showToast('Perfil de usuÃ¡rio sincronizado.', 'success');
+        showToast('Perfil de usuário sincronizado.', 'success');
       } else {
         await createUser({
           userEmail,
@@ -290,7 +290,7 @@ export const Management: React.FC = () => {
   };
 
   const handleDeleteCompany = async (id: string) => {
-    if (window.confirm('AtenÃ§Ã£o: A exclusÃ£o da matriz removerÃ¡ todos os vÃ­nculos operacionais. Confirmar?')) {
+    if (window.confirm('Atenção: A exclusão da matriz removerá todos os vínculos operacionais. Confirmar?')) {
       try {
         await removeCompany({ userEmail, id: id as any });
         showToast('Entidade removida do ledger.', 'success');
@@ -301,7 +301,7 @@ export const Management: React.FC = () => {
   };
 
   const handleDeleteUser = async (id: string) => {
-    if (window.confirm('Revogar permanentemente o acesso deste usuÃ¡rio?')) {
+    if (window.confirm('Revogar permanentemente o acesso deste usuário?')) {
       try {
         await removeUser({ userEmail, id: id as any });
         showToast('Acesso revogado com sucesso.', 'success');
@@ -331,7 +331,7 @@ export const Management: React.FC = () => {
             Identity <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-primary drop-shadow-[0_0_30px_rgba(99,102,241,0.3)]">Vault</span>
           </Typography>
           <Typography className="text-slate-400 font-bold tracking-wide max-w-2xl text-lg italic opacity-80 leading-relaxed">
-            OrquestraÃ§Ã£o de permissÃµes, perfis de seguranÃ§a e hierarquia corporativa EcoVolt. Monitoramento de rede em tempo real.
+            Orquestração de permissões, perfis de segurança e hierarquia corporativa EcoVolt. Monitoramento de rede em tempo real.
           </Typography>
         </motion.div>
         
@@ -402,7 +402,7 @@ export const Management: React.FC = () => {
             <div className="flex items-center gap-3">
               <div className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-pulse" />
               <Typography className="text-[10px] text-slate-500 font-black tracking-widest uppercase">
-                {activeTab === 'companies' ? 'OrquestraÃ§Ã£o de entidades federadas.' : 'GestÃ£o de credenciais e privilÃ©gios root.'}
+                {activeTab === 'companies' ? 'Orquestração de entidades federadas.' : 'Gestão de credenciais e privilégios root.'}
               </Typography>
             </div>
           </div>

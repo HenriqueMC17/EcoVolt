@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import React, { useState } from 'react';
 import { 
   Zap, 
@@ -15,17 +15,17 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Typography } from '@/shared/ui/Typography';
+import { Typography } from '@/shared/ui/typography';
 import { Button } from '@/shared/ui/Button';
 
 const mockProviders = [
   {
     id: 1,
-    name: 'GeraÃ§Ã£o Verde S.A.',
-    type: 'RenovÃ¡vel',
+    name: 'Geração Verde S.A.',
+    type: 'Renovável',
     specialties: ['Solar', 'Baterias'],
     rating: 4.9,
-    location: 'SÃ£o Paulo, SP',
+    location: 'São Paulo, SP',
     capacity: '10 MW',
     icon: Sun,
     color: 'text-emerald-400',
@@ -34,8 +34,8 @@ const mockProviders = [
   {
     id: 2,
     name: 'PowerRental Brasil',
-    type: 'LogÃ­stica / Diesel',
-    specialties: ['Geradores a Diesel', 'HÃ­bridos'],
+    type: 'Logística / Diesel',
+    specialties: ['Geradores a Diesel', 'Híbridos'],
     rating: 4.7,
     location: 'Rio de Janeiro, RJ',
     capacity: '5 MW',
@@ -46,8 +46,8 @@ const mockProviders = [
   {
     id: 3,
     name: 'SolarGrid Solutions',
-    type: 'RenovÃ¡vel',
-    specialties: ['Solar', 'EÃ³lica'],
+    type: 'Renovável',
+    specialties: ['Solar', 'Eólica'],
     rating: 4.8,
     location: 'Belo Horizonte, MG',
     capacity: '8 MW',
@@ -58,8 +58,8 @@ const mockProviders = [
   {
     id: 4,
     name: 'BlueEnergy Infra',
-    type: 'HÃ­drica / Redes',
-    specialties: ['SubestaÃ§Ãµes', 'Cabeamento'],
+    type: 'Hídrica / Redes',
+    specialties: ['Subestações', 'Cabeamento'],
     rating: 4.6,
     location: 'Curitiba, PR',
     capacity: '15 MW',
@@ -88,7 +88,7 @@ export const Providers: React.FC = () => {
             Ecossistema de <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Provedores</span>
           </Typography>
           <Typography className="text-slate-400 max-w-2xl">
-            Conecte seu evento aos melhores fornecedores de energia do Brasil. Filtre por tecnologia, capacidade e reputaÃ§Ã£o tÃ©cnica.
+            Conecte seu evento aos melhores fornecedores de energia do Brasil. Filtre por tecnologia, capacidade e reputação técnica.
           </Typography>
         </div>
       </header>
@@ -99,7 +99,7 @@ export const Providers: React.FC = () => {
           <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
           <input 
             type="text" 
-            placeholder="Buscar por nome, especialidade ou regiÃ£o..." 
+            placeholder="Buscar por nome, especialidade ou região..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full bg-slate-950/40 border border-slate-800/50 rounded-2xl py-4 pl-14 pr-4 text-white placeholder-slate-600 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/40 transition-all font-medium"

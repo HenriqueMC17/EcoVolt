@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import React, { useState, useMemo } from 'react';
 import { 
   Calendar, 
@@ -23,7 +23,7 @@ import { api } from "@convex/_generated/api";
 import { useToast } from "@/shared/context/ToastContext";
 import { Id } from "@convex/_generated/dataModel";
 import { useUser } from '@/shared/context/UserContext';
-import { Typography } from '@/shared/ui/Typography';
+import { Typography } from '@/shared/ui/typography';
 import { Button } from '@/shared/ui/Button';
 
 // --- Types & Constants ---
@@ -54,7 +54,7 @@ const itemVariants = {
 const getStatusDetails = (status: string) => {
   switch (status) {
     case 'completed': return { color: 'text-emerald-400', bg: 'bg-emerald-500/5', border: 'border-emerald-500/10', label: 'Finalizado', glow: 'shadow-[0_0_20px_rgba(16,185,129,0.1)]' };
-    case 'active': return { color: 'text-blue-400', bg: 'bg-blue-500/5', border: 'border-blue-500/10', label: 'OperaÃ§Ã£o Ativa', glow: 'shadow-[0_0_20px_rgba(59,130,246,0.1)]' };
+    case 'active': return { color: 'text-blue-400', bg: 'bg-blue-500/5', border: 'border-blue-500/10', label: 'Operação Ativa', glow: 'shadow-[0_0_20px_rgba(59,130,246,0.1)]' };
     case 'cancelled': return { color: 'text-rose-400', bg: 'bg-rose-500/5', border: 'border-rose-500/10', label: 'Descontinuado', glow: 'shadow-[0_0_20px_rgba(244,63,94,0.1)]' };
     case 'planning': return { color: 'text-amber-400', bg: 'bg-amber-500/5', border: 'border-amber-500/10', label: 'Planejamento', glow: 'shadow-[0_0_20px_rgba(245,158,11,0.1)]' };
     default: return { color: 'text-slate-400', bg: 'bg-slate-500/5', border: 'border-slate-500/10', label: status, glow: '' };
@@ -173,7 +173,7 @@ export const Events: React.FC = () => {
 
   const handleOpenEdit = (event: any) => {
     if (user?.role !== 'admin' && user?.companyId !== event.companyId) {
-      showToast('VocÃª nÃ£o tem permissÃ£o para editar este evento.', 'error');
+      showToast('Você não tem permissão para editar este evento.', 'error');
       return;
     }
     setFormData({
@@ -230,16 +230,16 @@ export const Events: React.FC = () => {
 
   const handleDelete = async (id: Id<"events">, eventCompanyId: string) => {
     if (user?.role !== 'admin' && user?.companyId !== eventCompanyId) {
-      showToast('VocÃª nÃ£o tem permissÃ£o para excluir este evento.', 'error');
+      showToast('Você não tem permissão para excluir este evento.', 'error');
       return;
     }
-    if (window.confirm("Tem certeza que deseja excluir este evento? Esta aÃ§Ã£o nÃ£o pode ser desfeita.")) {
+    if (window.confirm("Tem certeza que deseja excluir este evento? Esta ação não pode ser desfeita.")) {
       try {
         await removeEvent({ 
           eventId: id,
           userEmail: user!.email
         });
-        showToast('Evento excluÃ­do com sucesso!', 'success');
+        showToast('Evento excluído com sucesso!', 'success');
       } catch (error: any) {
         showToast(error.message || 'Erro ao excluir evento.', 'error');
       }
@@ -293,14 +293,14 @@ export const Events: React.FC = () => {
             Managed <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Events</span>
           </Typography>
           <Typography variant="body" className="text-slate-400 font-medium tracking-wide max-w-xl">
-            OrquestraÃ§Ã£o de infraestrutura de alto impacto e eficiÃªncia energÃ©tica para grandes operaÃ§Ãµes.
+            Orquestração de infraestrutura de alto impacto e eficiência energética para grandes operações.
           </Typography>
         </motion.div>
         
         <motion.div variants={itemVariants}>
           <Button onClick={handleOpenCreate} className="btn-premium-primary h-14 px-10 rounded-2xl shadow-[0_0_30px_rgba(59,130,246,0.15)] hover:shadow-[0_0_40px_rgba(59,130,246,0.25)] transition-all duration-500 group">
             <Plus className="w-5 h-5 mr-3 group-hover:rotate-90 transition-transform duration-500" />
-            Provisionar OperaÃ§Ã£o
+            Provisionar Operação
           </Button>
         </motion.div>
       </header>
@@ -308,7 +308,7 @@ export const Events: React.FC = () => {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         <StatCard 
-          title="Total de OperaÃ§Ãµes" 
+          title="Total de Operações" 
           value={stats.total} 
           icon={Globe} 
           color="from-blue-500 to-indigo-600"
@@ -330,7 +330,7 @@ export const Events: React.FC = () => {
           glowColor="from-amber-500/20"
         />
         <StatCard 
-          title="Alcance de PÃºblico" 
+          title="Alcance de Público" 
           value={stats.attendees.toLocaleString()} 
           icon={Users} 
           color="from-purple-500 to-pink-600"
@@ -344,7 +344,7 @@ export const Events: React.FC = () => {
           <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
           <input 
             type="text" 
-            placeholder="Buscar por operaÃ§Ã£o, local ou entidade..." 
+            placeholder="Buscar por operação, local ou entidade..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full bg-slate-950/40 border border-slate-800/50 rounded-2xl py-4 pl-14 pr-4 text-white placeholder-slate-600 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/40 transition-all font-medium"
@@ -360,7 +360,7 @@ export const Events: React.FC = () => {
             >
               <option value="all">Filtro: Global</option>
               <option value="planning">Status: Planejamento</option>
-              <option value="active">Status: Em OperaÃ§Ã£o</option>
+              <option value="active">Status: Em Operação</option>
               <option value="completed">Status: Finalizado</option>
               <option value="cancelled">Status: Descontinuado</option>
             </select>
@@ -397,7 +397,7 @@ export const Events: React.FC = () => {
               Nenhum Registro Localizado
             </Typography>
             <Typography className="text-slate-500 mb-10 max-w-sm mx-auto leading-relaxed font-medium">
-              {searchQuery ? `NÃ£o existem operaÃ§Ãµes vinculadas ao termo "${searchQuery}" nesta camada de dados.` : "O protocolo de eventos estÃ¡ vazio. Inicie um novo provisionamento para monitorar sua infraestrutura."}
+              {searchQuery ? `Não existem operações vinculadas ao termo "${searchQuery}" nesta camada de dados.` : "O protocolo de eventos está vazio. Inicie um novo provisionamento para monitorar sua infraestrutura."}
             </Typography>
             {!searchQuery && (
               <Button onClick={handleOpenCreate} className="btn-premium-primary rounded-2xl h-14 px-10">
@@ -446,7 +446,7 @@ export const Events: React.FC = () => {
                           <button 
                             onClick={() => handleOpenEdit(event)}
                             className="p-3.5 bg-slate-900/80 text-slate-500 hover:text-blue-400 hover:bg-blue-400/10 border border-slate-800/50 rounded-2xl transition-all shadow-xl"
-                            title="Editar OperaÃ§Ã£o"
+                            title="Editar Operação"
                           >
                             <Edit size={20} />
                           </button>
@@ -548,9 +548,9 @@ export const Events: React.FC = () => {
                       </Typography>
                     </div>
                     <Typography variant="h2" className="text-4xl font-bold text-white tracking-tight">
-                      {isEditing ? 'Ajustar OperaÃ§Ã£o' : 'Provisionar OperaÃ§Ã£o'}
+                      {isEditing ? 'Ajustar Operação' : 'Provisionar Operação'}
                     </Typography>
-                    <Typography className="text-slate-400 font-medium tracking-wide">Configure os parÃ¢metros tÃ©cnicos para o novo ativo.</Typography>
+                    <Typography className="text-slate-400 font-medium tracking-wide">Configure os parâmetros técnicos para o novo ativo.</Typography>
                   </div>
                   <button 
                     onClick={() => setIsModalOpen(false)}
@@ -562,19 +562,19 @@ export const Events: React.FC = () => {
 
                 <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-10">
                   <div className="space-y-3 md:col-span-2">
-                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">DesignaÃ§Ã£o da OperaÃ§Ã£o</label>
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">Designação da Operação</label>
                     <input 
                       type="text" 
                       value={formData.name}
                       onChange={e => setFormData({...formData, name: e.target.value})}
                       className="w-full bg-slate-950/40 border border-slate-800/50 rounded-[1.5rem] py-5 px-8 text-white outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/40 transition-all font-bold text-lg placeholder-slate-700"
-                      placeholder="Ex: Festival de VerÃ£o 2026"
+                      placeholder="Ex: Festival de Verão 2026"
                       required
                     />
                   </div>
 
                   <div className="space-y-3">
-                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">Entidade ResponsÃ¡vel</label>
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">Entidade Responsável</label>
                     <div className="relative group">
                       <select 
                         value={formData.companyId} 
@@ -601,7 +601,7 @@ export const Events: React.FC = () => {
                         required
                       >
                         <option value="planning">Planejamento</option>
-                        <option value="active">OperaÃ§Ã£o Ativa</option>
+                        <option value="active">Operação Ativa</option>
                         <option value="completed">Finalizado</option>
                         <option value="cancelled">Descontinuado</option>
                       </select>
@@ -610,7 +610,7 @@ export const Events: React.FC = () => {
                   </div>
 
                   <div className="space-y-3">
-                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">InÃ­cio Scheduled</label>
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">Início Scheduled</label>
                     <input 
                       type="date" 
                       value={formData.startDate}
@@ -621,7 +621,7 @@ export const Events: React.FC = () => {
                   </div>
 
                   <div className="space-y-3">
-                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">TÃ©rmino Scheduled</label>
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">Término Scheduled</label>
                     <input 
                       type="date" 
                       value={formData.endDate}
@@ -632,7 +632,7 @@ export const Events: React.FC = () => {
                   </div>
 
                   <div className="space-y-3 md:col-span-2">
-                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">Coordenadas / LocalizaÃ§Ã£o</label>
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">Coordenadas / Localização</label>
                     <div className="relative">
                       <MapPin size={22} className="absolute left-8 top-1/2 -translate-y-1/2 text-slate-600" />
                       <input 
@@ -640,14 +640,14 @@ export const Events: React.FC = () => {
                         value={formData.location}
                         onChange={e => setFormData({...formData, location: e.target.value})}
                         className="w-full bg-slate-950/40 border border-slate-800/50 rounded-[1.5rem] py-5 pl-20 pr-8 text-white outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/40 transition-all font-bold placeholder-slate-700"
-                        placeholder="Local exato da operaÃ§Ã£o fÃ­sica"
+                        placeholder="Local exato da operação física"
                         required
                       />
                     </div>
                   </div>
 
                   <div className="space-y-3">
-                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">Magnitude de PÃºblico</label>
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">Magnitude de Público</label>
                     <div className="relative">
                       <Users size={22} className="absolute left-8 top-1/2 -translate-y-1/2 text-slate-600" />
                       <input 
@@ -662,7 +662,7 @@ export const Events: React.FC = () => {
                   </div>
 
                   <div className="space-y-3">
-                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">Provision EnergÃ©tico (kWh)</label>
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">Provision Energético (kWh)</label>
                     <div className="relative">
                       <Zap size={22} className="absolute left-8 top-1/2 -translate-y-1/2 text-amber-500/50" />
                       <input 

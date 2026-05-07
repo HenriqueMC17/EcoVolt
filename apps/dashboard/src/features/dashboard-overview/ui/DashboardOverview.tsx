@@ -12,7 +12,7 @@ import {
   Clock,
   Battery
 } from 'lucide-react';
-import { Typography } from '@/shared/ui/Typography';
+import { Typography } from '@/shared/ui/typography';
 import { 
   AreaChart, 
   Area, 

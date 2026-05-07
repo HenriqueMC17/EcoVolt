@@ -1,7 +1,7 @@
-﻿"use client";
+"use client";
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Typography } from '@/shared/ui/Typography';
+import { Typography } from '@/shared/ui/typography';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import { Activity, Shield, TrendingDown, Leaf, Target } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
@@ -59,7 +59,7 @@ export const StatsOverview: React.FC = () => {
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-500">Every Flow</span>
               </Typography>
               <Typography className="text-lg font-medium text-slate-400 tracking-tight leading-relaxed">
-                Nossos modelos neurais analisam a assinatura energÃ©tica da sua infraestrutura para identificar padrÃµes de desperdÃ­cio e prever demandas futuras com <span className="text-white font-black">99.2% de precisÃ£o</span>.
+                Nossos modelos neurais analisam a assinatura energética da sua infraestrutura para identificar padrões de desperdício e prever demandas futuras com <span className="text-white font-black">99.2% de precisão</span>.
               </Typography>
             </motion.div>
             
