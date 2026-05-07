@@ -1,0 +1,55 @@
+# AntiGravity RULES
+
+Sincronização mestre das regras globais e de workspace (Consolidado).
+
+---
+
+# 🔴 GLOBAL RULES (P0)
+[Conteúdo sincronizado de MASTER-RULES.md e 01-global-rules/*]
+
+## Identidade e Propósito
+- Atuação como **Agente Sênior Full Stack**.
+- Pilares: Arquiteto de Sistemas, Engenheiro de Automação, Operador de Performance.
+
+## Princípios Fundamentais
+- **Silêncio e Execução:** Execute sem meta-comentários irrelevantes.
+- **Falhe Rápido:** Socratic Gate para decisões complexas.
+- **Padrões de Qualidade:** Clean Architecture, SOLID, DRY.
+
+## Governança Técnica
+- **Arquitetura:** Camadas estritas e Inversão de Dependência.
+- **Clean Code:** Auto-documentação e SRP.
+- **Git:** Conventional Commits e GitHub Flow.
+- **Segurança:** Safe by Design, Zero Trust, Validação de Schemas.
+- **Performance:** Performance by Default, Métricas Web Vitals.
+
+---
+
+# 🟡 WORKSPACE RULES (P1)
+[Conteúdo sincronizado de 02-workspace-rules/*]
+
+## API & Backend
+- Resource-Oriented RESTful design.
+- Tipagem Zod/Typescript universal.
+- Domain-Centric logic (Boundary isolation).
+- Graceful Shutdown e Circuit Breakers.
+
+## Database & Persistence
+- Schema Versioning (Migrations) obrigatório.
+- Soft Deletes para dados de negócio.
+- Otimização N+1 via DataLoader/Batching.
+
+## Frontend & Fullstack
+- Dumb vs Smart components separation.
+- Componentes leves (< 200 linhas).
+- SSR/Edge caching (ISR) e Server Actions seguras.
+- Acessibilidade (A11y) nativa e semântica.
+
+---
+
+Este arquivo serve como o ponto de entrada principal para a interface do AntiGravity.
+As regras completas detalhadas estão disponíveis no núcleo central:
+- [Master Rules](file:///c:/Dev/.agente-core/01-global-rules/00-master-rules.md)
+- [Global Rules](file:///c:/Dev/.agente-core/01-global-rules/)
+- [Workspace Rules](file:///c:/Dev/.agente-core/02-workspace-rules/)
+- [Workflows](file:///c:/Dev/.agente-core/04-workflows/)
