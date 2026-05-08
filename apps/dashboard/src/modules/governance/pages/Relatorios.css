@@ -1,0 +1,122 @@
+.relatorios-page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.executive-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.summary-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  border-radius: var(--radius-xl);
+}
+
+.summary-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.summary-info .label {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.summary-info .value {
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.summary-info .sub {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.summary-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.summary-icon.green { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+.summary-icon.blue { background: rgba(59, 130, 246, 0.1); color: var(--info); }
+.summary-icon.yellow { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+
+.reports-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.chart-card {
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.chart-header h3 {
+  font-size: 1.1rem;
+}
+
+.insights-section {
+  padding: 2rem;
+  border-radius: var(--radius-xl);
+}
+
+.insights-section h3 {
+  margin-bottom: 1.5rem;
+}
+
+.insights-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.insight-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.insight-bullet {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-top: 5px;
+  flex-shrink: 0;
+}
+
+.insight-bullet.green { background: var(--success); box-shadow: 0 0 10px var(--success); }
+.insight-bullet.blue { background: var(--info); box-shadow: 0 0 10px var(--info); }
+.insight-bullet.orange { background: var(--warning); box-shadow: 0 0 10px var(--warning); }
+
+.insight-item p {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--text-main);
+}
+
+@media (max-width: 1024px) {
+  .reports-grid {
+    grid-template-columns: 1fr;
+  }
+}

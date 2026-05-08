@@ -1,0 +1,206 @@
+.compliance-page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.compliance-overview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.overview-card {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+}
+
+.icon-box {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-box.success { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+.icon-box.warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+.icon-box.error { background: rgba(239, 68, 68, 0.1); color: var(--error); }
+.icon-box.info { background: rgba(59, 130, 246, 0.1); color: var(--info); }
+
+.overview-card .info h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.overview-card .info p {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.document-filters {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  border-radius: var(--radius-lg);
+  gap: 2rem;
+}
+
+.search-input {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  color: var(--text-muted);
+}
+
+.search-input input {
+  background: none;
+  border: none;
+  color: var(--text-main);
+  width: 100%;
+  outline: none;
+}
+
+.filter-chips {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.chip {
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: none;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.chip:hover {
+  background: var(--bg-hover);
+  color: var(--text-main);
+}
+
+.chip.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+
+.documents-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.document-card {
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  transition: transform var(--transition-normal);
+  border-left: 4px solid transparent;
+}
+
+.document-card:hover {
+  transform: translateY(-4px);
+}
+
+.document-card.valid { border-left-color: var(--success); }
+.document-card.expiring { border-left-color: var(--warning); }
+.document-card.expired { border-left-color: var(--error); }
+.document-card.pending { border-left-color: var(--slate-500); }
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.doc-icon {
+  color: var(--primary);
+}
+
+.doc-meta {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin-left: 1rem;
+}
+
+.doc-id {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.doc-category {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+
+.card-body h4 {
+  font-size: 1.1rem;
+  margin-bottom: 0.25rem;
+}
+
+.card-body .provider {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.expiry-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.expiry-info .label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.expiry-info .value {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.status-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+}
+
+.status-tag.valid { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+.status-tag.expiring { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+.status-tag.expired { background: rgba(239, 68, 68, 0.1); color: var(--error); }
+.status-tag.pending { background: rgba(148, 163, 184, 0.1); color: var(--slate-400); }
+
+@media (max-width: 768px) {
+  .document-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
