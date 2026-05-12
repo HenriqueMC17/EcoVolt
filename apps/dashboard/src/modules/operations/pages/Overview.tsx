@@ -4,11 +4,16 @@ import {
   Zap, 
   DollarSign, 
   AlertTriangle, 
-  ArrowUpRight, 
-  ArrowDownRight,
+  ArrowUpRight,
   Calendar,
   Clock,
-  Activity
+  Activity,
+  FileText,
+  TrendingUp,
+  ShieldAlert,
+  ArrowRight,
+  Leaf,
+  Target
 } from 'lucide-react';
 import { 
   AreaChart, 
@@ -22,6 +27,8 @@ import {
   YAxis,
   Area
 } from 'recharts';
+import StatusBadge from '../../../components/shared/StatusBadge';
+import type { StatusType } from '../../../components/shared/StatusBadge';
 import './Overview.css';
 
 const dataPerformance = [
@@ -34,132 +41,174 @@ const dataPerformance = [
 ];
 
 const dataContratos = [
-  { name: 'Ativos', value: 45, color: '#10b981' },
-  { name: 'Assinatura', value: 25, color: '#3b82f6' },
-  { name: 'Negociação', value: 20, color: '#f59e0b' },
-  { name: 'Encerrados', value: 10, color: '#94a3b8' },
+  { name: 'Ativos', value: 45, color: 'var(--primary-main)' },
+  { name: 'Assinatura', value: 25, color: 'var(--secondary-main)' },
+  { name: 'Negociação', value: 20, color: 'var(--warning-main)' },
+  { name: 'Encerrados', value: 10, color: 'var(--text-muted)' },
 ];
-
-interface KPICardProps {
-  title: string;
-  value: string;
-  icon: React.ReactNode;
-  trend: 'up' | 'down';
-  trendValue: string;
-  color: string;
-}
-
-const KPICard = ({ title, value, icon, trend, trendValue, color }: KPICardProps) => (
-  <div className="kpi-card glass animate-fade-in">
-    <div className="kpi-header">
-      <div className={`kpi-icon-box ${color}`}>
-        {icon}
-      </div>
-      <div className={`kpi-trend ${trend === 'up' ? 'positive' : 'negative'}`}>
-        {trend === 'up' ? <ArrowUpRight size={16} /> : <ArrowDownRight size={16} />}
-        <span>{trendValue}</span>
-      </div>
-    </div>
-    <div className="kpi-body">
-      <h3 className="kpi-value">{value}</h3>
-      <p className="kpi-title">{title}</p>
-    </div>
-  </div>
-);
 
 const Overview: React.FC = () => {
   return (
-    <div className="overview-page">
-      <div className="page-header">
-        <div>
-          <h1 className="page-title">Bem-vindo ao EcoVolt</h1>
-          <p className="page-subtitle">Acompanhe a performance e operação em tempo real.</p>
+    <div className="overview-page module-page">
+      <header className="module-header">
+        <div className="header-content">
+          <div className="header-badge">Centro de Comando AI</div>
+          <h1 className="header-title">Centro de Comando</h1>
+          <p className="header-subtitle">
+            Visão executiva da operação energética, contratos e eventos em tempo real.
+          </p>
         </div>
         <div className="header-actions">
-          <button className="btn btn-secondary">Exportar PDF</button>
-          <button className="btn btn-primary">Novo Evento</button>
+          <button className="btn btn-secondary">
+            <FileText size={18} />
+            <span>Relatório Executivo</span>
+          </button>
+          <button className="btn btn-primary">
+            <TrendingUp size={18} />
+            <span>Simular Cenários</span>
+          </button>
+        </div>
+      </header>
+
+      <div className="intelligence-banner glass animate-fade-in">
+        <div className="banner-icon">
+          <ShieldAlert size={24} className="text-error" />
+        </div>
+        <div className="banner-content">
+          <span className="ai-badge-mini">Alerta AI</span>
+          <h4>Atenção Necessária na Operação</h4>
+          <p>
+            Existem <strong>3 desvios críticos</strong> identificados na reconciliação financeira e 
+            <strong> 2 contratos</strong> vencendo nos próximos 7 dias.
+          </p>
+        </div>
+        <div className="banner-actions">
+          <button className="btn btn-primary btn-sm">Ver Detalhes</button>
+          <button className="icon-btn-glass">
+            <ArrowRight size={16} />
+          </button>
         </div>
       </div>
 
-      {/* KPI Grid */}
       <div className="kpi-grid">
-        <KPICard 
-          title="Eventos Ativos" 
-          value="12" 
-          icon={<Users size={24} />} 
-          trend="up" 
-          trendValue="+2" 
-          color="green"
-        />
-        <KPICard 
-          title="Injeção Total" 
-          value="450 MWh" 
-          icon={<Zap size={24} />} 
-          trend="up" 
-          trendValue="+15%" 
-          color="blue"
-        />
-        <KPICard 
-          title="Economia Gerada" 
-          value="R$ 42.5k" 
-          icon={<DollarSign size={24} />} 
-          trend="up" 
-          trendValue="+12%" 
-          color="yellow"
-        />
-        <KPICard 
-          title="CO2 Evitado" 
-          value="15.8 t" 
-          icon={<Activity size={24} />} 
-          trend="up" 
-          trendValue="+4%" 
-          color="purple"
-        />
+        <div className="kpi-card-enterprise">
+          <div className="kpi-icon-wrapper success">
+            <Users size={24} />
+          </div>
+          <div className="kpi-info">
+            <span className="kpi-label">Eventos Ativos</span>
+            <div className="kpi-value-container">
+              <h2 className="kpi-value">12</h2>
+              <span className="kpi-trend positive">
+                <ArrowUpRight size={12} />
+                +2
+              </span>
+            </div>
+            <p className="kpi-subtitle">Novos eventos esta semana</p>
+          </div>
+        </div>
+
+        <div className="kpi-card-enterprise">
+          <div className="kpi-icon-wrapper primary">
+            <Zap size={24} />
+          </div>
+          <div className="kpi-info">
+            <span className="kpi-label">Injeção Total</span>
+            <div className="kpi-value-container">
+              <h2 className="kpi-value">450 <span className="unit">MWh</span></h2>
+              <span className="kpi-trend positive">
+                <ArrowUpRight size={12} />
+                +15%
+              </span>
+            </div>
+            <p className="kpi-subtitle">vs mês anterior</p>
+          </div>
+        </div>
+
+        <div className="kpi-card-enterprise">
+          <div className="kpi-icon-wrapper warning">
+            <DollarSign size={24} />
+          </div>
+          <div className="kpi-info">
+            <span className="kpi-label">Economia Gerada</span>
+            <div className="kpi-value-container">
+              <h2 className="kpi-value">R$ 42.5k</h2>
+              <span className="kpi-trend positive">
+                <Target size={12} />
+                12.4%
+              </span>
+            </div>
+            <p className="kpi-subtitle">Otimização de custos</p>
+          </div>
+        </div>
+
+        <div className="kpi-card-enterprise">
+          <div className="kpi-icon-wrapper secondary">
+            <Leaf size={24} />
+          </div>
+          <div className="kpi-info">
+            <span className="kpi-label">CO2 Evitado</span>
+            <div className="kpi-value-container">
+              <h2 className="kpi-value">15.8 <span className="unit">t</span></h2>
+              <span className="kpi-trend positive">92%</span>
+            </div>
+            <p className="kpi-subtitle">Meta de sustentabilidade</p>
+          </div>
+        </div>
       </div>
 
-      {/* Charts Section */}
-      <div className="charts-grid">
-        <div className="chart-container glass large">
-          <div className="chart-header">
-            <h3>Previsto x Realizado (Consumo kWh)</h3>
+      <div className="overview-charts-grid">
+        <div className="content-card-enterprise chart-card large">
+          <div className="card-header">
+            <div className="header-info">
+              <Activity size={20} className="text-primary" />
+              <h3>Performance Energética</h3>
+            </div>
             <div className="chart-legend">
-              <span className="legend-item"><span className="dot blue"></span> Previsto</span>
-              <span className="legend-item"><span className="dot green"></span> Realizado</span>
+              <span className="legend-item"><span className="dot secondary"></span> Previsto</span>
+              <span className="legend-item"><span className="dot primary"></span> Realizado</span>
             </div>
           </div>
           <div className="chart-body">
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={320}>
               <AreaChart data={dataPerformance}>
                 <defs>
                   <linearGradient id="colorPrev" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="var(--secondary-main)" stopOpacity={0.1}/>
+                    <stop offset="95%" stopColor="var(--secondary-main)" stopOpacity={0}/>
                   </linearGradient>
                   <linearGradient id="colorReal" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="var(--primary-main)" stopOpacity={0.2}/>
+                    <stop offset="95%" stopColor="var(--primary-main)" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12}} />
-                <YAxis axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12}} />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border-light)" vertical={false} />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: 'var(--text-muted)', fontSize: 12}} />
+                <YAxis axisLine={false} tickLine={false} tick={{fill: 'var(--text-muted)', fontSize: 12}} />
                 <Tooltip 
-                  contentStyle={{backgroundColor: '#1e293b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px'}}
-                  itemStyle={{color: '#f8fafc'}}
+                  contentStyle={{
+                    backgroundColor: 'var(--bg-primary)',
+                    border: '1px solid var(--border-light)',
+                    borderRadius: '12px',
+                    boxShadow: 'var(--shadow-lg)'
+                  }}
                 />
-                <Area type="monotone" dataKey="previsto" stroke="#3b82f6" fillOpacity={1} fill="url(#colorPrev)" />
-                <Area type="monotone" dataKey="realizado" stroke="#10b981" fillOpacity={1} fill="url(#colorReal)" />
+                <Area type="monotone" dataKey="previsto" stroke="var(--secondary-main)" strokeWidth={2} strokeDasharray="5 5" fillOpacity={1} fill="url(#colorPrev)" />
+                <Area type="monotone" dataKey="realizado" stroke="var(--primary-main)" strokeWidth={3} fillOpacity={1} fill="url(#colorReal)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        <div className="chart-container glass small">
-          <div className="chart-header">
-            <h3>Lifecycle de Contratos</h3>
+        <div className="content-card-enterprise chart-card">
+          <div className="card-header">
+            <div className="header-info">
+              <FileText size={20} className="text-secondary" />
+              <h3>Lifecycle de Contratos</h3>
+            </div>
           </div>
-          <div className="chart-body flex-center">
-            <ResponsiveContainer width="100%" height={250}>
+          <div className="chart-body pie-container">
+            <ResponsiveContainer width="100%" height={200}>
               <PieChart>
                 <Pie
                   data={dataContratos}
@@ -167,21 +216,21 @@ const Overview: React.FC = () => {
                   cy="50%"
                   innerRadius={60}
                   outerRadius={80}
-                  paddingAngle={5}
+                  paddingAngle={8}
                   dataKey="value"
                 >
                   {dataContratos.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
+                    <Cell key={`cell-${index}`} fill={entry.color} stroke="transparent" />
                   ))}
                 </Pie>
                 <Tooltip />
               </PieChart>
             </ResponsiveContainer>
-            <div className="pie-legend">
+            <div className="pie-legend-enterprise">
               {dataContratos.map((item) => (
-                <div key={item.name} className="pie-legend-item">
+                <div key={item.name} className="legend-item-pill">
                   <span className="dot" style={{backgroundColor: item.color}}></span>
-                  <span className="name">{item.name}</span>
+                  <span className="label">{item.name}</span>
                   <span className="value">{item.value}%</span>
                 </div>
               ))}
@@ -190,74 +239,85 @@ const Overview: React.FC = () => {
         </div>
       </div>
 
-      {/* Bottom Grid */}
-      <div className="bottom-grid">
-        <div className="block-container glass">
-          <div className="block-header">
-            <div className="flex-center gap-2">
+      <div className="overview-bottom-grid">
+        <div className="content-card-enterprise block-card">
+          <div className="card-header">
+            <div className="header-info">
               <AlertTriangle size={18} className="text-warning" />
-              <h3>Alertas e Pendências</h3>
+              <h3>Pendências Críticas</h3>
             </div>
-            <button className="view-all">Ver tudo</button>
+            <button className="btn-text">Ver Painel</button>
           </div>
-          <div className="block-content">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="alert-item">
-                <div className="alert-icon-box warning">!</div>
-                <div className="alert-info">
-                  <p className="alert-title">Contrato #459 expira em 48h</p>
-                  <p className="alert-time">Há 2 horas • Urgente</p>
+          <div className="block-list">
+            {[
+              { title: 'Contrato #459 expira em 48h', time: 'Há 2 horas', status: 'error' as StatusType, label: 'Urgente' },
+              { title: 'Inconsistência na Reconciliação PCH-02', time: 'Há 5 horas', status: 'warning' as StatusType, label: 'Atenção' },
+              { title: 'Relatório de conformidade pendente', time: 'Hoje', status: 'info' as StatusType, label: 'Novo' }
+            ].map((item, i) => (
+              <div key={i} className="list-item-enterprise">
+                <div className="item-details">
+                  <p className="item-title">{item.title}</p>
+                  <p className="item-meta">{item.time}</p>
                 </div>
+                <StatusBadge status={item.status} label={item.label} size="sm" />
               </div>
             ))}
           </div>
         </div>
 
-        <div className="block-container glass">
-          <div className="block-header">
-            <div className="flex-center gap-2">
+        <div className="content-card-enterprise block-card">
+          <div className="card-header">
+            <div className="header-info">
               <Calendar size={18} className="text-primary" />
-              <h3>Próximos Eventos</h3>
+              <h3>Próximas Operações</h3>
             </div>
-            <button className="view-all">Ver tudo</button>
+            <button className="btn-text">Calendário</button>
           </div>
-          <div className="block-content">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="event-mini-card">
-                <div className="event-date">
-                  <span className="day">15</span>
-                  <span className="month">MAI</span>
+          <div className="block-list">
+            {[
+              { name: 'EcoFestival 2024', loc: 'Parque Ibirapuera, SP', date: '15', month: 'MAI', status: 'success' as StatusType, label: 'Confirmado' },
+              { name: 'Rock in Rio 2024', loc: 'Cidade do Rock, RJ', date: '13', month: 'SET', status: 'info' as StatusType, label: 'Agendado' },
+              { name: 'Congresso Tech', loc: 'Expominas, MG', date: '22', month: 'MAI', status: 'warning' as StatusType, label: 'Pendente' }
+            ].map((item, i) => (
+              <div key={i} className="operation-item">
+                <div className="date-badge">
+                  <span className="day">{item.date}</span>
+                  <span className="month">{item.month}</span>
                 </div>
-                <div className="event-details">
-                  <p className="event-name">EcoFestival 2024</p>
-                  <p className="event-loc">Parque Ibirapuera, SP</p>
+                <div className="item-details">
+                  <p className="item-title">{item.name}</p>
+                  <p className="item-meta">{item.loc}</p>
                 </div>
-                <div className="event-status badge-success">Confirmado</div>
+                <StatusBadge status={item.status} label={item.label} size="sm" />
               </div>
             ))}
           </div>
         </div>
 
-        <div className="block-container glass">
-          <div className="block-header">
-            <div className="flex-center gap-2">
+        <div className="content-card-enterprise block-card">
+          <div className="card-header">
+            <div className="header-info">
               <Clock size={18} className="text-info" />
-              <h3>Últimas Movimentações</h3>
+              <h3>Atividade Recente</h3>
             </div>
-            <button className="view-all">Ver tudo</button>
+            <button className="btn-text">Logs</button>
           </div>
-          <div className="block-content">
-            <div className="timeline">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="timeline-item">
-                  <div className="timeline-dot"></div>
-                  <div className="timeline-content">
-                    <p className="timeline-text"><strong>Carlos A.</strong> aprovou a proposta de <strong>SolarTech</strong></p>
-                    <p className="timeline-time">Ontem às 14:30</p>
-                  </div>
+          <div className="activity-timeline">
+            {[
+              { user: 'Carlos A.', action: 'aprovou proposta', target: 'SolarTech', time: '14:30' },
+              { user: 'Mariana L.', action: 'assinou contrato', target: 'PCH-02', time: '11:15' },
+              { user: 'Sistema', action: 'detectou pico', target: 'Setor A', time: '08:45' }
+            ].map((item, i) => (
+              <div key={i} className="timeline-event">
+                <div className="timeline-marker"></div>
+                <div className="event-details">
+                  <p className="event-desc">
+                    <strong>{item.user}</strong> {item.action} <strong>{item.target}</strong>
+                  </p>
+                  <p className="event-time">{item.time}</p>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>

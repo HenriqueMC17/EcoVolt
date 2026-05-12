@@ -7,10 +7,10 @@ import {
   Shield,
   Clock,
   User,
-  CheckCircle2,
-  XCircle
 } from 'lucide-react';
 import DataTable from '../../../components/shared/DataTable';
+import StatusBadge from '../../../components/shared/StatusBadge';
+import type { StatusType } from '../../../components/shared/StatusBadge';
 import './Usuarios.css';
 
 interface UserData {
@@ -31,10 +31,22 @@ const usersData: UserData[] = [
 ];
 
 const Usuarios: React.FC = () => {
+  const getStatusInfo = (status: UserData['status']): { status: StatusType; label: string } => {
+    switch (status) {
+      case 'active':
+        return { status: 'success', label: 'Ativo' };
+      case 'inactive':
+        return { status: 'neutral', label: 'Inativo' };
+      default:
+        return { status: 'neutral', label: status };
+    }
+  };
+
   const columns = [
     { 
       header: 'Usuário', 
-      accessor: 'name',
+      accessor: 'name' as keyof UserData,
+      sortable: true,
       render: (row: UserData) => (
         <div className="user-profile-cell">
           <div className="avatar-small">
@@ -51,7 +63,8 @@ const Usuarios: React.FC = () => {
     },
     { 
       header: 'Perfil', 
-      accessor: 'role',
+      accessor: 'role' as keyof UserData,
+      sortable: true,
       render: (row: UserData) => (
         <div className="flex-center gap-2">
           <Shield size={14} className="text-secondary" />
@@ -61,7 +74,8 @@ const Usuarios: React.FC = () => {
     },
     { 
       header: 'Visto por último', 
-      accessor: 'lastLogin',
+      accessor: 'lastLogin' as keyof UserData,
+      sortable: true,
       render: (row: UserData) => (
         <div className="flex-center gap-2">
           <Clock size={14} className="text-muted" />
@@ -71,20 +85,16 @@ const Usuarios: React.FC = () => {
     },
     { 
       header: 'Status', 
-      accessor: 'status',
-      render: (row: UserData) => (
-        <div className={`status-pill ${row.status}`}>
-          {row.status === 'active' ? (
-            <><CheckCircle2 size={12} /> Ativo</>
-          ) : (
-            <><XCircle size={12} /> Inativo</>
-          )}
-        </div>
-      )
+      accessor: 'status' as keyof UserData,
+      sortable: true,
+      render: (row: UserData) => {
+        const { status, label } = getStatusInfo(row.status);
+        return <StatusBadge status={status} label={label} size="sm" />;
+      }
     },
     {
       header: 'Ações',
-      accessor: 'id',
+      accessor: 'id' as keyof UserData,
       render: () => (
         <button className="icon-btn"><MoreVertical size={18} /></button>
       )
@@ -121,6 +131,7 @@ const Usuarios: React.FC = () => {
           title="Colaboradores e Clientes"
           columns={columns}
           data={usersData}
+          searchPlaceholder="Buscar usuários..."
         />
       </div>
     </div>
@@ -128,3 +139,4 @@ const Usuarios: React.FC = () => {
 };
 
 export default Usuarios;
+

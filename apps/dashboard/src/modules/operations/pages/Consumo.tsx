@@ -6,7 +6,11 @@ import {
   AlertCircle,
   Database,
   ArrowUpRight,
-  ArrowDownRight
+  ArrowDownRight,
+  Download,
+  Filter,
+  BarChart3,
+  Cpu
 } from 'lucide-react';
 import { 
   AreaChart, 
@@ -21,6 +25,9 @@ import {
   Cell
 } from 'recharts';
 import DataTable from '../../../components/shared/DataTable';
+import StatusBadge from '../../../components/shared/StatusBadge';
+import type { StatusType } from '../../../components/shared/StatusBadge';
+import '../../../styles/enterprise-components.css';
 import './Consumo.css';
 
 const telemetryData = [
@@ -61,142 +68,234 @@ const devices: Device[] = [
 ];
 
 const Consumo: React.FC = () => {
+  const getStatusInfo = (status: Device['status']): { type: StatusType; label: string; pulse?: boolean } => {
+    switch (status) {
+      case 'online':
+        return { type: 'success', label: 'Online', pulse: true };
+      case 'offline':
+        return { type: 'neutral', label: 'Offline' };
+      case 'alert':
+        return { type: 'error', label: 'Alerta', pulse: true };
+      default:
+        return { type: 'neutral', label: status };
+    }
+  };
+
   const columns = [
-    { header: 'ID', accessor: 'id' },
-    { header: 'Equipamento', accessor: 'name' },
     { 
-      header: 'Status', 
-      accessor: 'status',
+      header: 'ID', 
+      accessor: 'id' as keyof Device,
+      sortable: true 
+    },
+    { 
+      header: 'Equipamento', 
+      accessor: 'name' as keyof Device,
+      sortable: true,
       render: (row: Device) => (
-        <span className={`badge-${row.status}`}>
-          {row.status.toUpperCase()}
-        </span>
+        <div className="flex items-center gap-3">
+          <div className="device-icon-wrapper">
+            <Cpu size={16} />
+          </div>
+          <span className="font-medium">{row.name}</span>
+        </div>
       )
     },
-    { header: 'Carga Atual', accessor: 'currentLoad' },
-    { header: 'Tensão', accessor: 'voltage' },
-    { header: 'Sincronização', accessor: 'lastSync' },
+    { 
+      header: 'Status', 
+      accessor: 'status' as keyof Device,
+      sortable: true,
+      render: (row: Device) => {
+        const { type, label, pulse } = getStatusInfo(row.status);
+        return <StatusBadge status={type} label={label} pulse={pulse} variant="glass" size="sm" />;
+      }
+    },
+    { 
+      header: 'Carga Atual', 
+      accessor: 'currentLoad' as keyof Device,
+      sortable: true,
+      render: (row: Device) => (
+        <span className="font-mono text-primary">{row.currentLoad}</span>
+      )
+    },
+    { 
+      header: 'Tensão', 
+      accessor: 'voltage' as keyof Device,
+      sortable: true 
+    },
+    { 
+      header: 'Sincronização', 
+      accessor: 'lastSync' as keyof Device,
+      sortable: true,
+      render: (row: Device) => (
+        <span className="text-sm text-muted">{row.lastSync}</span>
+      )
+    }
   ];
 
   return (
     <div className="consumo-page animate-fade-in">
-      <div className="page-header">
-        <div>
-          <h1 className="page-title">Telemetria e Consumo</h1>
-          <p className="page-subtitle">Acompanhamento em tempo real da carga energética da operação.</p>
+      {/* Executive Header */}
+      <div className="module-header">
+        <div className="header-content">
+          <div className="header-badge">Telemetria Real-time</div>
+          <h1 className="header-title">Gestão de Consumo</h1>
+          <p className="header-subtitle">Monitoramento de carga, eficiência e distribuição energética da operação.</p>
         </div>
         <div className="header-actions">
-          <button className="btn btn-secondary">Download Log</button>
-          <button className="btn btn-primary flex-center gap-2">
+          <button className="btn btn-secondary flex items-center gap-2">
+            <Filter size={18} />
+            Filtros
+          </button>
+          <button className="btn btn-primary flex items-center gap-2">
             <TrendingUp size={18} />
             Análise Preditiva
           </button>
         </div>
       </div>
 
-      <div className="consumo-grid">
-        {/* Real-time Graph */}
-        <div className="chart-card glass large">
-          <div className="chart-header">
-            <div className="flex-center gap-2">
-              <Activity size={20} className="text-primary" />
-              <h3>Carga Instantânea (kW)</h3>
+      {/* KPI Grid */}
+      <div className="kpi-grid">
+        <div className="kpi-card-enterprise">
+          <div className="kpi-header">
+            <div className="kpi-icon-box info">
+              <Zap size={20} />
             </div>
-            <div className="live-indicator">
-              <span className="dot pulse"></span>
-              LIVE
+            <div className="kpi-trend negative">
+              <ArrowUpRight size={12} /> +12%
             </div>
           </div>
-          <div className="chart-body">
-            <ResponsiveContainer width="100%" height={300}>
+          <div className="kpi-content">
+            <span className="kpi-label">Demanda Atual</span>
+            <h2 className="kpi-value">91.4 kW</h2>
+            <p className="kpi-desc">vs. 1h atrás</p>
+          </div>
+        </div>
+
+        <div className="kpi-card-enterprise">
+          <div className="kpi-header">
+            <div className="kpi-icon-box success">
+              <Database size={20} />
+            </div>
+            <div className="kpi-trend positive">
+              Estável
+            </div>
+          </div>
+          <div className="kpi-content">
+            <span className="kpi-label">Consumo Acumulado</span>
+            <h2 className="kpi-value text-primary">1,450 kWh</h2>
+            <p className="kpi-desc">Dentro da meta prevista</p>
+          </div>
+        </div>
+
+        <div className="kpi-card-enterprise">
+          <div className="kpi-header">
+            <div className="kpi-icon-box warning">
+              <AlertCircle size={20} />
+            </div>
+            <div className="kpi-trend negative">
+              <ArrowDownRight size={12} /> -2.1%
+            </div>
+          </div>
+          <div className="kpi-content">
+            <span className="kpi-label">Eficiência Energética</span>
+            <h2 className="kpi-value">94.2%</h2>
+            <p className="kpi-desc">Leve instabilidade detectada</p>
+          </div>
+        </div>
+
+        <div className="kpi-card-enterprise">
+          <div className="kpi-header">
+            <div className="kpi-icon-box secondary">
+              <BarChart3 size={20} />
+            </div>
+            <div className="kpi-trend positive">
+              Otimizado
+            </div>
+          </div>
+          <div className="kpi-content">
+            <span className="kpi-label">Fator de Carga</span>
+            <h2 className="kpi-value">0.82</h2>
+            <p className="kpi-desc">Distribuição equilibrada</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Charts Grid */}
+      <div className="charts-grid consumo-charts">
+        {/* Real-time Graph */}
+        <div className="content-card-enterprise chart-card large">
+          <div className="card-header">
+            <div className="header-info">
+              <div className="flex items-center gap-2">
+                <Activity size={20} className="text-primary" />
+                <h3>Curva de Carga Instantânea (kW)</h3>
+              </div>
+            </div>
+            <div className="header-actions">
+              <div className="live-tag">
+                <span className="dot pulse"></span>
+                LIVE
+              </div>
+            </div>
+          </div>
+          <div className="card-body">
+            <ResponsiveContainer width="100%" height={320}>
               <AreaChart data={telemetryData}>
                 <defs>
                   <linearGradient id="colorLoad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="var(--primary)" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                <XAxis dataKey="time" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12}} />
-                <YAxis axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12}} />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                <XAxis dataKey="time" axisLine={false} tickLine={false} tick={{fill: 'var(--text-muted)', fontSize: 12}} />
+                <YAxis axisLine={false} tickLine={false} tick={{fill: 'var(--text-muted)', fontSize: 12}} />
                 <Tooltip 
-                  contentStyle={{backgroundColor: '#1e293b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px'}}
-                  itemStyle={{color: '#f8fafc'}}
+                  contentStyle={{
+                    backgroundColor: 'var(--bg-sidebar)',
+                    border: '1px solid var(--border)',
+                    borderRadius: '12px',
+                    backdropFilter: 'blur(8px)'
+                  }}
+                  itemStyle={{color: 'var(--text-main)'}}
                 />
-                <Area type="monotone" dataKey="kwh" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorLoad)" />
+                <Area type="monotone" dataKey="kwh" stroke="var(--primary)" strokeWidth={3} fillOpacity={1} fill="url(#colorLoad)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Mini Stats */}
-        <div className="stats-column">
-          <div className="stat-card glass">
-            <div className="stat-icon-box blue">
-              <Zap size={20} />
-            </div>
-            <div className="stat-info">
-              <p className="stat-label">Demanda Atual</p>
-              <h3 className="stat-value">91.4 kW</h3>
-              <div className="stat-trend positive">
-                <ArrowUpRight size={14} />
-                <span>+12% vs última hora</span>
+        {/* Sector Distribution */}
+        <div className="content-card-enterprise chart-card">
+          <div className="card-header">
+            <div className="header-info">
+              <div className="flex items-center gap-2">
+                <BarChart3 size={20} className="text-secondary" />
+                <h3>Distribuição por Setor</h3>
               </div>
             </div>
           </div>
-
-          <div className="stat-card glass">
-            <div className="stat-icon-box green">
-              <Database size={20} />
-            </div>
-            <div className="stat-info">
-              <p className="stat-label">Consumo Acumulado</p>
-              <h3 className="stat-value">1,450 kWh</h3>
-              <div className="stat-trend neutral">
-                <span>Dentro do previsto</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="stat-card glass alert">
-            <div className="stat-icon-box yellow">
-              <AlertCircle size={20} />
-            </div>
-            <div className="stat-info">
-              <p className="stat-label">Eficiência Energética</p>
-              <h3 className="stat-value">94.2%</h3>
-              <div className="stat-trend negative">
-                <ArrowDownRight size={14} />
-                <span>-2.1% instabilidade</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="distribution-grid mt-6">
-        {/* Distribution Chart */}
-        <div className="chart-card glass">
-          <div className="chart-header">
-            <h3>Distribuição de Carga por Setor</h3>
-          </div>
-          <div className="chart-body">
-            <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={distributionData} layout="vertical">
+          <div className="card-body">
+            <ResponsiveContainer width="100%" height={320}>
+              <BarChart data={distributionData} layout="vertical" margin={{ left: -20, right: 20 }}>
                 <XAxis type="number" hide />
                 <YAxis 
                   dataKey="name" 
                   type="category" 
                   axisLine={false} 
                   tickLine={false} 
-                  tick={{fill: '#f8fafc', fontSize: 12}} 
+                  tick={{fill: 'var(--text-main)', fontSize: 11}} 
                   width={100}
                 />
                 <Tooltip 
-                  cursor={{fill: 'rgba(255,255,255,0.05)'}}
-                  contentStyle={{backgroundColor: '#1e293b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px'}}
+                  cursor={{fill: 'var(--bg-hover)'}}
+                  contentStyle={{
+                    backgroundColor: 'var(--bg-sidebar)',
+                    border: '1px solid var(--border)',
+                    borderRadius: '12px'
+                  }}
                 />
-                <Bar dataKey="value" radius={[0, 4, 4, 0]}>
+                <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={20}>
                   {distributionData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
@@ -205,13 +304,26 @@ const Consumo: React.FC = () => {
             </ResponsiveContainer>
           </div>
         </div>
+      </div>
 
-        {/* Device Table */}
-        <div className="device-table-container">
+      {/* Operational Table */}
+      <div className="content-card-enterprise">
+        <div className="card-header">
+          <div className="header-info">
+            <h3>Inventário de Telemetria</h3>
+            <p>Monitoramento ativo de sensores e medidores de campo</p>
+          </div>
+          <div className="header-actions">
+            <button className="btn-text flex items-center gap-2">
+              <Download size={16} /> Exportar Relatório
+            </button>
+          </div>
+        </div>
+        <div className="card-body">
           <DataTable 
-            title="Sensores e Atuadores"
             columns={columns}
             data={devices}
+            searchPlaceholder="Buscar por ID ou Equipamento..."
           />
         </div>
       </div>

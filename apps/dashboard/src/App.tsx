@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import DashboardLayout from './layouts/DashboardLayout';
 import Overview from './modules/operations/pages/Overview';
 import Contracts from './modules/commercial/pages/Contracts';
@@ -22,20 +22,42 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<DashboardLayout />}>
-        <Route index element={<Overview />} />
-        <Route path="empresas" element={<Empresas />} />
-        <Route path="usuarios" element={<Usuarios />} />
-        <Route path="eventos" element={<Events />} />
-        <Route path="estimativa" element={<Estimativa />} />
-        <Route path="consumo" element={<Consumo />} />
-        <Route path="provedores" element={<Provedores />} />
-        <Route path="propostas" element={<Propostas />} />
-        <Route path="contratos" element={<Contracts />} />
-        <Route path="financeiro" element={<Financeiro />} />
-        <Route path="reconciliacao" element={<Reconciliacao />} />
-        <Route path="compliance" element={<Compliance />} />
-        <Route path="relatorios" element={<Relatorios />} />
-        <Route path="auditoria" element={<Auditoria />} />
+        {/* Redirect root to operations overview */}
+        <Route index element={<Navigate to="/operations/overview" replace />} />
+        
+        {/* Operations Domain */}
+        <Route path="operations">
+          <Route index element={<Navigate to="overview" replace />} />
+          <Route path="overview" element={<Overview />} />
+          <Route path="eventos" element={<Events />} />
+          <Route path="estimativa" element={<Estimativa />} />
+          <Route path="consumo" element={<Consumo />} />
+          <Route path="auditoria" element={<Auditoria />} />
+        </Route>
+
+        {/* Commercial Domain */}
+        <Route path="commercial">
+          <Route path="empresas" element={<Empresas />} />
+          <Route path="propostas" element={<Propostas />} />
+          <Route path="contratos" element={<Contracts />} />
+          <Route path="provedores" element={<Provedores />} />
+        </Route>
+
+        {/* Financial Domain */}
+        <Route path="financial">
+          <Route path="financeiro" element={<Financeiro />} />
+          <Route path="reconciliacao" element={<Reconciliacao />} />
+        </Route>
+
+        {/* Governance Domain */}
+        <Route path="governance">
+          <Route path="compliance" element={<Compliance />} />
+          <Route path="relatorios" element={<Relatorios />} />
+          <Route path="usuarios" element={<Usuarios />} />
+          <Route path="configuracoes" element={<Configuracoes />} />
+        </Route>
+
+        {/* Legacy / Direct paths for compatibility if needed, otherwise removed */}
         <Route path="configuracoes" element={<Configuracoes />} />
       </Route>
     </Routes>
