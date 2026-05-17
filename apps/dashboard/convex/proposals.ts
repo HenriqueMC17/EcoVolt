@@ -24,14 +24,14 @@ export const getProposals = query({
       } else if (user.role === "provider") {
         proposals = await ctx.db
           .query("proposals")
-          .withIndex("by_providerCompanyId", (q) => q.eq("providerCompanyId", user.companyId))
+          .withIndex("by_providerCompanyId", (q) => q.eq("providerCompanyId", user.companyId!))
           .order("desc")
           .collect();
       } else if (user.role === "event_company") {
         // Find events owned by this company
         const events = await ctx.db
           .query("events")
-          .withIndex("by_companyId", (q) => q.eq("companyId", user.companyId))
+          .withIndex("by_companyId", (q) => q.eq("companyId", user.companyId!))
           .collect();
         
         const eventIds = events.map(e => e._id);
@@ -49,14 +49,19 @@ export const getProposals = query({
         return [];
       }
     } else {
-      let proposalsQuery = ctx.db.query("proposals");
-
       if (args.eventId) {
-        proposalsQuery = ctx.db.query("proposals").withIndex("by_eventId", q => q.eq("eventId", args.eventId!));
+        proposals = await ctx.db
+          .query("proposals")
+          .withIndex("by_eventId", (q) => q.eq("eventId", args.eventId!))
+          .collect();
       } else if (args.providerCompanyId) {
-        proposalsQuery = ctx.db.query("proposals").withIndex("by_providerCompanyId", q => q.eq("providerCompanyId", args.providerCompanyId!));
+        proposals = await ctx.db
+          .query("proposals")
+          .withIndex("by_providerCompanyId", (q) => q.eq("providerCompanyId", args.providerCompanyId!))
+          .collect();
+      } else {
+        proposals = await ctx.db.query("proposals").collect();
       }
-      proposals = await proposalsQuery.collect();
     }
     
     // Join with related data

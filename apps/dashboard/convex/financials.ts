@@ -12,7 +12,7 @@ export const getFinancials = query({
 
     if (!user) throw new Error("Unauthorized: User not found");
 
-    let financialsQuery = ctx.db.query("financials").order("desc");
+    const financialsQuery = ctx.db.query("financials").order("desc");
     let financials;
 
     if (user.role === "admin" || user.role === "operator") {
@@ -104,7 +104,8 @@ export const createFinancialTransaction = mutation({
       throw new Error("Unauthorized: Only admins and operators can create transactions");
     }
 
-    const { userEmail, ...transactionData } = args;
+    const transactionData = { ...args };
+    delete (transactionData as Record<string, unknown>).userEmail;
     const financialId = await ctx.db.insert("financials", {
       ...transactionData,
       createdAt: Date.now(),
@@ -188,14 +189,15 @@ export const updateFinancial = mutation({
       throw new Error("Unauthorized: Only admins and operators can update transactions");
     }
 
-    const oldFinancial = await ctx.db.get(id);
-    const { id: _, userEmail: __, ...updates } = args;
-    await ctx.db.patch(id, updates);
+    const updates = { ...args };
+    delete (updates as Record<string, unknown>).id;
+    delete (updates as Record<string, unknown>).userEmail;
+    await ctx.db.patch(args.id, updates);
 
     await logActivityHelper(ctx, {
       userId: user._id,
       action: "UPDATE_FINANCIAL",
-      entityId: id,
+      entityId: args.id,
       entityType: "financials",
       details: {
         updates,
@@ -341,8 +343,9 @@ export const getFinancialStats = query({
     }
 
     // Reuse filtering logic
-    let financialsQuery = ctx.db.query("financials");
-    let transactions;
+    const financialsQuery = ctx.db.query("financials");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let transactions: any[] = [];
 
     if (user.role === "admin" || user.role === "operator") {
       transactions = await financialsQuery.collect();

@@ -5,6 +5,17 @@ import { logActivityHelper } from "./activities";
 export const getMe = query({
   args: { email: v.optional(v.string()) },
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (identity) {
+      const email = identity.email;
+      if (!email) return null;
+
+      return await ctx.db
+        .query("users")
+        .withIndex("by_email", (q) => q.eq("email", email))
+        .unique();
+    }
+
     if (args.email) {
       return await ctx.db
         .query("users")
@@ -15,6 +26,38 @@ export const getMe = query({
     return null;
   },
 });
+
+export const storeUser = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Unauthenticated call to storeUser");
+    }
+
+    const email = identity.email;
+    if (!email) {
+      throw new Error("User identity lacks email");
+    }
+
+    let user = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", email))
+      .unique();
+
+    if (!user) {
+      const userId = await ctx.db.insert("users", {
+        name: identity.name || "Membro EcoVolt",
+        email: email,
+        role: "admin", // Default role for first onboarded users
+        createdAt: Date.now(),
+      });
+      user = await ctx.db.get(userId);
+    }
+    return user;
+  },
+});
+
 
 export const getUsers = query({
   args: { userEmail: v.string() },

@@ -1,7 +1,7 @@
 import React from 'react';
 import { cn } from '@/shared/lib/utils';
 
-interface TypographyProps {
+interface TypographyProps extends React.HTMLAttributes<HTMLElement> {
   variant?: 'h1' | 'h2' | 'h3' | 'h4' | 'p' | 'small' | 'muted';
   children: React.ReactNode;
   className?: string;
@@ -13,6 +13,7 @@ export const Typography: React.FC<TypographyProps> = ({
   children,
   className,
   as,
+  ...props
 }) => {
   const Component = as || (variant.startsWith('h') ? (variant as any) : 'p');
 
@@ -27,7 +28,7 @@ export const Typography: React.FC<TypographyProps> = ({
   };
 
   return (
-    <Component className={cn(styles[variant], className)}>
+    <Component className={cn(styles[variant], className)} {...props}>
       {children}
     </Component>
   );

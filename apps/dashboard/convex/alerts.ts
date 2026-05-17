@@ -30,7 +30,7 @@ export const getOperationalAlerts = query({
 
       if (consumption && consumption.actualKwh) {
         const diff = Math.abs(consumption.actualKwh - consumption.predictedKwh);
-        const tolerance = event.toleranceKwh ?? (event.estimatedConsumption * 0.1); // 10% default tolerance
+        const tolerance = (event as any).toleranceKwh ?? (event.estimatedConsumption * 0.1); // 10% default tolerance
 
         if (diff > tolerance) {
           alerts.push({

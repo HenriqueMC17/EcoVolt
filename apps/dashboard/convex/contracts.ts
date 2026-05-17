@@ -18,13 +18,13 @@ export const getContracts = query({
     } else if (user.role === "event_company") {
       contracts = await ctx.db
         .query("contracts")
-        .withIndex("by_clientCompanyId", (q) => q.eq("clientCompanyId", user.companyId))
+        .withIndex("by_clientCompanyId", (q) => q.eq("clientCompanyId", user.companyId!))
         .order("desc")
         .collect();
     } else if (user.role === "provider") {
       contracts = await ctx.db
         .query("contracts")
-        .withIndex("by_providerCompanyId", (q) => q.eq("providerCompanyId", user.companyId))
+        .withIndex("by_providerCompanyId", (q) => q.eq("providerCompanyId", user.companyId!))
         .order("desc")
         .collect();
     } else {
@@ -206,7 +206,8 @@ export const updateContract = mutation({
     userEmail: v.string(),
   },
   handler: async (ctx, args) => {
-    const { contractId, userEmail, ...updateFields } = args;
+    const { contractId, ...updateFields } = args;
+    delete (updateFields as Record<string, unknown>).userEmail;
     
     const user = await ctx.db
       .query("users")

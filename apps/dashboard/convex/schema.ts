@@ -65,6 +65,7 @@ export default defineSchema({
     location: v.string(),
     expectedAttendees: v.number(),
     estimatedConsumption: v.number(), 
+    toleranceKwh: v.optional(v.number()),
     companyId: v.id("companies"), 
     createdAt: v.number(),
   }).index("by_companyId", ["companyId"]),
@@ -85,7 +86,8 @@ export default defineSchema({
     signedAt: v.optional(v.number()),
     createdAt: v.number(),
   }).index("by_eventId", ["eventId"])
-    .index("by_providerCompanyId", ["providerCompanyId"]),
+    .index("by_providerCompanyId", ["providerCompanyId"])
+    .index("by_clientCompanyId", ["clientCompanyId"]),
 
   consumptions: defineTable({
     eventId: v.id("events"),

@@ -1,8 +1,20 @@
+"use client";
+
 import React from 'react';
-import { StatCard } from '../../../shared/ui/StatCard';
-import { EnergyChart } from './EnergyChart';
+import { SmartKPI } from '@/shared/ui/SmartKPI';
 import { useDashboardData } from '../api/useDashboardData';
 import { BarChart3, Clock } from 'lucide-react';
+import dynamic from 'next/dynamic';
+
+const EnergyChart = dynamic(() => import('./EnergyChart').then(mod => mod.EnergyChart), { 
+  ssr: false, 
+  loading: () => <div className="w-full h-full bg-white/5 animate-pulse rounded-xl" /> 
+});
+
+const AICenter = dynamic(() => import('@/widgets/ai-center/ui/AICenter').then(mod => mod.AICenter), {
+  ssr: false,
+  loading: () => <div className="w-full h-[400px] bg-white/5 animate-pulse rounded-xl" />
+});
 
 export const Dashboard: React.FC = () => {
   const { stats, chartData, isLoading } = useDashboardData();
@@ -41,49 +53,57 @@ export const Dashboard: React.FC = () => {
       </header>
       
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <StatCard 
+        <SmartKPI 
           title="Consumo Total"
           value={stats?.totalEnergy?.toLocaleString() || '0'}
           unit="kWh"
-          progress={65}
+          trend={{ value: 4.2, direction: 'down', label: 'vs último mês' }}
+          aiInsight="O consumo apresentou uma redução atípica fora do horário comercial. Possível ganho de eficiência nas operações de standby."
           color="primary"
         />
-        <StatCard 
-          title="Economia Total"
+        <SmartKPI 
+          title="Economia Estimada"
           value={`R$ ${stats?.totalSavings?.toLocaleString() || '0'}`}
-          progress={45}
+          trend={{ value: 12.5, direction: 'up', label: 'vs último mês' }}
+          aiInsight="Projeção aponta superávit devido ao uso otimizado de tarifas no mercado livre de energia."
           color="secondary"
         />
-        <StatCard 
+        <SmartKPI 
           title="Impacto Ambiental"
           value={stats?.totalCO2?.toLocaleString() || '0'}
           unit="kg CO2"
-          progress={stats?.totalCO2 ? (stats.totalCO2 / 100) : 0}
+          trend={{ value: 8.1, direction: 'up', label: 'compensados' }}
+          aiInsight="Sua compensação este mês equivale ao plantio de 43 árvores. Padrão excelente."
           color="neutral"
         />
       </div>
       
-      <div className="glass-card p-8 bg-black/20 border border-white/5 rounded-3xl">
-        <div className="flex justify-between items-center mb-8">
-          <h3 className="text-sm font-black uppercase tracking-[0.2em] text-white/60">
-            Desempenho Energético
-          </h3>
-          <div className="flex gap-6">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-secondary" />
-              <span className="text-[10px] font-bold text-text-muted uppercase">Previsto</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-primary" />
-              <span className="text-[10px] font-bold text-text-muted uppercase">Realizado</span>
+      <div className="grid gap-6 lg:grid-cols-3">
+        <div className="lg:col-span-2 glass-card p-8 bg-black/20 border border-white/5 rounded-3xl">
+          <div className="flex justify-between items-center mb-8">
+            <h3 className="text-sm font-black uppercase tracking-[0.2em] text-white/60">
+              Desempenho Energético
+            </h3>
+            <div className="flex gap-6">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-secondary" />
+                <span className="text-[10px] font-bold text-text-muted uppercase">Previsto</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-primary" />
+                <span className="text-[10px] font-bold text-text-muted uppercase">Realizado</span>
+              </div>
             </div>
           </div>
+          <div className="h-[350px]">
+            <EnergyChart data={chartData || []} />
+          </div>
         </div>
-        <div className="h-[350px]">
-          <EnergyChart data={chartData || []} />
+
+        <div className="lg:col-span-1 flex flex-col">
+          <AICenter />
         </div>
       </div>
     </div>
   );
 };
-

@@ -1,3 +1,5 @@
+"use client";
+
 import React from 'react';
 import { 
   AreaChart, 
@@ -21,12 +23,12 @@ export const EnergyChart: React.FC<EnergyChartProps> = ({ data }) => {
         <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
           <defs>
             <linearGradient id="colorPrevisto" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="oklch(0.6 0.18 250)" stopOpacity={0.3}/>
-              <stop offset="95%" stopColor="oklch(0.6 0.18 250)" stopOpacity={0}/>
+              <stop offset="5%" stopColor="var(--color-primary)" stopOpacity={0.3}/>
+              <stop offset="95%" stopColor="var(--color-primary)" stopOpacity={0}/>
             </linearGradient>
             <linearGradient id="colorRealizado" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="oklch(0.705 0.15 160)" stopOpacity={0.3}/>
-              <stop offset="95%" stopColor="oklch(0.705 0.15 160)" stopOpacity={0}/>
+              <stop offset="5%" stopColor="var(--color-secondary)" stopOpacity={0.3}/>
+              <stop offset="95%" stopColor="var(--color-secondary)" stopOpacity={0}/>
             </linearGradient>
           </defs>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
@@ -62,7 +64,7 @@ export const EnergyChart: React.FC<EnergyChartProps> = ({ data }) => {
           <Area 
             type="monotone" 
             dataKey="previsto" 
-            stroke="oklch(0.6 0.18 250)" 
+            stroke="var(--color-primary)" 
             strokeWidth={3}
             fillOpacity={1} 
             fill="url(#colorPrevisto)" 
@@ -71,7 +73,7 @@ export const EnergyChart: React.FC<EnergyChartProps> = ({ data }) => {
           <Area 
             type="monotone" 
             dataKey="realizado" 
-            stroke="oklch(0.705 0.15 160)" 
+            stroke="var(--color-secondary)" 
             strokeWidth={3}
             fillOpacity={1} 
             fill="url(#colorRealizado)" 

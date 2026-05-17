@@ -19,7 +19,7 @@ export const getConsumptions = query({
       // Find events for this company
       const events = await ctx.db
         .query("events")
-        .withIndex("by_companyId", (q) => q.eq("companyId", user.companyId))
+        .withIndex("by_companyId", (q) => q.eq("companyId", user.companyId!))
         .collect();
       
       const consumptionsList = await Promise.all(
@@ -35,7 +35,7 @@ export const getConsumptions = query({
       // Find contracts for this provider to get event IDs
       const contracts = await ctx.db
         .query("contracts")
-        .withIndex("by_providerCompanyId", (q) => q.eq("providerCompanyId", user.companyId))
+        .withIndex("by_providerCompanyId", (q) => q.eq("providerCompanyId", user.companyId!))
         .collect();
       
       const consumptionsList = await Promise.all(
@@ -54,7 +54,7 @@ export const getConsumptions = query({
     // Enrich with event data
     return Promise.all(consumptions.map(async (cons) => {
       const event = await ctx.db.get(cons.eventId);
-      const tolerance = event?.toleranceKwh ?? 5;
+      const tolerance = (event as Record<string, unknown> & { toleranceKwh?: number })?.toleranceKwh ?? 5;
       
       const difference = cons.actualKwh ? cons.actualKwh - cons.predictedKwh : 0;
       let status = "Dentro da Tolerância";
@@ -70,7 +70,7 @@ export const getConsumptions = query({
 
       return { 
         ...cons, 
-        eventName: event ? event.name : "Desconhecido",
+        eventName: event ? (event as Record<string, unknown> & { name?: string }).name ?? "Desconhecido" : "Desconhecido",
         difference,
         status,
         action,
@@ -183,15 +183,15 @@ export const updateConsumption = mutation({
     if (!user || (user.role !== "admin" && user.role !== "operator")) {
       throw new Error("Apenas administradores e operadores podem editar registros de consumo.");
     }
-
-    const oldConsumption = await ctx.db.get(id);
-    const { id: _, userEmail: __, ...updates } = args;
-    await ctx.db.patch(id, updates);
+    const updates = { ...args };
+    delete (updates as Record<string, unknown>).id;
+    delete (updates as Record<string, unknown>).userEmail;
+    await ctx.db.patch(args.id, updates);
 
     await logActivityHelper(ctx, {
       userId: user._id,
       action: "UPDATE_CONSUMPTION",
-      entityId: id,
+      entityId: args.id,
       entityType: "consumptions",
       details: {
         updates,
@@ -248,7 +248,7 @@ export const getConsumptionChartData = query({
     } else if (user.role === "event_company") {
       const events = await ctx.db
         .query("events")
-        .withIndex("by_companyId", (q) => q.eq("companyId", user.companyId))
+        .withIndex("by_companyId", (q) => q.eq("companyId", user.companyId!))
         .collect();
       const consumptionsList = await Promise.all(
         events.map(event => 
@@ -262,7 +262,7 @@ export const getConsumptionChartData = query({
     } else if (user.role === "provider") {
       const contracts = await ctx.db
         .query("contracts")
-        .withIndex("by_providerCompanyId", (q) => q.eq("providerCompanyId", user.companyId))
+        .withIndex("by_providerCompanyId", (q) => q.eq("providerCompanyId", user.companyId!))
         .collect();
       const consumptionsList = await Promise.all(
         contracts.map(contract => 

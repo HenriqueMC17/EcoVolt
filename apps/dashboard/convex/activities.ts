@@ -10,11 +10,12 @@ export const getRecentActivities = query({
     projectId: v.optional(v.id("projects")),
   },
   handler: async (ctx, args) => {
-    if (!args.userEmail) return [];
+    const userEmail = args.userEmail;
+    if (!userEmail) return [];
 
     const user = await ctx.db
       .query("users")
-      .withIndex("by_email", (q) => q.eq("email", args.userEmail))
+      .withIndex("by_email", (q) => q.eq("email", userEmail))
       .unique();
 
     if (!user) return [];
@@ -37,7 +38,7 @@ export const getRecentActivities = query({
     let filtered = activities;
     
     if (args.entityType) {
-      filtered = filtered.filter(a => a.entityType === args.entityType);
+      filtered = filtered.filter((a: any) => a.entityType === args.entityType);
     }
     
     if (args.userId) {

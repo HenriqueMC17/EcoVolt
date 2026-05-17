@@ -1,5 +1,9 @@
-import { redirect } from 'next/navigation';
+import { Dashboard } from '@/features/dashboard/ui/Dashboard';
 
 export default function Home() {
-  redirect('/operations/overview');
+  return (
+    <main>
+      <Dashboard />
+    </main>
+  );
 }

@@ -18,7 +18,7 @@ export const getEvents = query({
     } else if (user.role === "event_company") {
       events = await ctx.db
         .query("events")
-        .withIndex("by_companyId", (q) => q.eq("companyId", user.companyId))
+        .withIndex("by_companyId", (q) => q.eq("companyId", user.companyId!))
         .order("desc")
         .collect();
     } else if (user.role === "provider") {
@@ -280,7 +280,8 @@ export const updateEvent = mutation({
     userEmail: v.string(),
   },
   handler: async (ctx, args) => {
-    const { eventId, userEmail, ...updateFields } = args;
+    const { eventId, ...updateFields } = args;
+    delete (updateFields as Record<string, unknown>).userEmail;
     
     const user = await ctx.db
       .query("users")
@@ -388,7 +389,7 @@ export const getEventStats = query({
     } else if (user.role === "event_company") {
       events = await ctx.db
         .query("events")
-        .withIndex("by_companyId", (q) => q.eq("companyId", user.companyId))
+        .withIndex("by_companyId", (q) => q.eq("companyId", user.companyId!))
         .collect();
     } else if (user.role === "provider") {
       events = await ctx.db.query("events").collect(); // Or filter by active contracts
