@@ -75,7 +75,7 @@ export const SettingsPage: React.FC = () => {
                 </button>
               </div>
               <div className="text-center sm:text-left">
-                <Typography variant="h3" className="text-3xl font-bold text-white tracking-tight">Henrique Montemagno</Typography>
+                <Typography variant="h3" className="text-3xl font-bold text-white tracking-tight">Henrique Monteiro</Typography>
                 <p className="text-white/40 mt-1 font-medium">Administrador da Plataforma</p>
                 <div className="mt-4 flex justify-center sm:justify-start gap-3">
                   <span className="px-3 py-1 bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest rounded-full border border-primary/20 shadow-lg">Ativo</span>
@@ -89,7 +89,7 @@ export const SettingsPage: React.FC = () => {
                 <label className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em] ml-2">Nome Completo</label>
                 <input 
                   type="text" 
-                  defaultValue="Henrique Montemagno"
+                  defaultValue="Henrique Monteiro"
                   className="w-full bg-black/40 border border-white/10 rounded-full px-6 py-4 text-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all font-bold text-sm"
                 />
               </div>
