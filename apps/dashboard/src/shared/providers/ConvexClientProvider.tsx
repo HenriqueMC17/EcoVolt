@@ -1,13 +1,15 @@
 "use client";
 
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { ConvexReactClient, useMutation } from "convex/react";
 import { ClerkProvider, useAuth } from "@clerk/nextjs";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { api } from "@convex/_generated/api";
+import { MockAuthProvider } from "./MockAuthProvider";
+import { isMockMode } from "../lib/convex";
 
 const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL || "https://dummy.convex.cloud";
-const convex = new ConvexReactClient(convexUrl);
+const clerkKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
 function SyncUser() {
   const { isSignedIn } = useAuth();
@@ -29,8 +31,31 @@ export default function ConvexClientProvider({
 }: {
   children: ReactNode;
 }) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return <div className="min-h-screen bg-bg-main" />;
+  }
+
+  const isMock = isMockMode() || !clerkKey || clerkKey === "dummy";
+
+  if (isMock) {
+    return (
+      <MockAuthProvider>
+        {children}
+      </MockAuthProvider>
+    );
+  }
+
+  // Create Convex client instance only when not in mock mode to save sockets and resources
+  const convex = new ConvexReactClient(convexUrl);
+
   return (
-    <ClerkProvider>
+    <ClerkProvider publishableKey={clerkKey}>
       <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
         <SyncUser />
         {children}
@@ -38,4 +63,5 @@ export default function ConvexClientProvider({
     </ClerkProvider>
   );
 }
+
 
