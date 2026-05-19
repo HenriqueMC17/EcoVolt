@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useQuery as useConvexQuery, useMutation as useConvexMutation } from "convex/react";
@@ -298,34 +299,88 @@ const mockQueries: Record<string, (args?: any) => any> = {
     }
     return alerts;
   },
-  "metrics.getGlobalStats": () => {
+  "metrics.getGlobalStats": (args?: any) => {
+    const range = args?.timeRange || "30d";
     const projs = getStorageItem<MockProject[]>(STORAGE_KEYS.PROJECTS, DEFAULT_PROJECTS);
     const evts = getStorageItem<MockEvent[]>(STORAGE_KEYS.EVENTS, DEFAULT_EVENTS);
     const con = getStorageItem<MockConsumption[]>(STORAGE_KEYS.CONSUMPTIONS, DEFAULT_CONSUMPTIONS);
     
     const activeProjects = projs.filter(p => p.status === 'active').length;
     const totalConsumption = con.reduce((acc, c) => acc + (c.actualKwh || 0), 0);
-    const totalSavings = totalConsumption * 0.42; // arbitrary conversion rate R$ 0.42 / kWh
     
-    // Physical standard reduction: 0.35 kg CO2 avoided per kWh
-    const environmentalImpact = totalConsumption * 0.35; 
+    let multiplier = 1.0;
+    if (range === "24h") multiplier = 0.05;
+    else if (range === "7d") multiplier = 0.25;
+    else if (range === "30d") multiplier = 1.0;
+    else if (range === "12m") multiplier = 12.0;
+
+    const scaledConsumption = Math.round(totalConsumption * multiplier);
+    const totalSavings = Math.round(scaledConsumption * 0.42);
+    const environmentalImpact = Math.round(scaledConsumption * 0.35);
 
     return {
       activeProjects,
-      totalConsumption,
+      totalEnergy: scaledConsumption,
       totalSavings,
-      environmentalImpact,
+      totalCO2: environmentalImpact,
       activeEvents: evts.filter(e => e.status === "active").length,
     };
   },
-  "metrics.getGlobalChartData": () => {
+  "metrics.getGlobalChartData": (args?: any) => {
+    const range = args?.timeRange || "30d";
+
+    if (range === "24h") {
+      const data = [];
+      const currentHour = new Date().getHours();
+      for (let i = 23; i >= 0; i--) {
+        const hour = (currentHour - i + 24) % 24;
+        const hourStr = `${hour.toString().padStart(2, "0")}:00`;
+        const factor = Math.max(0.1, 1 - Math.abs(hour - 13) / 10);
+        const previsto = Math.round(300 + factor * 500 + Math.random() * 50);
+        const realizado = Math.round(previsto * (0.92 + Math.random() * 0.15));
+        data.push({ name: hourStr, previsto, realizado });
+      }
+      return data;
+    }
+
+    if (range === "7d") {
+      const weekdays = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+      const data = [];
+      const today = new Date().getDay();
+      for (let i = 6; i >= 0; i--) {
+        const dayIdx = (today - i + 7) % 7;
+        const previsto = Math.round(3200 + Math.random() * 800);
+        const realizado = Math.round(previsto * (0.95 + Math.random() * 0.1));
+        data.push({ name: weekdays[dayIdx], previsto, realizado });
+      }
+      return data;
+    }
+
+    if (range === "30d") {
+      const data = [];
+      for (let i = 30; i > 0; i -= 3) {
+        const day = new Date(Date.now() - (i * 24 * 60 * 60 * 1000));
+        const dateStr = `${day.getDate()}/${day.getMonth() + 1}`;
+        const previsto = Math.round(3800 + Math.random() * 1000);
+        const realizado = Math.round(previsto * (0.94 + Math.random() * 0.12));
+        data.push({ name: dateStr, previsto, realizado });
+      }
+      return data;
+    }
+
     return [
-      { month: "Jan", consumo: 12000, geracao: 14000, economias: 5040 },
-      { month: "Fev", consumo: 14000, geracao: 15500, economias: 5880 },
-      { month: "Mar", consumo: 16500, geracao: 18000, economias: 6930 },
-      { month: "Abr", consumo: 15000, geracao: 17200, economias: 6300 },
-      { month: "Mai", consumo: 15800, geracao: 19500, economias: 6636 },
-      { month: "Jun", consumo: 18000, geracao: 22000, economias: 7560 },
+      { name: 'Jan', previsto: 4500, realizado: 4200 },
+      { name: 'Fev', previsto: 4600, realizado: 4800 },
+      { name: 'Mar', previsto: 4800, realizado: 4400 },
+      { name: 'Abr', previsto: 5000, realizado: 5200 },
+      { name: 'Mai', previsto: 5200, realizado: 4900 },
+      { name: 'Jun', previsto: 5500, realizado: 5600 },
+      { name: 'Jul', previsto: 5800, realizado: 5400 },
+      { name: 'Ago', previsto: 6000, realizado: 6100 },
+      { name: 'Set', previsto: 5900, realizado: 5800 },
+      { name: 'Out', previsto: 5700, realizado: 5900 },
+      { name: 'Nov', previsto: 5500, realizado: 5300 },
+      { name: 'Dez', previsto: 5800, realizado: 6000 },
     ];
   }
 };
@@ -426,6 +481,8 @@ export function useQuery(queryReference: any, args?: any) {
   // Extract path string from Convex query reference: api.path.to.query._path
   const queryPath: string = queryReference && queryReference._path ? queryReference._path : "";
 
+  const serializedArgs = args ? JSON.stringify(args) : "";
+
   const runMock = useCallback(() => {
     if (!isMock || !queryPath) return;
     if (args === "skip") {
@@ -439,11 +496,16 @@ export function useQuery(queryReference: any, args?: any) {
       console.warn(`Query mock sem handler para path: ${queryPath}`);
       setState(null);
     }
-  }, [isMock, queryPath, JSON.stringify(args)]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMock, queryPath, serializedArgs]);
 
   useEffect(() => {
     if (!isMock) return;
-    runMock();
+    
+    Promise.resolve().then(() => {
+      runMock();
+    });
+
     listeners.add(runMock);
     return () => {
       listeners.delete(runMock);
