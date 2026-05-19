@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useQuery } from '@/shared/lib/convex';
+import { useQuery, MockConsumption } from '@/shared/lib/convex';
 import { api } from '@convex/_generated/api';
 import { Id } from '@convex/_generated/dataModel';
 import { 
@@ -43,17 +43,17 @@ export const ConsumptionPage: React.FC = () => {
   }
 
   const stats = consumptionData ? {
-    totalActual: consumptionData.reduce((acc: number, c: any) => acc + (c.actualKwh || 0), 0),
-    totalPredicted: consumptionData.reduce((acc: number, c: any) => acc + c.predictedKwh, 0),
+    totalActual: consumptionData.reduce((acc: number, c: MockConsumption) => acc + (c.actualKwh || 0), 0),
+    totalPredicted: consumptionData.reduce((acc: number, c: MockConsumption) => acc + c.predictedKwh, 0),
     avgDeviation: consumptionData.length > 0 
-      ? (consumptionData.reduce((acc: number, c: any) => acc + Math.abs((c.actualKwh || 0) - c.predictedKwh), 0) / consumptionData.length).toFixed(1)
+      ? (consumptionData.reduce((acc: number, c: MockConsumption) => acc + Math.abs((c.actualKwh || 0) - c.predictedKwh), 0) / consumptionData.length).toFixed(1)
       : '0',
     efficiency: consumptionData.length > 0
-      ? (100 - (consumptionData.reduce((acc: number, c: any) => acc + Math.abs((c.actualKwh || 0) - c.predictedKwh), 0) / consumptionData.reduce((acc: number, c: any) => acc + c.predictedKwh, 1)) * 100).toFixed(0)
+      ? (100 - (consumptionData.reduce((acc: number, c: MockConsumption) => acc + Math.abs((c.actualKwh || 0) - c.predictedKwh), 0) / consumptionData.reduce((acc: number, c: MockConsumption) => acc + c.predictedKwh, 1)) * 100).toFixed(0)
       : '100'
   } : { totalActual: 0, totalPredicted: 0, avgDeviation: '0', efficiency: '100' };
 
-  const maxVal = Math.max(...(consumptionData?.map(d => Math.max(d.predictedKwh, d.actualKwh || 0)) || [100]), 100);
+  const maxVal = Math.max(...(consumptionData?.map((d: MockConsumption) => Math.max(d.predictedKwh, d.actualKwh || 0)) || [100]), 100);
 
   return (
     <div className="space-y-10 pb-20 animate-luxury">
@@ -132,7 +132,7 @@ export const ConsumptionPage: React.FC = () => {
 
         <div className="h-64 flex items-end gap-10 px-4">
           {consumptionData && consumptionData.length > 0 ? (
-            consumptionData.map((d, idx) => (
+            consumptionData.map((d: MockConsumption, idx: number) => (
               <div key={idx} className="flex-1 flex flex-col items-center gap-4 group">
                 <div className="w-full flex justify-center gap-2 items-end h-full">
                   <motion.div 

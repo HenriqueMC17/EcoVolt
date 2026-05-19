@@ -19,7 +19,7 @@ import {
   Globe
 } from 'lucide-react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
-import { useQuery, useMutation } from "@/shared/lib/convex";
+import { useQuery, useMutation, MockEvent, MockCompany } from "@/shared/lib/convex";
 import { api } from "@convex/_generated/api";
 import { Id } from "@convex/_generated/dataModel";
 import { useRouter } from 'next/navigation';
@@ -68,7 +68,16 @@ const getSizeFromAttendees = (attendees: number) => {
 
 // --- Components ---
 
-const StatCard = ({ title, value, icon: Icon, trend, color, glowColor }: any) => (
+interface StatCardProps {
+  title: string;
+  value: string | number;
+  icon: React.ComponentType<{ size?: number; className?: string }>;
+  trend?: string;
+  color: string;
+  glowColor: string;
+}
+
+const StatCard = ({ title, value, icon: Icon, trend, color, glowColor }: StatCardProps) => (
   <motion.div 
     variants={itemVariants}
     className="glass-card relative overflow-hidden group hover:border-primary/30 transition-all duration-500"
@@ -148,7 +157,7 @@ export const EventsPage: React.FC = () => {
     companyId: '' as Id<"companies"> | ''
   });
 
-  const showToast = (msg: string, type: string) => alert(msg); // Placeholder
+  const showToast = (msg: string, _type?: string) => alert(msg); // Placeholder
 
   const resetForm = () => {
     setFormData({
@@ -159,7 +168,7 @@ export const EventsPage: React.FC = () => {
       location: '',
       expectedAttendees: 0,
       estimatedConsumption: 0,
-      companyId: user?.companyId || '' as any
+      companyId: (user?.companyId || '') as Id<"companies"> | ''
     });
     setIsEditing(false);
     setCurrentEventId(null);
@@ -174,7 +183,7 @@ export const EventsPage: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const handleOpenEdit = (event: any) => {
+  const handleOpenEdit = (event: MockEvent) => {
     if (user?.role !== 'admin' && user?.companyId !== event.companyId) {
       showToast('Você não tem permissão para editar este evento.', 'error');
       return;
@@ -187,10 +196,10 @@ export const EventsPage: React.FC = () => {
       location: event.location,
       expectedAttendees: event.expectedAttendees,
       estimatedConsumption: event.estimatedConsumption,
-      companyId: event.companyId
+      companyId: event.companyId as Id<"companies">
     });
     setIsEditing(true);
-    setCurrentEventId(event._id);
+    setCurrentEventId(event._id as Id<"events">);
     setIsModalOpen(true);
   };
 
@@ -224,8 +233,8 @@ export const EventsPage: React.FC = () => {
       }
       setIsModalOpen(false);
       resetForm();
-    } catch (error: any) {
-      showToast(error.message || 'Erro ao salvar evento.', 'error');
+    } catch (error) {
+      showToast((error as Error).message || 'Erro ao salvar evento.', 'error');
     } finally {
       setIsSaving(false);
     }
@@ -243,8 +252,8 @@ export const EventsPage: React.FC = () => {
           userEmail: user!.email
         });
         showToast('Evento excluído com sucesso!', 'success');
-      } catch (error: any) {
-        showToast(error.message || 'Erro ao excluir evento.', 'error');
+      } catch (error) {
+        showToast((error as Error).message || 'Erro ao excluir evento.', 'error');
       }
     }
   };
@@ -253,14 +262,14 @@ export const EventsPage: React.FC = () => {
     if (!events) return { total: 0, active: 0, consumption: 0, attendees: 0 };
     return {
       total: events.length,
-      active: events.filter(e => e.status === 'active').length,
-      consumption: events.reduce((acc, curr) => acc + (curr.estimatedConsumption || 0), 0),
-      attendees: events.reduce((acc, curr) => acc + (curr.expectedAttendees || 0), 0),
+      active: events.filter((e: MockEvent) => e.status === 'active').length,
+      consumption: events.reduce((acc: number, curr: MockEvent) => acc + (curr.estimatedConsumption || 0), 0),
+      attendees: events.reduce((acc: number, curr: MockEvent) => acc + (curr.expectedAttendees || 0), 0),
     };
   }, [events]);
 
   const filteredEvents = useMemo(() => {
-    return events?.filter(event => {
+    return events?.filter((event: MockEvent) => {
       const matchesSearch = event.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                            event.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
                            event.companyName.toLowerCase().includes(searchQuery.toLowerCase());
@@ -411,7 +420,7 @@ export const EventsPage: React.FC = () => {
         ) : (
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
             <AnimatePresence mode="popLayout">
-              {filteredEvents?.map((event) => {
+              {filteredEvents?.map((event: MockEvent) => {
                 const status = getStatusDetails(event.status);
                 const size = getSizeFromAttendees(event.expectedAttendees);
                 return (
@@ -454,7 +463,7 @@ export const EventsPage: React.FC = () => {
                             <Edit size={20} />
                           </button>
                           <button 
-                            onClick={() => handleDelete(event._id, event.companyId)}
+                            onClick={() => handleDelete(event._id as Id<"events">, event.companyId)}
                             className="p-3.5 bg-black/40 text-white/40 hover:text-rose-400 hover:bg-rose-400/10 border border-white/10 rounded-2xl transition-all shadow-xl"
                             title="Descontinuar"
                           >
@@ -567,7 +576,7 @@ export const EventsPage: React.FC = () => {
                     <input 
                       type="text" 
                       value={formData.name}
-                      onChange={e => setFormData({...formData, name: e.target.value})}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({...formData, name: e.target.value})}
                       className="w-full bg-black/40 border border-white/10 rounded-[1.5rem] py-5 px-8 text-white outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all font-bold text-lg placeholder-white/20"
                       placeholder="Ex: Festival de Verão 2026"
                       required
@@ -579,12 +588,12 @@ export const EventsPage: React.FC = () => {
                     <div className="relative group">
                       <select 
                         value={formData.companyId} 
-                        onChange={e => setFormData({...formData, companyId: e.target.value as Id<"companies">})}
+                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFormData({...formData, companyId: e.target.value as Id<"companies">})}
                         className="w-full bg-black/40 border border-white/10 rounded-[1.5rem] py-5 px-8 text-white outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all appearance-none cursor-pointer font-bold text-sm"
                         required
                       >
                         <option value="">Selecione a Entidade</option>
-                        {companies?.filter(c => c.type === 'client').map(company => (
+                        {companies?.filter((c: MockCompany) => c.type === 'client').map((company: MockCompany) => (
                           <option key={company._id} value={company._id}>{company.name}</option>
                         ))}
                       </select>
@@ -597,7 +606,7 @@ export const EventsPage: React.FC = () => {
                     <div className="relative group">
                       <select 
                         value={formData.status} 
-                        onChange={e => setFormData({...formData, status: e.target.value as any})}
+                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFormData({...formData, status: e.target.value as 'planning' | 'active' | 'completed' | 'cancelled'})}
                         className="w-full bg-black/40 border border-white/10 rounded-[1.5rem] py-5 px-8 text-white outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all appearance-none cursor-pointer font-bold text-sm"
                         required
                       >

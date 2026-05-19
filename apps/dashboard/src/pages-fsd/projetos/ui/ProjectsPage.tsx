@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation } from '@/shared/lib/convex';
 import { api } from '@convex/_generated/api';
+import { Doc, Id } from '@convex/_generated/dataModel';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, MapPin, Activity, Calendar, Trash2, ChevronRight, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -23,7 +24,7 @@ export const ProjectsPage: React.FC = () => {
 
   const createProject = useMutation(api.projects.create);
 
-  const handleDelete = async (id: any, e: React.MouseEvent) => {
+  const handleDelete = async (id: Id<"projects">, e: React.MouseEvent) => {
     e.stopPropagation();
     if (confirm("Deseja realmente excluir este projeto? A ação é irreversível.")) {
       await removeProject({ projectId: id });
@@ -85,7 +86,7 @@ export const ProjectsPage: React.FC = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects.map((project) => (
+          {projects.map((project: Doc<"projects">) => (
             <motion.div
               key={project._id}
               initial={{ opacity: 0, y: 20 }}
@@ -193,7 +194,7 @@ export const ProjectsPage: React.FC = () => {
                   <label className="text-[10px] font-black text-white/60 uppercase tracking-widest">Categoria</label>
                   <select 
                     value={category}
-                    onChange={(e) => setCategory(e.target.value as any)}
+                    onChange={(e) => setCategory(e.target.value as 'Solar' | 'Wind' | 'Hydro' | 'Biomass')}
                     className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors appearance-none"
                   >
                     <option value="Solar">Fotovoltaica (Solar)</option>
