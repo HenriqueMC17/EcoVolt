@@ -466,25 +466,38 @@ const mockMutations: Record<string, (args: any) => Promise<any>> = {
     const filtered = evts.filter(e => e._id !== args.eventId);
     setStorageItem(STORAGE_KEYS.EVENTS, filtered);
     return { success: true };
+  },
+  "external.weather.getSolarData": async (args) => {
+    return {
+      averageRadiation: 750 + Math.random() * 200,
+      source: "Open-Meteo Satellite"
+    };
   }
 };
 
 // --- CUSTOM WRAPPED HOOKS ---
-export function useQuery(queryReference: any, args?: any) {
-  const isMock = isMockMode();
+function useLiveQuery(queryReference: any, args?: any) {
+  return useConvexQuery(queryReference, args);
+}
 
-  // If live Convex is active, delegate directly to native Convex hook
-  const liveResult = useConvexQuery(isMock ? undefined : queryReference, args);
+function useLiveMutation(mutationReference: any) {
+  return useConvexMutation(mutationReference);
+}
 
+function useMockQuery(queryReference: any, args?: any) {
   const [state, setState] = useState<any>(undefined);
-
-  // Extract path string from Convex query reference: api.path.to.query._path
-  const queryPath: string = queryReference && queryReference._path ? queryReference._path : "";
-
+  const queryPath = (() => {
+    if (!queryReference) return "";
+    if (typeof queryReference === "string") return queryReference.replace(/[:\/]/g, ".");
+    const symName = queryReference[Symbol.for("functionName")];
+    if (typeof symName === "string") return symName.replace(/[:\/]/g, ".");
+    if (typeof queryReference._path === "string") return queryReference._path.replace(/[:\/]/g, ".");
+    return "";
+  })();
   const serializedArgs = args ? JSON.stringify(args) : "";
 
   const runMock = useCallback(() => {
-    if (!isMock || !queryPath) return;
+    if (!queryPath) return;
     if (args === "skip") {
       setState(undefined);
       return;
@@ -497,11 +510,9 @@ export function useQuery(queryReference: any, args?: any) {
       setState(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isMock, queryPath, serializedArgs]);
+  }, [queryPath, serializedArgs]);
 
   useEffect(() => {
-    if (!isMock) return;
-    
     Promise.resolve().then(() => {
       runMock();
     });
@@ -510,21 +521,22 @@ export function useQuery(queryReference: any, args?: any) {
     return () => {
       listeners.delete(runMock);
     };
-  }, [runMock, isMock]);
+  }, [runMock]);
 
-  if (!isMock) {
-    return liveResult;
-  }
   return state;
 }
 
-export function useMutation(mutationReference: any) {
-  const isMock = isMockMode();
-  const liveMutation = useConvexMutation(isMock ? undefined : mutationReference);
+function useMockMutation(mutationReference: any) {
+  const mutationPath = (() => {
+    if (!mutationReference) return "";
+    if (typeof mutationReference === "string") return mutationReference.replace(/[:\/]/g, ".");
+    const symName = mutationReference[Symbol.for("functionName")];
+    if (typeof symName === "string") return symName.replace(/[:\/]/g, ".");
+    if (typeof mutationReference._path === "string") return mutationReference._path.replace(/[:\/]/g, ".");
+    return "";
+  })();
 
-  const mutationPath: string = mutationReference && mutationReference._path ? mutationReference._path : "";
-
-  const executeMock = useCallback(
+  return useCallback(
     async (args: any) => {
       if (!mutationPath) return;
       const handler = mockMutations[mutationPath];
@@ -539,14 +551,11 @@ export function useMutation(mutationReference: any) {
     },
     [mutationPath]
   );
-
-  if (!isMock) {
-    return liveMutation;
-  }
-  return executeMock;
 }
 
+export const useQuery = isMockMode() ? useMockQuery : useLiveQuery;
+export const useMutation = isMockMode() ? useMockMutation : useLiveMutation;
+
 export function useAction(actionReference: any) {
-  // Similar to mutation for full stubs compatibility
   return useMutation(actionReference);
 }

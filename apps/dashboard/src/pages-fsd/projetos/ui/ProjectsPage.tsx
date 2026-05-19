@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { useQuery, useMutation } from 'convex/react';
+import { useQuery, useMutation } from '@/shared/lib/convex';
 import { api } from '@convex/_generated/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, MapPin, Activity, Calendar, Trash2, ChevronRight, X } from 'lucide-react';

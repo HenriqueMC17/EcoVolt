@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useQuery, useAction } from 'convex/react';
+import { useQuery, useAction } from '@/shared/lib/convex';
 import { api } from '@convex/_generated/api';
 import { motion } from 'framer-motion';
 import { 

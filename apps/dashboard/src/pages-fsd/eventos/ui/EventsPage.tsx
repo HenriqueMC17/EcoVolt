@@ -19,7 +19,7 @@ import {
   Globe
 } from 'lucide-react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
-import { useQuery, useMutation } from "convex/react";
+import { useQuery, useMutation } from "@/shared/lib/convex";
 import { api } from "@convex/_generated/api";
 import { Id } from "@convex/_generated/dataModel";
 import { useRouter } from 'next/navigation';

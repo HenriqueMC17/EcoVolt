@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useQuery } from 'convex/react';
+import { useQuery } from '@/shared/lib/convex';
 import { api } from '@convex/_generated/api';
 import { Id } from '@convex/_generated/dataModel';
 import { 
@@ -43,13 +43,13 @@ export const ConsumptionPage: React.FC = () => {
   }
 
   const stats = consumptionData ? {
-    totalActual: consumptionData.reduce((acc, c) => acc + (c.actualKwh || 0), 0),
-    totalPredicted: consumptionData.reduce((acc, c) => acc + c.predictedKwh, 0),
+    totalActual: consumptionData.reduce((acc: number, c: any) => acc + (c.actualKwh || 0), 0),
+    totalPredicted: consumptionData.reduce((acc: number, c: any) => acc + c.predictedKwh, 0),
     avgDeviation: consumptionData.length > 0 
-      ? (consumptionData.reduce((acc, c) => acc + Math.abs((c.actualKwh || 0) - c.predictedKwh), 0) / consumptionData.length).toFixed(1)
+      ? (consumptionData.reduce((acc: number, c: any) => acc + Math.abs((c.actualKwh || 0) - c.predictedKwh), 0) / consumptionData.length).toFixed(1)
       : '0',
     efficiency: consumptionData.length > 0
-      ? (100 - (consumptionData.reduce((acc, c) => acc + Math.abs((c.actualKwh || 0) - c.predictedKwh), 0) / consumptionData.reduce((acc, c) => acc + c.predictedKwh, 1)) * 100).toFixed(0)
+      ? (100 - (consumptionData.reduce((acc: number, c: any) => acc + Math.abs((c.actualKwh || 0) - c.predictedKwh), 0) / consumptionData.reduce((acc: number, c: any) => acc + c.predictedKwh, 1)) * 100).toFixed(0)
       : '100'
   } : { totalActual: 0, totalPredicted: 0, avgDeviation: '0', efficiency: '100' };
 
