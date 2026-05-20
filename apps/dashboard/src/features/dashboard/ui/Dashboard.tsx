@@ -3,17 +3,17 @@
 import React, { useState } from 'react';
 import { SmartKPI } from '@/shared/ui/SmartKPI';
 import { useDashboardData } from '../api/useDashboardData';
-import { BarChart3, Clock, Calendar, ShieldAlert } from 'lucide-react';
+import { BarChart3, Clock, Calendar } from 'lucide-react';
 import dynamic from 'next/dynamic';
 
 const EnergyChart = dynamic(() => import('./EnergyChart').then(mod => mod.EnergyChart), { 
   ssr: false, 
-  loading: () => <div className="w-full h-full bg-white/5 animate-pulse rounded-2xl" /> 
+  loading: () => <div className="w-full h-full min-h-[300px] bg-white/5 animate-pulse rounded-2xl" /> 
 });
 
 const AICenter = dynamic(() => import('@/widgets/ai-center/ui/AICenter').then(mod => mod.AICenter), {
   ssr: false,
-  loading: () => <div className="w-full h-[450px] bg-white/5 animate-pulse rounded-3xl" />
+  loading: () => <div className="w-full min-h-[498px] bg-white/5 animate-pulse rounded-3xl" />
 });
 
 export const Dashboard: React.FC = () => {
@@ -38,7 +38,7 @@ export const Dashboard: React.FC = () => {
         {/* KPIs Row Skeleton */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {[1, 2, 3].map(i => (
-            <div key={i} className="glass-card h-[160px] bg-white/5 rounded-[2.5rem] border border-white/5 p-8 flex flex-col justify-between">
+            <div key={i} className="glass-card h-[188px] bg-white/5 border border-white/5 p-10 flex flex-col justify-between">
               <div className="flex justify-between items-start">
                 <div className="h-4 w-28 bg-white/5 rounded-md" />
                 <div className="h-8 w-8 bg-white/5 rounded-lg" />
@@ -51,7 +51,7 @@ export const Dashboard: React.FC = () => {
 
         {/* Bento Details Area Skeleton */}
         <div className="grid gap-6 lg:grid-cols-3">
-          <div className="lg:col-span-2 glass-card h-[498px] bg-white/5 rounded-[2.5rem] border border-white/5 p-8 flex flex-col justify-between">
+          <div className="lg:col-span-2 glass-card h-[498px] bg-white/5 border border-white/5 p-10 flex flex-col justify-between">
             <div className="flex justify-between items-center mb-8">
               <div className="h-5 w-48 bg-white/5 rounded-md" />
               <div className="flex gap-4">
@@ -62,7 +62,7 @@ export const Dashboard: React.FC = () => {
             <div className="flex-1 w-full bg-white/5 rounded-2xl" />
           </div>
 
-          <div className="lg:col-span-1 glass-card h-[498px] bg-white/5 rounded-[2.5rem] border border-white/5 p-8 flex flex-col gap-4">
+          <div className="lg:col-span-1 glass-card h-[498px] bg-white/5 border border-white/5 p-10 flex flex-col gap-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-white/5 rounded-xl" />
               <div className="flex flex-col gap-1.5">
@@ -155,7 +155,7 @@ export const Dashboard: React.FC = () => {
       {/* Bento Grid layout with detailed Telemetry & Real-Time AI Center */}
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Main Telemetry Panel (Bento Grid Col-Span-2) */}
-        <div className="lg:col-span-2 glass-card force-gpu p-8 bg-gradient-to-br from-white/[0.02] to-transparent border border-white/5 rounded-[2.5rem] relative overflow-hidden flex flex-col justify-between min-h-[498px]">
+        <div className="lg:col-span-2 glass-card force-gpu bg-linear-to-br from-white/2 to-transparent border border-white/5 relative overflow-hidden flex flex-col justify-between min-h-[498px]">
           {/* Subtle Ambient Glow */}
           <div className="absolute -top-40 -left-40 w-96 h-96 bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
           

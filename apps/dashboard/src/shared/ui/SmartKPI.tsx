@@ -25,26 +25,35 @@ export const SmartKPI: React.FC<SmartKPIProps> = ({
   color,
   className 
 }) => {
-  const colorClasses = {
-    primary: 'text-primary glow-primary',
-    secondary: 'text-secondary glow-secondary',
-    neutral: 'text-white/80'
+  const containerRef = React.useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    containerRef.current.style.setProperty('--mouse-x', `${x}px`);
+    containerRef.current.style.setProperty('--mouse-y', `${y}px`);
   };
 
-  const bgClasses = {
-    primary: 'bg-primary',
-    secondary: 'bg-secondary',
-    neutral: 'bg-white/20'
+  const shadowClasses = {
+    primary: 'hover:border-primary/35 hover:shadow-[0_0_80px_rgba(16,185,129,0.12)]',
+    secondary: 'hover:border-secondary/35 hover:shadow-[0_0_80px_rgba(96,165,250,0.12)]',
+    neutral: 'hover:border-white/20 hover:shadow-[0_0_80px_rgba(255,255,255,0.06)]'
   };
 
   const isPositive = trend.direction === 'up';
 
   return (
-    <div className={cn(
-      "glass-card force-gpu group relative overflow-hidden transition-all duration-700",
-      "hover:border-white/10 hover:shadow-[0_0_80px_rgba(255,255,255,0.02)]",
-      className
-    )}>
+    <div 
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      className={cn(
+        "glass-card force-gpu group relative overflow-hidden transition-all duration-700",
+        shadowClasses[color],
+        className
+      )}
+    >
       {/* Glow Superior de Identificação Visual do KPI */}
       <div className={cn(
         "absolute top-0 left-0 right-0 h-[2px] transition-all duration-700",

@@ -75,12 +75,12 @@ export const EnergyChart: React.FC<EnergyChartProps> = ({ data }) => {
         <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
           <defs>
             <linearGradient id="colorPrevisto" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="var(--color-secondary)" stopOpacity={0.25}/>
-              <stop offset="95%" stopColor="var(--color-secondary)" stopOpacity={0}/>
+              <stop offset="5%" style={{ stopColor: 'var(--color-secondary)', stopOpacity: 0.25 }} />
+              <stop offset="95%" style={{ stopColor: 'var(--color-secondary)', stopOpacity: 0 }} />
             </linearGradient>
             <linearGradient id="colorRealizado" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="var(--color-primary)" stopOpacity={0.25}/>
-              <stop offset="95%" stopColor="var(--color-primary)" stopOpacity={0}/>
+              <stop offset="5%" style={{ stopColor: 'var(--color-primary)', stopOpacity: 0.25 }} />
+              <stop offset="95%" style={{ stopColor: 'var(--color-primary)', stopOpacity: 0 }} />
             </linearGradient>
           </defs>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" vertical={false} />

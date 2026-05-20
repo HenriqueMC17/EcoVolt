@@ -134,7 +134,7 @@ export const AICenter: React.FC = () => {
               
               {/* Dynamic word printing with custom cursor indicator */}
               <p className={cn(
-                "text-xs text-white/80 leading-relaxed font-medium mb-3 min-h-[54px]",
+                "text-xs text-white/80 leading-relaxed font-medium mb-3 min-h-[72px]",
                 isStreaming && "sse-cursor"
               )}>
                 {streamText}
