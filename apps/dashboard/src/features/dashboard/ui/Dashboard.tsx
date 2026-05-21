@@ -17,8 +17,8 @@ const AICenter = dynamic(() => import('@/widgets/ai-center/ui/AICenter').then(mo
 });
 
 export const Dashboard: React.FC = () => {
-  const { stats, chartData, isLoading } = useDashboardData();
   const [timeRange, setTimeRange] = useState<'24h' | '7d' | '30d' | '12m'>('30d');
+  const { stats, chartData, isLoading } = useDashboardData(undefined, timeRange);
 
   // Mirror loading state matching exactly the final DOM structure to eliminate Layout Shift
   if (isLoading) {

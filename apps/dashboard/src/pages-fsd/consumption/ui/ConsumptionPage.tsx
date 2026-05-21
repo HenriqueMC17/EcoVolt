@@ -21,20 +21,56 @@ export const ConsumptionPage: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const eventId = searchParams.get('eventId');
-  // Temporary mock user since context might not be fully ported yet
-  const user = { email: "admin@ecovolt.com" }; // useUser() if available
+  const user = { email: "admin@ecovolt.com" }; // Mock user session fallback
+
+  // Fetch events list first to handle defaults and dropdown selection
+  const events = useQuery(
+    api.events.getEvents,
+    user?.email ? { userEmail: user.email } : 'skip'
+  );
+
+  // If eventId query param is not specified, default to the first event found
+  const activeEventId = eventId || (events && events.length > 0 ? events[0]._id : null);
 
   const consumptionData = useQuery(
     api.consumptions.getConsumptionByEventId,
-    eventId && user?.email ? { eventId: eventId as Id<"events">, userEmail: user.email } : 'skip'
+    activeEventId && user?.email ? { eventId: activeEventId as Id<"events">, userEmail: user.email } : 'skip'
   );
 
   const alerts = useQuery(
     api.alerts.getAlertsByEventId,
-    eventId && user?.email ? { eventId: eventId as Id<"events">, userEmail: user.email } : 'skip'
+    activeEventId && user?.email ? { eventId: activeEventId as Id<"events">, userEmail: user.email } : 'skip'
   );
 
-  if (consumptionData === undefined) {
+  if (events === undefined) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (events.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
+        <AlertTriangle className="text-secondary w-12 h-12 animate-pulse" />
+        <Typography variant="h2" className="text-lg font-bold text-white uppercase tracking-wider">
+          Nenhum Evento Encontrado
+        </Typography>
+        <Typography className="text-text-muted text-sm text-center max-w-md">
+          Não há eventos registrados sob a conta admin@ecovolt.com. Crie um evento na página de eventos para começar a monitorar a telemetria.
+        </Typography>
+        <button 
+          onClick={() => router.push('/eventos')}
+          className="px-6 py-3 rounded-xl bg-primary text-black font-black uppercase tracking-wider text-xs hover:shadow-[0_0_20px_var(--color-primary)] transition-all duration-300 active:scale-95 cursor-pointer mt-2"
+        >
+          Ir para Eventos
+        </button>
+      </div>
+    );
+  }
+
+  if (consumptionData === undefined || alerts === undefined) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
@@ -58,11 +94,11 @@ export const ConsumptionPage: React.FC = () => {
   return (
     <div className="space-y-10 pb-20 animate-luxury">
       <header className="space-y-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <button 
               onClick={() => router.back()}
-              className="p-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-colors text-text-muted"
+              className="p-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-colors text-text-muted cursor-pointer"
             >
               <ArrowLeft size={18} />
             </button>
@@ -73,11 +109,25 @@ export const ConsumptionPage: React.FC = () => {
               Telemetria Operacional
             </Typography>
           </div>
-          {eventId && (
-             <div className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold text-text-muted uppercase tracking-widest">
-               ID: {eventId.slice(-6)}
-             </div>
-          )}
+          <div className="flex items-center gap-3">
+            <label className="text-[10px] font-black uppercase tracking-widest text-text-muted">Selecione o Evento:</label>
+            <select
+              value={activeEventId || ""}
+              onChange={(e) => router.replace(`/consumo?eventId=${e.target.value}`)}
+              className="bg-[#161616]/95 border border-white/10 rounded-xl px-4 py-2 text-white text-xs font-bold outline-none focus:border-primary/50 transition-colors cursor-pointer"
+            >
+              {events.map((e: any) => (
+                <option key={e._id} value={e._id}>
+                  {e.name}
+                </option>
+              ))}
+            </select>
+            {activeEventId && (
+               <div className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold text-text-muted uppercase tracking-widest">
+                 ID: {String(activeEventId).slice(-6)}
+               </div>
+            )}
+          </div>
         </div>
         <Typography variant="h1" className="text-4xl font-black tracking-tighter text-white uppercase italic">
           Previsto x <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-500">Realizado</span>
