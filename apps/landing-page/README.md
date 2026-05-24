@@ -1,11 +1,11 @@
 <div align="center">
   <img src="./Logo_EcoVolt_UPX3.png" alt="EcoVolt Logo" width="200"/>
-  
-  # EcoVolt – Inteligência Energética para Eventos
-  
-  **Potencializando a rentabilidade do seu negócio através da energia limpa e gestão inteligente.**
 
-  [![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+# EcoVolt – Portal de Apresentação e Conversão Corporativa
+
+  **Acelerando a transição corporativa para energia limpa e gerenciamento de ativos sustentáveis.**
+
+  [![Next.js](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
   [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
   [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
   [![Framer Motion](https://img.shields.io/badge/Framer_Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white)](https://www.framer.com/motion/)
@@ -14,84 +14,117 @@
 
 ---
 
-## 🌿 Sobre a EcoVolt
+## ✦ Sobre o Projeto
 
-A **EcoVolt** é líder em infraestrutura energética para grandes eventos, focada em transformar a maneira como empresas consomem e gerenciam energia. Nossa missão é promover a transição para uma **Sociedade Carbono Zero**, aliando sustentabilidade ambiental à máxima rentabilidade operacional.
+A **EcoVolt Landing Page** é o portal institucional focado no fechamento de parcerias B2B da plataforma. Criada para proporcionar uma experiência **Cinematic UX**, ela combina narrativas interativas sobre sustentabilidade e economia energética com recursos técnicos modernos.
 
-Nossa plataforma permite reduzir custos operacionais em até **30%** e eliminar riscos regulatórios através do monitoramento em tempo real e inteligência de dados aplicada ao grid energético.
+A arquitetura foi meticulosamente otimizada visando a pontuação máxima de **Core Web Vitals**:
 
-## ✨ Funcionalidades Principais
+* **Code Splitting Agressivo:** Componentes e seções posicionados abaixo da dobra (Below-the-Fold) são carregados assincronamente através de `next/dynamic` apenas quando entram na viewport do usuário.
+* **Resiliência Transversal:** Lógica para garantir estabilidade mesmo perante falhas nas APIs do backend.
+* **Acessibilidade Completa:** Foco em contrastes adequados (OKLCH), atributos ARIA semânticos e navegação fluida por teclado.
 
-- 📊 **Monitoramento em Tempo Real**: Visualize a distribuição energética por blocos operacionais com milissegundos de precisão.
-- ⚡ **Redução de Custos**: Identificação automatizada de gargalos e ineficiências no consumo.
-- 🌱 **ESG Integrado**: Acompanhamento direto da pegada de carbono e geração de relatórios de sustentabilidade.
-- 🛠️ **Dashboard Premium**: Interface glassmorphism projetada para alta performance e clareza visual.
-- 📱 **Design Responsivo & Mobile-First**: Gestão completa na palma da mão, em qualquer dispositivo.
+---
 
-## 🚀 Tecnologias Utilizadas
+## ✦ Recursos Principais e Diferenciais Técnicos
 
-O projeto foi construído com as tecnologias mais modernas do ecossistema front-end para garantir performance, escalabilidade e uma experiência de usuário impecável:
+* **Validação Segura com Server Actions:** Captação de leads de interesse via formulários de contato processados no servidor com Next.js **Server Actions** (`submitLeadAction`) e validados rigorosamente com **Zod**.
+* **Observabilidade e Logs Estruturados:** Utiliza a biblioteca **Pino** (com formatação legível por `pino-pretty` em desenvolvimento) para gerar logs JSON estruturados e padronizados sobre os processos da aplicação.
+* **Motor de Resiliência (Circuit Breaker & Backoff):** Camada interna customizada (`withResilience`) que encapsula requisições críticas, fornecendo suporte a **Circuit Breaker** (Disjuntor de API) e retentativas automáticas com recuo exponencial.
+* **Banco de Dados de Telemetria (Convex):** Integração com o Convex local sob o esquema de telemetria `energyData` (para demonstrativos em tempo real das máquinas energéticas) e status de latência `healthMetrics`.
+* **Dark & Light Mode Nativo:** Tematização flexível controlada via `next-themes` e integrada com as novas variáveis do Tailwind CSS v4.
 
-- **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
-- **Estilização**: [Tailwind CSS 4](https://tailwindcss.com/)
-- **Animações**: [Framer Motion](https://www.framer.com/motion/)
-- **Iconografia**: [Lucide React](https://lucide.dev/)
-- **Tipografia**: [Geist Sans](https://vercel.com/font)
-- **Gestão de Estado & Forms**: React Hook Form + Zod
-- **Temas**: Next Themes (Suporte nativo a Dark Mode)
+---
 
-## 📁 Estrutura do Projeto
+## ✦ Estrutura e Arquitetura do Projeto (FSD Simplificado)
 
-O projeto segue um padrão arquitetural baseado em **Features**, facilitando a manutenção e o crescimento escalável:
+O projeto divide as pastas de forma modular baseada em responsabilidades:
 
 ```text
 src/
-├── app/              # Roteamento e layouts globais
-├── features/         # Módulos isolados por funcionalidade (Hero, Discovery, Conversion)
-├── shared/           # Componentes UI, hooks, libs e constantes compartilhadas
-│   ├── components/   # Componentes de layout comuns (Navbar, Footer)
-│   ├── ui/           # Design System (Button, Badge, Typography)
-│   ├── lib/          # Utilitários e configurações de tema
-│   └── hooks/        # Hooks globais
-└── assets/           # Imagens e recursos estáticos
+├── app/                  # Rotas físicas do Next.js App Router, CSS global e layout root
+│   ├── company/          # Páginas institucionais (Quem Somos)
+│   ├── legal/            # Termos de serviço e políticas de privacidade
+│   ├── product/          # Detalhamento de planos corporativos
+│   ├── providers/        # Contextos compartilhados (Next-themes, ConvexProvider)
+│   └── solicitar-demonstracao/ # Formulário dedicado de contato avançado
+│
+├── features/             # Lógicas e seções isoladas divididas por contexto funcional
+│   ├── conversion/       # Formulários de contato e seções de públicos-alvo (Persona)
+│   ├── dashboard/        # Demonstrações de gráficos reais de telemetria
+│   ├── discovery/        # Seções de descoberta do problema, precificação e diferenciais
+│   ├── hero/             # Banner animado principal acima da dobra (Above-the-Fold)
+│   ├── lead-submission/  # Server Actions e schemas do Zod para submissão de contatos
+│   ├── motion/           # Componentes e transições pré-configuradas do Framer Motion
+│   └── support/          # Seção de FAQ e ajudas gerais
+│
+├── shared/               # Recursos reutilizáveis de baixo nível (Sem regras de negócio)
+│   ├── components/       # Componentes de interface globais (Navbar, Footer)
+│   ├── ui/               # Design System atômico (Button, Badge, etc.)
+│   └── lib/              # Inicialização de bibliotecas (logger, resilience)
+│
+└── widgets/              # Elementos que unem features em estruturas de layout (Layout wrapper)
 ```
 
-## 🛠️ Como Iniciar
+---
 
-### Pré-requisitos
-- Node.js (v20 ou superior)
-- NPM, Yarn, Pnpm ou Bun
+## ✦ Instalação e Execução Local
 
-### Instalação
+### 1. Clonar o Repositório
 
-1. Clone o repositório:
 ```bash
-git clone https://github.com/seu-usuario/ecovolt-landing.git
+git clone https://github.com/HenriqueMC17/portfolio-profissional.git
+cd portfolio-profissional/apps/landing-page
 ```
 
-2. Instale as dependências:
+### 2. Instalar Dependências
+
 ```bash
 npm install
 ```
 
-3. Inicie o servidor de desenvolvimento:
+### 3. Configurar Variáveis de Ambiente
+
+Crie um arquivo `.env.local` na pasta raiz de `apps/landing-page`:
+
+```env
+NEXT_PUBLIC_CONVEX_URL=http://127.0.0.1:3210
+```
+
+> [!WARNING]
+> **Atenção:** Evite utilizar URLs de placeholder como `https://dummy-url.convex.cloud`. O parser interno do SDK do Convex exige um formato válido (ex: `https://funny-animal-123.convex.cloud` ou conexões locais como `http://127.0.0.1:3210`). URLs inválidas acarretarão no erro crítico `Couldn't parse deployment name`.
+
+### 4. Executar em Desenvolvimento
+
+Para subir o servidor local:
+
 ```bash
 npm run dev
 ```
 
-4. Acesse o projeto em: `http://localhost:3000`
-
-## 🎨 Princípios de Design
-
-O EcoVolt foi desenvolvido sob os pilares de **Aesthetics & Performance**:
-1. **Glassmorphism**: Uso de transparências e borrões suaves para profundidade.
-2. **Micro-interações**: Feedbacks táteis e transições fluidas com Framer Motion.
-3. **Acessibilidade**: Seguindo padrões WCAG para garantir inclusão.
-4. **Cinematic View**: Layouts que priorizam o impacto visual e a narrativa institucional.
+Acesse o portal em: `http://localhost:3000`.
 
 ---
 
-<div align="center">
-  <p>Construindo um futuro energético mais verde e inteligente.</p>
-  <strong>EcoVolt © 2026</strong>
-</div>
+## ✦ Testes de Conversão e Qualidade
+
+O projeto está configurado com o **Playwright** para garantir que o fluxo de conversão principal (Preenchimento e Envio de Lead) nunca quebre em produção.
+
+* **Executar os testes E2E:**
+  ```bash
+  npm run e2e
+  ```
+* **Visualizar a interface gráfica do Playwright (modo interativo):**
+  ```bash
+  npm run e2e:ui
+  ```
+
+---
+
+## ✦ Scripts Disponíveis
+
+* `npm run dev`: Inicializa o servidor local de desenvolvimento.
+* `npm run build`: Compila e otimiza a aplicação Next.js para produção.
+* `npm run start`: Inicia o servidor Next.js compilado em produção.
+* `npm run lint`: Valida o linter de código.
+* `npm run prepare`: Inicializa os hooks do Husky para validações no commit.

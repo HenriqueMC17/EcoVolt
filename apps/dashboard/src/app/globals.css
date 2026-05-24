@@ -6,8 +6,8 @@
   --color-secondary: oklch(0.6 0.18 250); /* Blue-ish */
   
   --color-bg-main: oklch(0.13 0 0); /* #0D0D0D base física */
-  --color-bg-surface: oklch(0.18 0 0 / 0.5); /* #161616 translúcido */
-  --color-bg-surface-elevated: oklch(0.24 0 0 / 0.85); /* #222222 */
+  --color-bg-surface: oklch(0.20 0 0 / 0.5); /* #1A1A1A translúcido */
+  --color-bg-surface-elevated: oklch(0.28 0 0 / 0.85); /* #2D2D2D */
   
   --color-text-main: oklch(0.98 0.005 240);
   --color-text-muted: oklch(0.7 0.01 240);
@@ -57,7 +57,7 @@
 }
 
 @utility glass {
-  @apply bg-slate-900/40 backdrop-blur-3xl border border-white/5 shadow-[0_20px_50px_rgba(0,0,0,0.4)];
+  @apply bg-slate-900/40 backdrop-blur-3xl border border-white/8 shadow-[0_20px_50px_rgba(0,0,0,0.4)];
 }
 
 @utility glass-thick {
@@ -161,7 +161,7 @@
 
 /* SSE Live Streaming Caret Cursor */
 .sse-cursor::after {
-  content: "▊";
+  content: "\258A";
   @apply text-secondary ml-1 inline-block;
   animation: sse-blink 1s steps(2, start) infinite;
 }

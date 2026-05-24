@@ -34,8 +34,8 @@ export function RealTimeDashboard() {
             <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <Zap className="w-10 h-10 text-amber-400 mb-4 drop-shadow-[0_0_15px_rgba(251,191,36,0.5)]" />
             <Heading as="h4" className="mb-2 text-white/90">Voltagem</Heading>
-            <Paragraph className="text-amber-400 font-medium text-2xl">
-              {energyData && energyData.length > 0 ? `${energyData[0].voltage}V` : "-- V"}
+            <Paragraph className="text-amber-400 font-medium text-2xl tabular-nums">
+              {energyData && energyData.length > 0 ? <span className="whitespace-nowrap">{energyData[0].voltage}&nbsp;V</span> : <span className="whitespace-nowrap">--&nbsp;V</span>}
             </Paragraph>
           </GlassCard>
 
@@ -43,8 +43,8 @@ export function RealTimeDashboard() {
             <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
              <Server className="w-10 h-10 text-blue-400 mb-4 drop-shadow-[0_0_15px_rgba(96,165,250,0.5)]" />
              <Heading as="h4" className="mb-2 text-white/90">Potência Reativa</Heading>
-             <Paragraph className="text-blue-400 font-medium text-2xl">
-               {energyData && energyData.length > 0 ? `${energyData[0].power}W` : "-- W"}
+             <Paragraph className="text-blue-400 font-medium text-2xl tabular-nums">
+               {energyData && energyData.length > 0 ? <span className="whitespace-nowrap">{energyData[0].power}&nbsp;W</span> : <span className="whitespace-nowrap">--&nbsp;W</span>}
              </Paragraph>
           </GlassCard>
           

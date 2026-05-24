@@ -118,7 +118,7 @@ export const AICenter: React.FC = () => {
         {/* Dynamic Insights Stack */}
         <div className="flex flex-col gap-4">
           {/* 1. Real-time Streaming AI Insight Card */}
-          <div className="group force-gpu p-5 rounded-2xl bg-secondary/2 border border-secondary/10 hover:border-secondary/30 hover:bg-secondary/4 transition-all duration-300 relative overflow-hidden flex gap-4">
+          <div className="group force-gpu p-6 rounded-2xl bg-secondary/2 border border-secondary/10 hover:border-secondary/30 hover:bg-secondary/4 transition-all duration-300 relative overflow-hidden flex gap-4">
             {/* Glow accent for streaming card */}
             <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-secondary" />
             <div className="mt-0.5 shrink-0">
@@ -155,7 +155,7 @@ export const AICenter: React.FC = () => {
           {mockInsights.map((insight) => (
             <div 
               key={insight.id} 
-              className="group force-gpu p-5 rounded-2xl bg-white/2 border border-white/5 hover:border-white/10 hover:bg-white/4 transition-all duration-500 cursor-pointer flex gap-4"
+              className="group force-gpu p-6 rounded-2xl bg-white/2 border border-white/5 hover:border-white/10 hover:bg-white/4 transition-all duration-500 cursor-pointer flex gap-4"
             >
               <div className="mt-0.5 shrink-0">
                 {insight.type === 'anomaly' && <AlertTriangle className="w-4 h-4 text-rose-400" />}

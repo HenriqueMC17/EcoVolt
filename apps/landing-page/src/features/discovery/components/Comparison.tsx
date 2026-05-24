@@ -6,7 +6,6 @@ import { Section } from "@/shared/components/Section";
 import { Heading, Paragraph, Subheading } from "@/shared/ui/Typography";
 import { GlassCard } from "@/shared/ui/GlassCard";
 import { Check, X, ZapOff, Scale, ArrowRight } from "lucide-react";
-import { cn } from "@/shared/lib/utils";
 
 const comparisonData = [
   {
@@ -141,7 +140,7 @@ export const Comparison = () => {
                     </div>
                     <div>
                        <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-80 mb-1">Guaranteed Performance</p>
-                       <p className="text-5xl font-black tracking-tighter">+35% <span className="text-xl opacity-60">Avg. Efficiency</span></p>
+                       <p className="text-5xl font-black tracking-tighter tabular-nums">+35%&nbsp;<span className="text-xl opacity-60">Avg. Efficiency</span></p>
                     </div>
                  </div>
                  <div className="hidden sm:block h-16 w-px bg-white/20 relative z-10" />
