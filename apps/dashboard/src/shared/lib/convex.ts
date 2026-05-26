@@ -89,6 +89,7 @@ const STORAGE_KEYS = {
   CONSUMPTIONS: "ecovolt_mock_consumptions",
   ALERTS: "ecovolt_mock_alerts",
   FINANCIALS: "ecovolt_mock_financials",
+  CONTRACTS: "ecovolt_mock_contracts",
 };
 
 // --- STATIC SEED DATA ---
@@ -100,6 +101,19 @@ const DEFAULT_USER: MockUser = {
   companyId: "company_ecovolt_client_001",
   createdAt: Date.now(),
 };
+
+const DEFAULT_CONTRACTS = [
+  {
+    _id: "ctr001",
+    eventId: "event_festival_verao",
+    providerCompanyId: "company_ecovolt_provider_001",
+    clientCompanyId: "company_ecovolt_client_002",
+    status: "active",
+    value: 45000,
+    ratePerKwh: 1.0,
+    createdAt: Date.now() - 15 * 24 * 60 * 60 * 1000,
+  }
+];
 
 const DEFAULT_COMPANIES: MockCompany[] = [
   {
@@ -242,6 +256,9 @@ const initializeLocalStorage = () => {
   if (!localStorage.getItem(STORAGE_KEYS.ALERTS)) {
     localStorage.setItem(STORAGE_KEYS.ALERTS, JSON.stringify(DEFAULT_ALERTS));
   }
+  if (!localStorage.getItem(STORAGE_KEYS.CONTRACTS)) {
+    localStorage.setItem(STORAGE_KEYS.CONTRACTS, JSON.stringify(DEFAULT_CONTRACTS));
+  }
 };
 
 // --- REACTIVE LISTENER SYSTEM ---
@@ -282,8 +299,52 @@ const mockQueries: Record<string, (args?: any) => any> = {
   "events.getEvents": () => {
     return getStorageItem<MockEvent[]>(STORAGE_KEYS.EVENTS, DEFAULT_EVENTS);
   },
-  "companies.getCompanies": () => {
-    return getStorageItem<MockCompany[]>(STORAGE_KEYS.COMPANIES, DEFAULT_COMPANIES);
+  "companies.getCompanies": (args) => {
+    const comps = getStorageItem<MockCompany[]>(STORAGE_KEYS.COMPANIES, DEFAULT_COMPANIES);
+    if (args && args.type) {
+      return comps.filter(c => c.type === args.type);
+    }
+    return comps;
+  },
+  "contracts.getContracts": () => {
+    const user = getStorageItem<any | null>(STORAGE_KEYS.USER, DEFAULT_USER);
+    if (!user) return [];
+    const contracts = getStorageItem<any[]>(STORAGE_KEYS.CONTRACTS, DEFAULT_CONTRACTS);
+    
+    let filtered = contracts;
+    if (user.role === "event_company") {
+      filtered = contracts.filter(c => c.clientCompanyId === user.companyId);
+    } else if (user.role === "provider") {
+      filtered = contracts.filter(c => c.providerCompanyId === user.companyId);
+    }
+    
+    const events = getStorageItem<MockEvent[]>(STORAGE_KEYS.EVENTS, DEFAULT_EVENTS);
+    const companies = getStorageItem<MockCompany[]>(STORAGE_KEYS.COMPANIES, DEFAULT_COMPANIES);
+    
+    return filtered.map(c => {
+      const ev = events.find(e => e._id === c.eventId);
+      const prov = companies.find(comp => comp._id === c.providerCompanyId);
+      return {
+        ...c,
+        event: ev ? ev.name : "Desconhecido",
+        provider: prov ? prov.name : "Desconhecido",
+        energy: ev ? `${ev.estimatedConsumption} kWh` : "-",
+      };
+    });
+  },
+  "contracts.getContractByEventId": (args) => {
+    const contracts = getStorageItem<any[]>(STORAGE_KEYS.CONTRACTS, DEFAULT_CONTRACTS);
+    const contract = contracts.find(c => c.eventId === args?.eventId);
+    if (!contract) return null;
+    const events = getStorageItem<MockEvent[]>(STORAGE_KEYS.EVENTS, DEFAULT_EVENTS);
+    const companies = getStorageItem<MockCompany[]>(STORAGE_KEYS.COMPANIES, DEFAULT_COMPANIES);
+    const ev = events.find(e => e._id === contract.eventId);
+    const prov = companies.find(comp => comp._id === contract.providerCompanyId);
+    return {
+      ...contract,
+      eventName: ev ? ev.name : "Desconhecido",
+      providerName: prov ? prov.name : "Desconhecido",
+    };
   },
   "consumptions.getConsumptionByEventId": (args) => {
     const data = getStorageItem<MockConsumption[]>(STORAGE_KEYS.CONSUMPTIONS, DEFAULT_CONSUMPTIONS);
@@ -466,6 +527,31 @@ const mockMutations: Record<string, (args: any) => Promise<any>> = {
     const filtered = evts.filter(e => e._id !== args.eventId);
     setStorageItem(STORAGE_KEYS.EVENTS, filtered);
     return { success: true };
+  },
+  "contracts.createContract": async (args) => {
+    const contracts = getStorageItem<any[]>(STORAGE_KEYS.CONTRACTS, DEFAULT_CONTRACTS);
+    const newContract = {
+      _id: `ctr_${Date.now()}`,
+      eventId: args.eventId,
+      providerCompanyId: args.providerCompanyId,
+      clientCompanyId: args.clientCompanyId,
+      value: args.value,
+      ratePerKwh: args.ratePerKwh || 1.0,
+      status: args.status || "draft",
+      createdAt: Date.now(),
+    };
+    setStorageItem(STORAGE_KEYS.CONTRACTS, [...contracts, newContract]);
+    return newContract._id;
+  },
+  "contracts.updateContractStatus": async (args) => {
+    const contracts = getStorageItem<any[]>(STORAGE_KEYS.CONTRACTS, DEFAULT_CONTRACTS);
+    const idx = contracts.findIndex(c => c._id === args.contractId);
+    if (idx !== -1) {
+      contracts[idx] = { ...contracts[idx], status: args.status };
+      setStorageItem(STORAGE_KEYS.CONTRACTS, contracts);
+      return { success: true };
+    }
+    throw new Error("Contrato não encontrado");
   },
   "external.weather.getSolarData": async (args) => {
     return {

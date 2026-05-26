@@ -5,6 +5,8 @@ import { SmartKPI } from '@/shared/ui/SmartKPI';
 import { useDashboardData } from '../api/useDashboardData';
 import { BarChart3, Clock, Calendar } from 'lucide-react';
 import dynamic from 'next/dynamic';
+import { useMockAuth } from '@/shared/providers/MockAuthProvider';
+import { ProviderDashboard } from './ProviderDashboard';
 
 const EnergyChart = dynamic(() => import('./EnergyChart').then(mod => mod.EnergyChart), { 
   ssr: false, 
@@ -17,11 +19,12 @@ const AICenter = dynamic(() => import('@/widgets/ai-center/ui/AICenter').then(mo
 });
 
 export const Dashboard: React.FC = () => {
+  const { user, isLoaded } = useMockAuth();
   const [timeRange, setTimeRange] = useState<'24h' | '7d' | '30d' | '12m'>('30d');
   const { stats, chartData, isLoading } = useDashboardData(undefined, timeRange);
 
   // Mirror loading state matching exactly the final DOM structure to eliminate Layout Shift
-  if (isLoading) {
+  if (!isLoaded || isLoading) {
     return (
       <div className="space-y-8 animate-pulse force-gpu">
         <header className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
@@ -79,6 +82,10 @@ export const Dashboard: React.FC = () => {
         </div>
       </div>
     );
+  }
+
+  if (user?.role === "provider") {
+    return <ProviderDashboard />;
   }
 
   return (

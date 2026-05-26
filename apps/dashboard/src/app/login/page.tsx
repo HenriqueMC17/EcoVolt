@@ -17,7 +17,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { Typography } from "@/shared/ui/Typography";
 
-type ProfileRole = "admin" | "operator" | "provider";
+type ProfileRole = "admin" | "operator" | "provider" | "event_company";
 
 interface ProfilePreset {
   email: string;
@@ -42,8 +42,8 @@ const PROFILE_PRESETS: ProfilePreset[] = [
   {
     email: "operacoes@rioarena.com.br",
     name: "Rio Arena Congressos",
-    role: "operator",
-    roleLabel: "Operador",
+    role: "event_company",
+    roleLabel: "Organizador",
     description: "Provisão de carga, telemetria de consumo em tempo real e relatórios de eventos.",
     icon: Activity,
     glowColor: "from-blue-500/20 to-indigo-500/10",
@@ -102,7 +102,7 @@ export default function LoginPage() {
       // Find matching preset, fallback to default naming if customized
       const preset = PROFILE_PRESETS.find(p => p.email === email);
       const name = preset ? preset.name : "Operador Convidado";
-      const finalRole = preset ? preset.role : "client";
+      const finalRole = preset ? preset.role : "event_company";
 
       // Execute Mock login (simulates network and writes session cookies)
       await login(email, name, finalRole);

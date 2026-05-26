@@ -13,7 +13,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Activity,
-  Bot
+  Bot,
+  Search
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -21,6 +22,8 @@ const NAV_ITEMS = [
   { href: '/', icon: LayoutDashboard, label: 'Overview' },
   { href: '/projetos', icon: FolderKanban, label: 'Projetos' },
   { href: '/eventos', icon: Activity, label: 'Eventos' },
+  { href: '/buscar', icon: Search, label: 'Buscar Energia' },
+  { href: '/contratos', icon: FileText, label: 'Contratos' },
   { href: '/consumo', icon: Zap, label: 'Consumo' },
   { href: '/financeiro', icon: DollarSign, label: 'Financeiro' },
   { href: '/documentos', icon: FileText, label: 'Documentos' },
@@ -47,7 +50,7 @@ export function Sidebar() {
             exit={{ opacity: 0 }}
             className="flex items-center gap-2"
           >
-            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+            <div className="h-8 w-8 rounded-lg bg-linear-to-br from-primary to-secondary flex items-center justify-center">
               <Zap className="text-black h-5 w-5" />
             </div>
             <span className="font-bold text-xl tracking-tight text-white">EcoVolt</span>
@@ -93,7 +96,7 @@ export function Sidebar() {
 
       <div className="p-4 border-t border-white/5">
         <div className={`flex items-center gap-3 ${isCollapsed ? 'justify-center' : 'px-2'}`}>
-          <div className="h-10 w-10 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 border-2 border-white/10 shrink-0" />
+          <div className="h-10 w-10 rounded-full bg-linear-to-tr from-blue-500 to-purple-500 border-2 border-white/10 shrink-0" />
           {!isCollapsed && (
             <div className="overflow-hidden">
               <p className="text-sm font-medium text-white truncate">Admin User</p>

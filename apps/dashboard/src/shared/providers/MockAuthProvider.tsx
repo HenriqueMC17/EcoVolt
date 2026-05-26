@@ -8,14 +8,14 @@ export interface MockUser {
   primaryEmailAddress: {
     emailAddress: string;
   };
-  role: "admin" | "operator" | "provider" | "client";
+  role: "admin" | "operator" | "provider" | "event_company";
 }
 
 interface MockAuthContextType {
   isSignedIn: boolean;
   isLoaded: boolean;
   user: MockUser | null;
-  login: (email: string, name: string, role: "admin" | "operator" | "provider" | "client") => Promise<void>;
+  login: (email: string, name: string, role: "admin" | "operator" | "provider" | "event_company") => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -68,7 +68,7 @@ export const MockAuthProvider: React.FC<{ children: ReactNode }> = ({ children }
   const login = async (
     email: string,
     name: string,
-    role: "admin" | "operator" | "provider" | "client"
+    role: "admin" | "operator" | "provider" | "event_company"
   ) => {
     setIsLoaded(false);
     // Simulate short network delay for premium visual micro-loaders
