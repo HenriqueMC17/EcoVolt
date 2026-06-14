@@ -22,6 +22,7 @@ export const metadata: Metadata = {
 
 import { CommandPalette } from "@/features/search/ui/CommandPalette";
 import ConvexClientProvider from "@/shared/providers/ConvexClientProvider";
+import { Analytics } from "@vercel/analytics/next";
 
 export default async function RootLayout({
   children,
@@ -47,6 +48,7 @@ export default async function RootLayout({
             </main>
           </div>
           {!isLoginPage && <CommandPalette />}
+          <Analytics />
         </ConvexClientProvider>
       </body>
     </html>
