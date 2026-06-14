@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { m as motion } from "framer-motion";
 import { Section } from "@/shared/components/Section";
 import { Heading, Paragraph, Subheading } from "@/shared/ui/Typography";
@@ -8,7 +8,6 @@ import { Glow } from "@/shared/ui/Glow";
 import { Badge } from "@/shared/ui/Badge";
 import { GlassCard } from "@/shared/ui/GlassCard";
 import { Layout, Zap, Terminal, BarChart3, Globe, Cpu, Shield, Activity, ArrowRight } from "lucide-react";
-import { theme } from "@/shared/lib/theme";
 import { cn } from "@/shared/lib/utils";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
@@ -33,10 +32,22 @@ const PreviewHeader = () => (
 );
 
 export const PlatformShowcase = () => {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setMounted(true);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
+
   const energyData = useQuery(api.energy.getMachineData, { machineId: "generator-alpha", limit: 3 });
-  const recentData = energyData?.[0];
+  const recentData = mounted ? energyData?.[0] : undefined;
   const peakLoad = recentData ? (recentData.power / 1000).toFixed(1) : "---";
   const efficiency = recentData ? (recentData.voltage / 220 * 100).toFixed(1) : "--.-";
+  const displayEnergyData = mounted ? energyData : undefined;
+
+
 
   return (
     <Section id="plataforma" className="bg-slate-950 py-32 md:py-64 overflow-hidden relative">
@@ -175,7 +186,7 @@ export const PlatformShowcase = () => {
                            </button>
                         </div>
                         <div className="space-y-3">
-                           {energyData ? energyData.map((node, i) => (
+                           {displayEnergyData ? displayEnergyData.map((node, i) => (
                              <div key={i} className="flex items-center justify-between p-5 bg-white/3 border border-white/5 rounded-2xl hover:bg-white/8 transition-all duration-300 backdrop-blur-md">
                                 <div className="flex items-center gap-6">
                                    <div className="w-10 h-10 rounded-xl bg-slate-900 border border-white/5 flex items-center justify-center text-slate-500 font-black text-xs">

@@ -4,6 +4,7 @@ import "./globals.css";
 import { AppThemeProvider } from "@/app/providers/ThemeProvider";
 import { MotionProvider } from "@/features/motion/providers/MotionProvider";
 import { ConvexClientProvider } from "@/app/providers/ConvexClientProvider";
+import { Analytics } from "@vercel/analytics/next";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -41,6 +42,7 @@ export default function RootLayout({
             <MotionProvider>
               {children}
             </MotionProvider>
+            <Analytics />
           </ConvexClientProvider>
         </AppThemeProvider>
       </body>

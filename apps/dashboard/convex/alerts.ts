@@ -16,7 +16,7 @@ export const getOperationalAlerts = query({
     // 1. Check for consumption deviations (only for active events)
     const activeEvents = await ctx.db
       .query("events")
-      .filter((q) => q.eq(q.field("status"), "active"))
+      .withIndex("by_status", (q) => q.eq("status", "active"))
       .collect();
 
     for (const event of activeEvents) {
@@ -49,7 +49,7 @@ export const getOperationalAlerts = query({
     // 2. Check for overdue financials
     const overdueFinancials = await ctx.db
       .query("financials")
-      .filter((q) => q.eq(q.field("status"), "overdue"))
+      .withIndex("by_status", (q) => q.eq("status", "overdue"))
       .collect();
 
     for (const fin of overdueFinancials) {
@@ -71,10 +71,10 @@ export const getOperationalAlerts = query({
     // Note: Events have endDate, we can use that if contracts don't have explicit end dates
     const soonEvents = await ctx.db
       .query("events")
-      .filter((q) => q.and(
-        q.eq(q.field("status"), "active"),
-        q.lte(q.field("endDate"), Date.now() + 7 * 24 * 60 * 60 * 1000)
-      ))
+      .withIndex("by_status_endDate", (q) => 
+        q.eq("status", "active")
+         .lte("endDate", Date.now() + 7 * 24 * 60 * 60 * 1000)
+      )
       .collect();
 
     for (const event of soonEvents) {
@@ -95,7 +95,7 @@ export const getOperationalAlerts = query({
     if (user.role === "admin" || user.role === "operator") {
       const pendingDocs = await ctx.db
         .query("documents")
-        .filter((q) => q.eq(q.field("status"), "pending_validation"))
+        .withIndex("by_status", (q) => q.eq("status", "pending_validation"))
         .collect();
 
       if (pendingDocs.length > 0) {

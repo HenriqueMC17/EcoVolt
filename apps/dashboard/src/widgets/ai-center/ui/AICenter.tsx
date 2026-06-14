@@ -45,25 +45,33 @@ export const AICenter: React.FC = () => {
   const [isStreaming, setIsStreaming] = useState(true);
   const [refreshCount, setRefreshCount] = useState(0);
 
-  // Simulated SSE streaming effect word by word
+  // Real SSE streaming effect using EventSource
   useEffect(() => {
-    const words = STREAMING_TEXT.split(' ');
-    let currentWordIndex = 0;
-    let accumulatedText = '';
+    if (!isStreaming) return;
 
-    const interval = setInterval(() => {
-      if (currentWordIndex < words.length) {
-        accumulatedText += (currentWordIndex === 0 ? '' : ' ') + words[currentWordIndex];
-        setStreamText(accumulatedText);
-        currentWordIndex++;
-      } else {
-        setIsStreaming(false);
-        clearInterval(interval);
+    setStreamText('');
+    const eventSource = new EventSource('/api/ai/insights');
+
+    eventSource.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.text) {
+          setStreamText((prev) => prev + data.text);
+        }
+      } catch (err) {
+        console.error("Error parsing SSE data:", err);
       }
-    }, 120);
+    };
 
-    return () => clearInterval(interval);
-  }, [refreshCount]);
+    eventSource.onerror = () => {
+      setIsStreaming(false);
+      eventSource.close();
+    };
+
+    return () => {
+      eventSource.close();
+    };
+  }, [isStreaming, refreshCount]);
 
   const handleRefresh = () => {
     if (!isStreaming) {

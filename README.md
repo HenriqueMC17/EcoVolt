@@ -2,7 +2,13 @@
 
 EcoVolt é uma infraestrutura de **Luxury Enterprise** focada em gestão, análise e simulação de ativos de energia renovável. Evoluída de um dashboard simples para uma plataforma robusta, permite que empresas monitorem seu consumo, prevejam economias e analisem o impacto ambiental em tempo real.
 
+## 🔗 Links de Acesso (Deploys)
+
+- 📈 **Dashboard**: [https://dashboard-psi-lyart-97.vercel.app/login](https://dashboard-psi-lyart-97.vercel.app/login)
+- 🌐 **Landing Page**: [https://landing-page-wheat-omega-53.vercel.app/](https://landing-page-wheat-omega-53.vercel.app/)
+
 ## 🚀 Problema que Resolve
+
 A falta de visibilidade sobre o desempenho de ativos energéticos descentralizados (Solar, Eólico, etc.) e a dificuldade em realizar projeções financeiras realistas baseadas em dados ambientais externos. O EcoVolt centraliza esses dados e oferece ferramentas de simulação precisas.
 
 ## 🏛️ Arquitetura do Sistema

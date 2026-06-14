@@ -10,7 +10,20 @@ import { ProviderDashboard } from './ProviderDashboard';
 
 const EnergyChart = dynamic(() => import('./EnergyChart').then(mod => mod.EnergyChart), { 
   ssr: false, 
-  loading: () => <div className="w-full h-full min-h-[300px] bg-white/5 animate-pulse rounded-2xl" /> 
+  loading: () => (
+    <div className="w-full h-[320px] rounded-2xl flex flex-col justify-between p-4 bg-white/2 border border-white/5 animate-pulse-slow">
+      <div className="flex-1 flex items-end justify-between gap-3 pt-10">
+        {[40, 60, 45, 75, 50, 85, 65, 90, 70, 80].map((height, i) => (
+          <div 
+            key={i} 
+            className="w-full bg-white/5 rounded-t-md"
+            style={{ height: `${height}%` }}
+          />
+        ))}
+      </div>
+      <div className="h-4 w-full bg-white/5 rounded mt-4" />
+    </div>
+  )
 });
 
 const AICenter = dynamic(() => import('@/widgets/ai-center/ui/AICenter').then(mod => mod.AICenter), {
@@ -62,7 +75,18 @@ export const Dashboard: React.FC = () => {
                 <div className="h-4 w-16 bg-white/5 rounded-md" />
               </div>
             </div>
-            <div className="flex-1 w-full bg-white/5 rounded-2xl" />
+            <div className="flex-1 w-full h-[320px] rounded-2xl flex flex-col justify-between p-4 bg-white/2 border border-white/5 animate-pulse-slow">
+              <div className="flex-1 flex items-end justify-between gap-3 pt-10">
+                {[40, 60, 45, 75, 50, 85, 65, 90, 70, 80].map((height, i) => (
+                  <div 
+                    key={i} 
+                    className="w-full bg-white/5 rounded-t-md"
+                    style={{ height: `${height}%` }}
+                  />
+                ))}
+              </div>
+              <div className="h-4 w-full bg-white/5 rounded mt-4" />
+            </div>
           </div>
 
           <div className="lg:col-span-1 glass-card h-[498px] bg-white/5 border border-white/5 p-10 flex flex-col gap-4">

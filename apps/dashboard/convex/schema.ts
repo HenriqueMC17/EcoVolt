@@ -68,7 +68,9 @@ export default defineSchema({
     toleranceKwh: v.optional(v.number()),
     companyId: v.id("companies"), 
     createdAt: v.number(),
-  }).index("by_companyId", ["companyId"]),
+  }).index("by_companyId", ["companyId"])
+    .index("by_status", ["status"])
+    .index("by_status_endDate", ["status", "endDate"]),
 
   contracts: defineTable({
     eventId: v.id("events"),
@@ -109,7 +111,8 @@ export default defineSchema({
     paidAt: v.optional(v.number()),
     createdAt: v.number(),
   }).index("by_eventId", ["eventId"])
-    .index("by_contractId", ["contractId"]),
+    .index("by_contractId", ["contractId"])
+    .index("by_status", ["status"]),
 
   documents: defineTable({
     name: v.string(),
@@ -121,7 +124,8 @@ export default defineSchema({
     uploadedBy: v.id("users"),
     uploadedAt: v.number(),
   }).index("by_eventId", ["eventId"])
-    .index("by_contractId", ["contractId"]),
+    .index("by_contractId", ["contractId"])
+    .index("by_status", ["status"]),
     
   proposals: defineTable({
     eventId: v.id("events"),
