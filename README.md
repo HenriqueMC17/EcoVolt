@@ -15,19 +15,19 @@ A falta de visibilidade sobre o desempenho de ativos energéticos descentralizad
 O projeto segue uma arquitetura profissional em camadas (**Controller -> Service -> Repository**) implementada sobre o ecossistema Convex e React:
 
 ### Backend (Convex)
-- **Controller (Entry Points)**: Public `query` e `mutation` em `convex/projects.ts` e `convex/metrics.ts`.
+- **Controller (Entry Points)**: Public `query` e `mutation` em `convex/projects.ts` e `convex/metrics.ts`. Para segurança dos endpoints do backend Convex, implementamos o hardening de segurança baseado nas diretrizes de [Technical Report: The Evolution of API Security (OWASP Top 10)](file:///c:/Dev/Docs/Programação%20Web/Technical%20Report_%20The%20Evolution%20of%20API%20Security%E2%80%93A%20Deep%20Analysis%20of%20the%20OWASP%20API%20Top%2010%20%282019%E2%80%932025%29.md).
 - **Service Layer**: Lógica de negócio isolada em `convex/services/energy.ts` para cálculos de simulação e ROI.
 - **External Integration**: `convex/external/weather.ts` realiza chamadas assíncronas para APIs de clima (Open-Meteo).
 - **Audit System**: Registro automático de todas as ações críticas na tabela `auditLogs`.
 
 ### Frontend (FSD Alignment)
 - **Framework**: Next.js 16 (App Router) + React 19.
-- **Design System**: Tailwind CSS 4 + Framer Motion (Cinematic UX).
+- **Design System**: Tailwind CSS 4 + Framer Motion (Cinematic UX). A adoção estrutural do Tailwind v4 segue o roadmap definido no [Strategic Modernization Plan: Adopting Tailwind CSS v4](file:///c:/Dev/Docs/Programação%20Web/Strategic%20Modernization%20Plan_%20Adopting%20Tailwind%20CSS%20v4%20and%20the%20React%20Compiler.md).
 - **Visualization**: Recharts para análise de tendência e geração.
 
 ## 🔗 Integração com API Externa
 A plataforma consome a API da **Open-Meteo** para obter dados de radiação solar em tempo real baseados na localização do projeto.
-- **Fallback Strategy**: Caso a API esteja indisponível, o sistema utiliza médias históricas regionalizadas para garantir que o simulador nunca fique inativo.
+- **Fallback Strategy**: Caso a API esteja indisponível, o sistema utiliza médias históricas regionalizadas para garantir que o simulador nunca fique inativo. O tratamento e orquestração de contexto dos dados seguem os conceitos de [Strategic Manual: Context Engineering for High-Reliability Enterprise Applications](file:///c:/Dev/Docs/Guia%20de%20Engenharia%20de%20Prompt/Strategic%20Manual_%20Context%20Engineering%20for%20High-Reliability%20Enterprise%20Applications.md) para mitigar inconsistências.
 - **Normalização**: Os dados brutos são processados no backend antes de serem entregues ao frontend.
 
 ## 🛠️ Tecnologias Utilizadas
