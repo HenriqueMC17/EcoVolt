@@ -558,6 +558,27 @@ const mockMutations: Record<string, (args: any) => Promise<any>> = {
       averageRadiation: 750 + Math.random() * 200,
       source: "Open-Meteo Satellite"
     };
+  },
+  "services.energy.simulate": async (args) => {
+    const averageRadiation = 750 + Math.random() * 200;
+    const capacityKw = args.capacityKw || 50;
+    const rate = args.rate || 0.95;
+    const efficiency = 0.15;
+    const hoursPerDay = 5;
+    const gen = capacityKw * (averageRadiation / 1000) * efficiency * hoursPerDay * 30; 
+    return {
+      success: true,
+      weather: {
+        success: true,
+        averageRadiation,
+        unit: "W/m²",
+        source: "Mocked Open-Meteo"
+      },
+      generation: gen.toFixed(2),
+      savings: (gen * rate).toFixed(2),
+      co2: (gen * 0.088).toFixed(2),
+      paybackYears: ((capacityKw * 5000) / ((gen * rate) * 12)).toFixed(1),
+    };
   }
 };
 

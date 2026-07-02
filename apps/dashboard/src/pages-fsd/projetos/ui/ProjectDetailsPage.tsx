@@ -31,7 +31,7 @@ export const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({ projectI
   const router = useRouter();
   
   const project = useQuery(api.projects.getById, { projectId: projectId as any }) as any;
-  const getSolarData = useAction(api.external.weather.getSolarData) as any;
+  const runSimulation = useAction(api.services.energy.simulate) as any;
 
   const [simulation, setSimulation] = useState<any>(null);
   const [loadingSim, setLoadingSim] = useState(false);
@@ -50,19 +50,19 @@ export const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({ projectI
   const handleSimulate = async () => {
     setLoadingSim(true);
     try {
-      // Fetch external data (Open-Meteo)
-      const weather = await getSolarData({ latitude: -23.55, longitude: -46.63 }); // SP Coordinates
-      
-      // Calculate simulation (Simplified client-side for immediate feedback)
-      const capacity = 50; // 50kW
-      const rad = weather.averageRadiation;
-      const gen = capacity * (rad / 1000) * 0.15 * 5 * 30; // Monthly Gen
+      // Call Convex action to run simulation on the service layer
+      const result = await runSimulation({
+        latitude: -23.55,
+        longitude: -46.63,
+        capacityKw: 50,
+        rate: 0.95,
+      });
       
       setSimulation({
-        weather,
-        generation: gen.toFixed(2),
-        savings: (gen * 0.95).toFixed(2), // R$ 0.95 per kWh
-        co2: (gen * 0.088).toFixed(2),
+        weather: result.weather,
+        generation: result.generation,
+        savings: result.savings,
+        co2: result.co2,
       });
     } catch (err) {
       console.error(err);

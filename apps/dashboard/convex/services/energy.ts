@@ -1,3 +1,5 @@
+import { action } from "../_generated/server";
+import { getSolarData } from "../external/weather";
 import { v } from "convex/values";
 
 /**
@@ -51,3 +53,39 @@ export const energyService = {
     };
   }
 };
+
+/**
+ * Convex Action exposing simulation logic to the UI.
+ */
+export const simulate = action({
+  args: {
+    latitude: v.number(),
+    longitude: v.number(),
+    capacityKw: v.number(),
+    rate: v.number(),
+  },
+  handler: async (ctx, args) => {
+    // 1. Fetch real weather data from Open-Meteo using the weather action
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const weather = await ctx.runAction(getSolarData as any, {
+      latitude: args.latitude,
+      longitude: args.longitude,
+    });
+
+    // 2. Perform the simulation calculations using the domain service
+    const results = energyService.generateSimulation({
+      capacityKw: args.capacityKw,
+      radiation: weather.averageRadiation,
+      rate: args.rate,
+    });
+
+    return {
+      success: true,
+      weather,
+      generation: results.monthlyGeneration.toFixed(2),
+      savings: results.monthlySavings.toFixed(2),
+      co2: results.co2Avoided.toFixed(2),
+      paybackYears: results.paybackYears.toFixed(1),
+    };
+  },
+});
