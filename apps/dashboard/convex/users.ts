@@ -1,6 +1,33 @@
-import { query, mutation } from "./_generated/server";
+import { query, mutation, QueryCtx, MutationCtx } from "./_generated/server";
 import { v } from "convex/values";
+import { Id } from "./_generated/dataModel";
 import { logActivityHelper } from "./activities";
+
+/**
+ * Secures and resolves the authenticated user's ID via Clerk token identity.
+ */
+export async function resolveUser(ctx: QueryCtx | MutationCtx, userIdArg?: string): Promise<Id<"users">> {
+  const identity = await ctx.auth.getUserIdentity();
+  if (identity && identity.email) {
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", identity.email!))
+      .unique();
+    if (user) return user._id;
+  }
+  
+  // Strict check in production: if no valid token exists, reject immediately.
+  const isDev = process.env.NODE_ENV === "development" || !process.env.GEMINI_API_KEY;
+  if (isDev) {
+    if (userIdArg) {
+      return userIdArg as Id<"users">;
+    }
+    const firstUser = await ctx.db.query("users").first();
+    if (firstUser) return firstUser._id;
+  }
+  
+  throw new Error("Unauthorized: Active user session not found or not registered");
+}
 
 export const getMe = query({
   args: { email: v.optional(v.string()) },

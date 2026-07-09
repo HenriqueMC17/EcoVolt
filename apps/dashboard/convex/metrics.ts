@@ -1,28 +1,6 @@
-import { query, QueryCtx } from "./_generated/server";
-import { Id } from "./_generated/dataModel";
+import { query } from "./_generated/server";
 import { v } from "convex/values";
-
-// Helper to resolve user ID securely via Clerk identity, falling back to argument or database first user
-async function resolveUser(ctx: QueryCtx, userIdArg?: string): Promise<Id<"users">> {
-  const identity = await ctx.auth.getUserIdentity();
-  if (identity && identity.email) {
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", identity.email!))
-      .unique();
-    if (user) return user._id;
-  }
-  
-  if (userIdArg) {
-    return userIdArg as Id<"users">;
-  }
-  
-  // Dev/Test environment fallback: return first user in the system
-  const firstUser = await ctx.db.query("users").first();
-  if (firstUser) return firstUser._id;
-
-  throw new Error("Unauthorized: User session not found or not registered in the database");
-}
+import { resolveUser } from "./users";
 
 
 export const getGlobalStats = query({
@@ -51,12 +29,18 @@ export const getGlobalStats = query({
     else if (range === "30d") rangeStart = now - (30 * 24 * 60 * 60 * 1000);
     else if (range === "12m") rangeStart = now - (365 * 24 * 60 * 60 * 1000);
 
-    for (const project of projects) {
-      const projectMetrics = await ctx.db
+    // Fetch all project metrics concurrently to resolve N+1 tables scan queries
+    const metricsPromises = projects.map((p) =>
+      ctx.db
         .query("metrics")
-        .withIndex("by_projectId", (q) => q.eq("projectId", project._id))
-        .collect();
-      
+        .withIndex("by_projectId", (q) => q.eq("projectId", p._id))
+        .collect()
+    );
+
+    const allMetrics = await Promise.all(metricsPromises);
+
+    for (let i = 0; i < projects.length; i++) {
+      const projectMetrics = allMetrics[i];
       const filteredMetrics = rangeStart > 0 
         ? projectMetrics.filter(m => m.timestamp >= rangeStart)
         : projectMetrics;
